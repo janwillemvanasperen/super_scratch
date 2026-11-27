@@ -1,0 +1,1031 @@
+{
+  "id": "first-adventure",
+  "version": 1,
+  "name": "Scratch – The First Adventure",
+  "tutorial": false,
+  "story": "De Ideeëneilanden zijn hun sprankeling kwijt. Pip trekt met een rugzak vol nieuwsgierigheid door het Muntwoud, langs de oude werkplaats en de zwevende tuinen. Ergens tussen de wortels ligt een vergeten makerskamer. Kun jij het laatste licht naar de uitkijktoren brengen?",
+  "goal": "Vind de gouden sleutel, open de poort met ↑ en bereik de gele finishvlag.",
+  "difficulty": "Medium",
+  "makers": [
+    {
+      "name": "Super Scratch",
+      "avatar": "#f8cc71"
+    },
+    {
+      "name": "Basisgame",
+      "avatar": "#9bdbc6"
+    }
+  ],
+  "palette": {
+    "sky": "#bce8e5",
+    "far": "#87c6bb",
+    "near": "#4c9b85",
+    "ground": "#7c6652",
+    "accent": "#f8cc71"
+  },
+  "character": {
+    "name": "Pip de ideeënverzamelaar",
+    "color": "#ffdc8b"
+  },
+  "music": {
+    "tempo": 124,
+    "notes": [
+      60,
+      67,
+      72,
+      76,
+      74,
+      67,
+      64,
+      67,
+      62,
+      69,
+      74,
+      77,
+      76,
+      72,
+      67,
+      64
+    ]
+  },
+  "world": {
+    "width": 8800,
+    "height": 540
+  },
+  "spawn": {
+    "x": 60,
+    "y": 420
+  },
+  "targetTime": 60,
+  "instructions": "Volg het licht naar de finish. ↑ opent deuren en geheime doorgangen. Kijk ook onder de platforms!",
+  "objects": [
+    {
+      "id": "ground-1",
+      "kind": "ground",
+      "x": 0,
+      "y": 480,
+      "w": 1900,
+      "h": 60
+    },
+    {
+      "id": "ground-2",
+      "kind": "ground",
+      "x": 2060,
+      "y": 480,
+      "w": 1790,
+      "h": 60
+    },
+    {
+      "id": "ground-3",
+      "kind": "ground",
+      "x": 4020,
+      "y": 480,
+      "w": 4780,
+      "h": 60
+    },
+    {
+      "id": "decoration-4",
+      "kind": "decoration",
+      "x": 120,
+      "y": 398,
+      "w": 32,
+      "h": 62,
+      "text": "Welkom op de Ideeëneilanden! Volg de munten naar de uitkijktoren."
+    },
+    {
+      "id": "coin-5",
+      "kind": "coin",
+      "x": 250,
+      "y": 430,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "coin-6",
+      "kind": "coin",
+      "x": 284,
+      "y": 430,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "coin-7",
+      "kind": "coin",
+      "x": 318,
+      "y": 430,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "coin-8",
+      "kind": "coin",
+      "x": 352,
+      "y": 430,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "coin-9",
+      "kind": "coin",
+      "x": 386,
+      "y": 430,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "coin-10",
+      "kind": "coin",
+      "x": 420,
+      "y": 430,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "platform-11",
+      "kind": "platform",
+      "x": 520,
+      "y": 390,
+      "w": 140,
+      "h": 22
+    },
+    {
+      "id": "coin-12",
+      "kind": "coin",
+      "x": 540,
+      "y": 350,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "coin-13",
+      "kind": "coin",
+      "x": 574,
+      "y": 350,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "coin-14",
+      "kind": "coin",
+      "x": 608,
+      "y": 350,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "walker-15",
+      "kind": "walker",
+      "x": 820,
+      "y": 450,
+      "w": 32,
+      "h": 30,
+      "speed": 50,
+      "range": 70,
+      "color": "#dc8790"
+    },
+    {
+      "id": "coin-16",
+      "kind": "coin",
+      "x": 900,
+      "y": 415,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "coin-17",
+      "kind": "coin",
+      "x": 934,
+      "y": 415,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "coin-18",
+      "kind": "coin",
+      "x": 968,
+      "y": 415,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "coin-19",
+      "kind": "coin",
+      "x": 1002,
+      "y": 415,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "breakable-20",
+      "kind": "breakable",
+      "x": 1130,
+      "y": 370,
+      "w": 32,
+      "h": 32
+    },
+    {
+      "id": "breakable-21",
+      "kind": "breakable",
+      "x": 1162,
+      "y": 370,
+      "w": 32,
+      "h": 32
+    },
+    {
+      "id": "breakable-22",
+      "kind": "breakable",
+      "x": 1194,
+      "y": 370,
+      "w": 32,
+      "h": 32
+    },
+    {
+      "id": "coin-23",
+      "kind": "coin",
+      "x": 1140,
+      "y": 325,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "coin-24",
+      "kind": "coin",
+      "x": 1174,
+      "y": 325,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "coin-25",
+      "kind": "coin",
+      "x": 1208,
+      "y": 325,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "decoration-26",
+      "kind": "decoration",
+      "x": 1060,
+      "y": 398,
+      "w": 32,
+      "h": 62,
+      "text": "Spring van onderen tegen de houten blokken om ze te breken."
+    },
+    {
+      "id": "spring-27",
+      "kind": "spring",
+      "x": 1370,
+      "y": 456,
+      "w": 36,
+      "h": 24
+    },
+    {
+      "id": "platform-28",
+      "kind": "platform",
+      "x": 1450,
+      "y": 310,
+      "w": 200,
+      "h": 22
+    },
+    {
+      "id": "coin-29",
+      "kind": "coin",
+      "x": 1470,
+      "y": 270,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "coin-30",
+      "kind": "coin",
+      "x": 1504,
+      "y": 270,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "coin-31",
+      "kind": "coin",
+      "x": 1538,
+      "y": 270,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "coin-32",
+      "kind": "coin",
+      "x": 1572,
+      "y": 270,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "coin-33",
+      "kind": "coin",
+      "x": 1606,
+      "y": 270,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "jump-34",
+      "kind": "jump",
+      "x": 1570,
+      "y": 275,
+      "w": 28,
+      "h": 28,
+      "duration": 10,
+      "color": "#c0e89b"
+    },
+    {
+      "id": "movingX-35",
+      "kind": "movingX",
+      "x": 1860,
+      "y": 424,
+      "w": 180,
+      "h": 22,
+      "speed": 60,
+      "range": 70
+    },
+    {
+      "id": "coin-36",
+      "kind": "coin",
+      "x": 1900,
+      "y": 385,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "coin-37",
+      "kind": "coin",
+      "x": 1934,
+      "y": 385,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "coin-38",
+      "kind": "coin",
+      "x": 1968,
+      "y": 385,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "decoration-39",
+      "kind": "decoration",
+      "x": 1770,
+      "y": 398,
+      "w": 32,
+      "h": 62,
+      "text": "De windbrug beweegt. Neem je tijd, of spring met een aanloop."
+    },
+    {
+      "id": "checkpoint-40",
+      "kind": "checkpoint",
+      "x": 2200,
+      "y": 414,
+      "w": 32,
+      "h": 66
+    },
+    {
+      "id": "heart-41",
+      "kind": "heart",
+      "x": 2290,
+      "y": 448,
+      "w": 26,
+      "h": 26
+    },
+    {
+      "id": "chaser-42",
+      "kind": "chaser",
+      "x": 2520,
+      "y": 450,
+      "w": 30,
+      "h": 30,
+      "speed": 75,
+      "range": 90,
+      "color": "#de9e80"
+    },
+    {
+      "id": "spikes-43",
+      "kind": "spikes",
+      "x": 2750,
+      "y": 460,
+      "w": 48,
+      "h": 20,
+      "color": "#de9aab"
+    },
+    {
+      "id": "coin-44",
+      "kind": "coin",
+      "x": 2720,
+      "y": 375,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "coin-45",
+      "kind": "coin",
+      "x": 2754,
+      "y": 375,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "coin-46",
+      "kind": "coin",
+      "x": 2788,
+      "y": 375,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "coin-47",
+      "kind": "coin",
+      "x": 2822,
+      "y": 375,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "shield-48",
+      "kind": "shield",
+      "x": 2910,
+      "y": 448,
+      "w": 28,
+      "h": 28,
+      "color": "#a5dbf4",
+      "duration": 15
+    },
+    {
+      "id": "vanish-49",
+      "kind": "vanish",
+      "x": 3060,
+      "y": 382,
+      "w": 150,
+      "h": 22,
+      "period": 3.4
+    },
+    {
+      "id": "coin-50",
+      "kind": "coin",
+      "x": 3080,
+      "y": 340,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "coin-51",
+      "kind": "coin",
+      "x": 3114,
+      "y": 340,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "coin-52",
+      "kind": "coin",
+      "x": 3148,
+      "y": 340,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "coin-53",
+      "kind": "coin",
+      "x": 3182,
+      "y": 340,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "movingY-54",
+      "kind": "movingY",
+      "x": 3320,
+      "y": 390,
+      "w": 130,
+      "h": 22,
+      "speed": 45,
+      "range": 55
+    },
+    {
+      "id": "flyer-55",
+      "kind": "flyer",
+      "x": 3470,
+      "y": 340,
+      "w": 32,
+      "h": 28,
+      "speed": 50,
+      "range": 90,
+      "color": "#ab8bc9"
+    },
+    {
+      "id": "platform-56",
+      "kind": "platform",
+      "x": 3590,
+      "y": 370,
+      "w": 130,
+      "h": 20
+    },
+    {
+      "id": "coin-57",
+      "kind": "coin",
+      "x": 3610,
+      "y": 330,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "coin-58",
+      "kind": "coin",
+      "x": 3644,
+      "y": 330,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "coin-59",
+      "kind": "coin",
+      "x": 3678,
+      "y": 330,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "movingX-60",
+      "kind": "movingX",
+      "x": 3810,
+      "y": 430,
+      "w": 180,
+      "h": 22,
+      "speed": 45,
+      "range": 55
+    },
+    {
+      "id": "checkpoint-61",
+      "kind": "checkpoint",
+      "x": 4140,
+      "y": 414,
+      "w": 32,
+      "h": 66
+    },
+    {
+      "id": "key-62",
+      "kind": "key",
+      "x": 4310,
+      "y": 445,
+      "w": 28,
+      "h": 24,
+      "key": "tower"
+    },
+    {
+      "id": "decoration-63",
+      "kind": "decoration",
+      "x": 4230,
+      "y": 398,
+      "w": 32,
+      "h": 62,
+      "text": "Een sleutel voor de oude poort. Neem hem mee!"
+    },
+    {
+      "id": "door-64",
+      "kind": "door",
+      "x": 4550,
+      "y": 350,
+      "w": 42,
+      "h": 130,
+      "key": "tower"
+    },
+    {
+      "id": "wall-65",
+      "kind": "wall",
+      "x": 4592,
+      "y": 350,
+      "w": 75,
+      "h": 25
+    },
+    {
+      "id": "decoration-66",
+      "kind": "decoration",
+      "x": 4450,
+      "y": 398,
+      "w": 32,
+      "h": 62,
+      "text": "↑ opent de poort. Zonder sleutel kom je er niet doorheen."
+    },
+    {
+      "id": "speed-67",
+      "kind": "speed",
+      "x": 4790,
+      "y": 448,
+      "w": 28,
+      "h": 28,
+      "color": "#90e7b9",
+      "duration": 8
+    },
+    {
+      "id": "coin-68",
+      "kind": "coin",
+      "x": 4900,
+      "y": 430,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "coin-69",
+      "kind": "coin",
+      "x": 4934,
+      "y": 430,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "coin-70",
+      "kind": "coin",
+      "x": 4968,
+      "y": 430,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "coin-71",
+      "kind": "coin",
+      "x": 5002,
+      "y": 430,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "coin-72",
+      "kind": "coin",
+      "x": 5036,
+      "y": 430,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "coin-73",
+      "kind": "coin",
+      "x": 5070,
+      "y": 430,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "jumper-74",
+      "kind": "jumper",
+      "x": 5230,
+      "y": 448,
+      "w": 32,
+      "h": 32,
+      "speed": 45,
+      "range": 80,
+      "color": "#cf91b8"
+    },
+    {
+      "id": "trap-75",
+      "kind": "trap",
+      "x": 5510,
+      "y": 432,
+      "w": 32,
+      "h": 32,
+      "speed": 65,
+      "range": 60,
+      "color": "#d6a4b5"
+    },
+    {
+      "id": "coin-76",
+      "kind": "coin",
+      "x": 5470,
+      "y": 355,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "coin-77",
+      "kind": "coin",
+      "x": 5504,
+      "y": 355,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "coin-78",
+      "kind": "coin",
+      "x": 5538,
+      "y": 355,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "coin-79",
+      "kind": "coin",
+      "x": 5572,
+      "y": 355,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "falling-80",
+      "kind": "falling",
+      "x": 5780,
+      "y": 210,
+      "w": 32,
+      "h": 32,
+      "color": "#ba9c86"
+    },
+    {
+      "id": "decoration-81",
+      "kind": "decoration",
+      "x": 5660,
+      "y": 398,
+      "w": 32,
+      "h": 62,
+      "text": "Kijk omhoog! De losse steen valt als je dichtbij komt."
+    },
+    {
+      "id": "platform-82",
+      "kind": "platform",
+      "x": 5980,
+      "y": 370,
+      "w": 300,
+      "h": 22
+    },
+    {
+      "id": "passage-83",
+      "kind": "passage",
+      "x": 6070,
+      "y": 420,
+      "w": 36,
+      "h": 60,
+      "target": {
+        "x": 6460,
+        "y": 425
+      }
+    },
+    {
+      "id": "decoration-84",
+      "kind": "decoration",
+      "x": 5900,
+      "y": 398,
+      "w": 32,
+      "h": 62,
+      "text": "Er gaat een verhaal over een makerskamer. ↑ bij een donkere doorgang…"
+    },
+    {
+      "id": "wall-85",
+      "kind": "wall",
+      "x": 6390,
+      "y": 340,
+      "w": 32,
+      "h": 140
+    },
+    {
+      "id": "platform-86",
+      "kind": "platform",
+      "x": 6422,
+      "y": 340,
+      "w": 260,
+      "h": 24
+    },
+    {
+      "id": "secret-87",
+      "kind": "secret",
+      "x": 6440,
+      "y": 390,
+      "w": 200,
+      "h": 90,
+      "text": "De vergeten makerskamer! Elk groot idee begint met een kleine pixel. +500"
+    },
+    {
+      "id": "coin-88",
+      "kind": "coin",
+      "x": 6460,
+      "y": 430,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "coin-89",
+      "kind": "coin",
+      "x": 6494,
+      "y": 430,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "coin-90",
+      "kind": "coin",
+      "x": 6528,
+      "y": 430,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "coin-91",
+      "kind": "coin",
+      "x": 6562,
+      "y": 430,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "coin-92",
+      "kind": "coin",
+      "x": 6596,
+      "y": 430,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "bonus-93",
+      "kind": "bonus",
+      "x": 6610,
+      "y": 430,
+      "w": 28,
+      "h": 28
+    },
+    {
+      "id": "passage-94",
+      "kind": "passage",
+      "x": 6660,
+      "y": 420,
+      "w": 36,
+      "h": 60,
+      "target": {
+        "x": 6800,
+        "y": 420
+      }
+    },
+    {
+      "id": "invincible-95",
+      "kind": "invincible",
+      "x": 6910,
+      "y": 448,
+      "w": 28,
+      "h": 28,
+      "duration": 9,
+      "color": "#ffe99a"
+    },
+    {
+      "id": "sentry-96",
+      "kind": "sentry",
+      "x": 7110,
+      "y": 446,
+      "w": 34,
+      "h": 34,
+      "color": "#d98f86"
+    },
+    {
+      "id": "shooter-97",
+      "kind": "shooter",
+      "x": 7380,
+      "y": 448,
+      "w": 32,
+      "h": 32,
+      "speed": 65,
+      "period": 2,
+      "color": "#b995cc"
+    },
+    {
+      "id": "lava-98",
+      "kind": "lava",
+      "x": 7570,
+      "y": 469,
+      "w": 70,
+      "h": 11
+    },
+    {
+      "id": "coin-99",
+      "kind": "coin",
+      "x": 7540,
+      "y": 380,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "coin-100",
+      "kind": "coin",
+      "x": 7574,
+      "y": 380,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "coin-101",
+      "kind": "coin",
+      "x": 7608,
+      "y": 380,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "coin-102",
+      "kind": "coin",
+      "x": 7642,
+      "y": 380,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "heart-103",
+      "kind": "heart",
+      "x": 7780,
+      "y": 448,
+      "w": 26,
+      "h": 26
+    },
+    {
+      "id": "crate-104",
+      "kind": "crate",
+      "x": 7970,
+      "y": 452,
+      "w": 28,
+      "h": 28
+    },
+    {
+      "id": "decoration-105",
+      "kind": "decoration",
+      "x": 7870,
+      "y": 398,
+      "w": 32,
+      "h": 62,
+      "text": "Neem een souvenir mee met ↓. De finish is in zicht!"
+    },
+    {
+      "id": "coin-106",
+      "kind": "coin",
+      "x": 8120,
+      "y": 425,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "coin-107",
+      "kind": "coin",
+      "x": 8154,
+      "y": 425,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "coin-108",
+      "kind": "coin",
+      "x": 8188,
+      "y": 425,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "coin-109",
+      "kind": "coin",
+      "x": 8222,
+      "y": 425,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "coin-110",
+      "kind": "coin",
+      "x": 8256,
+      "y": 425,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "coin-111",
+      "kind": "coin",
+      "x": 8290,
+      "y": 425,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "coin-112",
+      "kind": "coin",
+      "x": 8324,
+      "y": 425,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "finish-113",
+      "kind": "finish",
+      "x": 8580,
+      "y": 360,
+      "w": 64,
+      "h": 120
+    },
+    {
+      "id": "decoration-114",
+      "kind": "decoration",
+      "x": 8390,
+      "y": 398,
+      "w": 32,
+      "h": 62,
+      "text": "Het licht is terug. Jij hebt dit avontuur gemaakt!"
+    }
+  ]
+}
