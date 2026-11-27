@@ -1,0 +1,455 @@
+# Super Scratch — ontwerp- en bouwcatalogus
+
+**Voor de tien studentenduo’s van Scratch, MBO Utrecht**  
+Gecontroleerd op 27 november 2026. Gebaseerd op de code op GitHub, versie `b55777a`.
+
+## 1. Jullie opdracht
+
+Ontwerp samen een eigen level voor Super Scratch. Jullie leveren een prompt in: een duidelijke beschrijving van wat de bouwer moet maken. Je mag tekeningen en afbeeldingen toevoegen. Je hoeft zelf geen code te schrijven.
+
+Maak een avontuur dat bij een goede poging ongeveer **30 tot 60 seconden** duurt. Het moet een begin, een haalbare route en een duidelijke finish hebben. Geef jullie wereld een eigen verhaal. Denk bijvoorbeeld aan een festival, winkel, school, jungle of ruimtebasis. Een ander thema mag ook.
+
+**Belangrijk:** een idee bedenken en dat idee al kunnen bouwen zijn twee verschillende dingen. Deze gids beschrijft de game die nu bestaat. Een getekend personage of een muziekbestand verschijnt niet vanzelf in de game.
+
+### Zo lees je de status
+
+| Status | Wat betekent dit? |
+|---|---|
+| **Werkt** | De functie zit in de huidige code. Je kunt haar gebruiken met de genoemde instellingen. Iedere nieuwe opstelling moet nog worden getest. |
+| **Beperkt** | Een basis werkt, maar niet alle gewenste vormen of situaties worden ondersteund. Lees de beperking. |
+| **Nog bouwen** | Hiervoor moet de bouwer nieuwe code of ondersteuning voor bestanden toevoegen. |
+
+De namen tussen haakjes, zoals `ground`, zijn voor de bouwer. In jullie prompt mag je gewoon ‘grond’ schrijven.
+
+## 2. Wat mogen jullie zelf kiezen?
+
+| Onderdeel | Jullie keuze | Wat kan nu? |
+|---|---|---|
+| Naam en verhaal | Een eigen titel, verhaal en doel | **Werkt.** Het doel is een tekst; extra opdrachten worden niet vanzelf spelregels. |
+| Thema | Iedere originele wereld | **Beperkt.** De huidige beelden bestaan uit vaste pixelvormen. Een nieuw thema kan meer tekenwerk en code vragen. |
+| Route | Plaats van grond, platforms, gevaren en finish | **Werkt**, binnen de grenzen van hoofdstuk 8. |
+| Moeilijkheid | Easy, Medium of Hard | **Werkt.** Dit is een label. De bouwer maakt de route makkelijker of moeilijker. |
+| Vijanden | Type, plaats, kleur, grootte en ondersteunde instellingen | **Werkt**, met beperkingen per type. |
+| Beloningen | Munten, hartjes, bonusvoorwerpen en power-ups | **Werkt.** De puntwaarden staan vast. |
+| Geheim | Een verborgen plek, bonus of doorgang | **Werkt**, binnen dezelfde wereld. |
+| Personage | Naam, kleur en een ontwerpidee | **Beperkt.** Alleen naam en kleur zijn direct instelbaar. |
+| Makers | Twee namen en twee avatar-kleuren | **Werkt.** Eigen gezichten en kapsels moeten nog worden toegevoegd. |
+| Muziek | Sfeer, tempo en een korte melodie | **Beperkt.** De game speelt een eenvoudige reeks tonen. |
+| Extra spelmechaniek | Maximaal één nieuwe manier van spelen | **Nog bouwen**, tenzij de bestaande windfunctie past. Zie hoofdstuk 10. |
+
+Een eigen afbeelding is dus een **ontwerpvoorstel**, geen belofte dat die zonder extra werk kan worden gebruikt.
+
+## 3. Grond, platforms en omgeving
+
+Een platform is een oppervlak waarop je kunt staan. ‘Massief’ betekent dat je er niet doorheen kunt lopen of springen.
+
+| Bouwsteen | Wat gebeurt er? | Instelbaar en aandachtspunt | Status |
+|---|---|---|---|
+| Grond (`ground`) | Een massieve bodem | Plaats, breedte en hoogte. De kleuren komen uit het levelpalet. | **Werkt** |
+| Vast platform (`platform`) | Je kunt erop landen. Ook de onderkant en zijkanten houden je tegen. | Plaats, grootte en kleur van de bovenrand. Zwevend betekent hier niet dat het beweegt. | **Werkt** |
+| Muur (`wall`) | Houdt de speler tegen | Plaats, grootte en kleur van de bovenrand. | **Werkt** |
+| Horizontaal platform (`movingX`) | Beweegt links en rechts. Neemt een speler die erop staat mee. | Plaats, grootte, snelheid en bewegingsafstand. Van onderen kun je erdoorheen springen. | **Werkt**, botsingen in iedere nieuwe opstelling testen |
+| Verticaal platform (`movingY`) | Beweegt omhoog en omlaag en neemt de speler mee | Dezelfde instellingen. Het is geen lift met knoppen of vaste haltes. | **Werkt**, botsingen in iedere nieuwe opstelling testen |
+| Verdwijnend platform (`vanish`) | Is een deel van de tijd bruikbaar. Daarna zie je alleen een rand. | De totale cyclus duurt 0,5–30 seconden. Het platform is 72% van die tijd bruikbaar. Je kunt er van onderen doorheen springen. | **Werkt** |
+| Breekbaar blok (`breakable`) | Breekt als je van onderen ertegen springt | Plaats, grootte en kleuraccent. Er komt niet automatisch een munt uit. Het blijft kapot na verlies van een leven. | **Werkt** |
+| Springveer (`spring`) | Lanceert je omhoog als je het gebied raakt terwijl je daalt | Plaats en contactgebied. De lanceerkracht staat vast. | **Werkt**, plaatsing zorgvuldig testen |
+| Afgrond | Je valt uit de wereld en verliest één leven | Laat een stuk grond weg. Een afgrond is geen apart object. | **Werkt** |
+| Decoratie of bord (`decoration`) | Toont een bord. Dichtbij verschijnt eventueel een korte tekst. | Plaats, kleuraccent en tekst van maximaal 180 tekens. De afstand wordt alleen links-rechts gemeten. | **Beperkt:** geen vrije verzameling bomen, meubels of decorbeelden |
+| Achtergrondlagen | Wolken en twee lagen heuvels bewegen op verschillende snelheden | Kleuren zijn instelbaar. Eigen landschapsvormen zijn nog geen levelinstelling. | **Beperkt**, vooral bij lange levels; zie hoofdstuk 7 |
+
+**Ontwerptip:** geef een bewegend platform vrije ruimte. Zet geen plafond zo laag dat de speler ertussen vast komt te zitten. Bouw een veilige plek om te wachten bij een verdwijnend platform.
+
+## 4. Gevaren
+
+| Gevaar | Gedrag | Wat kun je kiezen? | Status |
+|---|---|---|---|
+| Stekels (`spikes`) | Aanraken kost een hartje | Plaats, afmetingen en kleur | **Werkt** |
+| Gevaarlijke vloer (`lava`) | Aanraken kost een hartje; de bovenkant beweegt in beeld | Plaats en contactgebied. Het beeld blijft rood-oranje lava. | **Beperkt:** een andere vloeistof is nog geen vrij instelbaar uiterlijk |
+| Bewegende val (`trap`) | Een stekelval beweegt links en rechts | Plaats, grootte, kleur, snelheid en afstand | **Werkt.** Geen verticale of zelfgetekende route. |
+| Vallend blok (`falling`) | Valt wanneer je horizontaal binnen 100 pixels komt. Verschijnt bovenaan terug nadat het onder de wereld is verdwenen. | Plaats, grootte en kleuraccent | **Beperkt:** het blok landt niet op de grond en wordt geen platform; het valt door de omgeving heen. |
+| Projectiel | Een schietende vijand vuurt een klein blokje af. Raken kost een hartje. | Via de instellingen van de schutter | **Werkt**, maar geen los plaatsbaar projectieltype in het levelbestand |
+
+Gevaren gebruiken een rechthoekig contactgebied. Bij stekels is dat het hele vak, niet alleen het zichtbare driehoekje. Lava is zelf geen stevige vloer. Leg er grond onder als je een gevaarlijke vloer wilt maken in plaats van een valkuil.
+
+## 5. De zes soorten vijanden
+
+Alle vijanden doen bij contact één hartje schade. De basisvorm is een klein pixelmonster. Kleuren en afmetingen zijn instelbaar. Een eigen dier, robot of mens vraagt extra teken- en programmeerwerk.
+
+| Vijand | Gedrag in de huidige game | Instellingen en grenzen |
+|---|---|---|
+| Wandelaar (`walker`) | Loopt links en rechts rond zijn startplek en valt door zwaartekracht | Snelheid en bereik. Hij kijkt niet of er een afgrond aankomt. **Werkt.** |
+| Achtervolger (`chaser`) | Loopt normaal heen en weer. Volgt de speler zodra die horizontaal binnen 280 pixels komt. | Snelheid en bereik rond de startplek. Hij zoekt geen slimme route om muren heen. **Werkt.** |
+| Springer (`jumper`) | Beweegt over de grond en springt opnieuw wanneer hij geland is en zijn timer voorbij 1,5 seconde is | Loopsnelheid en bereik. Sprongkracht en wachttijd staan vast. **Beperkt:** de timer voor zijn looprichting wordt bij iedere sprong gereset. Reken niet op een gelijkmatige patrouille naar beide kanten. |
+| Vlieger (`flyer`) | Zweeft links en rechts en golft tegelijk op en neer | Horizontale snelheid en afstand. De verticale beweging is vast: 24 pixels omhoog en omlaag. Hij botst niet met platforms of muren. **Werkt als eenvoudige vlieger.** |
+| Schutter (`shooter`) | Staat stil. Schiet naar links of rechts als de speler horizontaal binnen 650 pixels komt. | Tijd tussen schoten en projectielsnelheid. Hij richt niet omhoog of omlaag en controleert niet of er een muur tussen zit. **Werkt.** |
+| Vaste wachter (`sentry`) | Staat op zijn plek. Is ook van boven gevaarlijk. | Plaats, grootte en kleur. Hij loopt, springt en schiet niet. **Werkt.** |
+
+Je kunt de eerste vijf typen verslaan door er tijdens het dalen bovenop te landen. Daarna veer je omhoog. Een vaste wachter versla je alleen met de power-up voor onkwetsbaarheid. Met die power-up kun je ook de andere vijanden door aanraking verslaan.
+
+### Grenzen van vijandgedrag
+
+- Een vijand heeft één type. Een vliegende schutter of een achtervolger die ook springt is **nog niet beschikbaar**.
+- Vijanden hebben geen levensbalk of instelbaar aantal hartjes. Een geldige aanval schakelt ze in één keer uit.
+- Grondvijanden die onder de wereld vallen, worden op hun beginplek teruggezet. Dat levert geen punten op.
+- Schutters en vaste wachters hebben geen zwaartekracht. De bouwer moet ze dus goed plaatsen.
+- Een projectiel is 10 bij 10 pixels, beweegt horizontaal en blijft maximaal vier seconden bestaan. Het verdwijnt bij een treffer of botsing met een massief object.
+- Bij een schutter bepaalt `speed` de projectielsnelheid: de game telt er 130 pixels per seconde bij op. Bij een vlieger op snelheid nul blijft de verticale beweging doorgaan.
+
+## 6. Verzamelobjecten, power-ups en interactie
+
+### Verzamelobjecten
+
+| Voorwerp | Wat doet het? | Status |
+|---|---|---|
+| Munt (`coin`) | Eén munt en 100 punten | **Werkt** |
+| Hartje (`heart`) | Herstelt één hartje. Blijft liggen als je al drie hartjes hebt. | **Werkt** |
+| Sleutel (`key`) | Voegt een sleutelcode toe aan je sleutelbos. Kan bij een of meer deuren horen. | **Werkt** |
+| Bonusvoorwerp (`bonus`) | Geeft 500 punten. Verhoogt het aantal munten niet. | **Werkt** |
+
+Voor deze voorwerpen zijn geen vrij instelbare puntwaarden. Munten, hartjes en sleutels hebben vaste tekenvormen en kleuren. Een sleutel wordt bij gebruik niet verbruikt. De HUD toont alleen een sleutelteken, geen lijst met alle gevonden sleutels.
+
+### De vier power-ups
+
+Alle vier **werken**. De duur is per voorwerp instelbaar van 1 tot 60 seconden; standaard is dat 10 seconden.
+
+| Power-up | Effect | Let op |
+|---|---|---|
+| Sterrenkracht (`invincible`) | Beschermt tegen contactschade en projectielen. Vijanden verdwijnen bij aanraking. | Een bodemloze afgrond kost nog steeds een leven. |
+| Hoge sprong (`jump`) | Maakt de afzet 1,27 keer zo sterk. De maximale hoogte wordt ongeveer 168 pixels. | Dit geeft geen dubbele sprong. |
+| Turbo (`speed`) | Maakt de topsnelheid 1,45 keer zo hoog: ongeveer 355 pixels per seconde. | De zwaartekracht en gewone sprongkracht blijven gelijk. |
+| Schild (`shield`) | Vangt één treffer op. Daarna is het schild weg. | Het vervalt ook als de tijd om is. Beschermt niet tegen een afgrond. |
+
+Verschillende power-ups kunnen tegelijk actief zijn. Een tweede power-up van hetzelfde type zet de tijd opnieuw op de duur van het nieuwe voorwerp. De tijden worden niet bij elkaar opgeteld. Bij verlies van een leven vervallen alle actieve power-ups. Opgepakte power-ups verschijnen dan niet opnieuw.
+
+### Interactieve objecten
+
+| Object | Hoe gebruik je het? | Status en grens |
+|---|---|---|
+| Sleuteldeur (`door`) | Verzamel de passende sleutel en druk naast de deur op ↑. | **Werkt.** De deur blijft open. Alle deuren van dit type vereisen een sleutel. De kleur verandert direct; er is geen uitgebreide openanimatie. |
+| Geheime doorgang (`passage`) | Ga in de opening staan en druk op ↑. Je verschijnt op een opgegeven plek. | **Werkt.** Alleen verplaatsen binnen hetzelfde level. Een doorgang zonder sleutel kan hiermee worden gemaakt. |
+| Checkpoint (`checkpoint`) | Raak het vlaggetje aan. Hier begin je na verlies van een leven. | **Werkt met beperking.** Geef ieder checkpoint een andere horizontale positie. De code vergelijkt alleen die positie. |
+| Kist (`crate`) | Druk dichtbij op ↓ om hem boven je hoofd te dragen. Druk opnieuw op ↓ om hem neer te zetten. | **Werkt met beperking.** Eén kist tegelijk. Geen werpen, schakelaar of drukplaat. Houd kisten rond de voorbeeldgrootte van 28 × 28 pixels. |
+| Geheim gebied (`secret`) | Loop of spring erin. Je krijgt een bericht, lichteffect en 500 punten. | **Werkt.** Eén beloning per geheim per poging. Het vak is vooraf al heel vaag zichtbaar. |
+| Finish (`finish`) | Raak het finishgebied aan. | **Werkt.** Geeft de uitslag en slaat het resultaat op. Het beeld is een gele vlag. |
+
+Bij verlies van een leven worden kisten en vallende blokken teruggezet. Deuren blijven open, gebroken blokken blijven kapot en eerder verzamelde beloningen blijven weg.
+
+**Plaatsingstips:** zet een checkpoint boven veilige, vaste grond. Zet een sleutel vóór de deur die hij opent. Geef iedere geheime kamer een uitgang. Plaats de bestemming van een doorgang niet in een muur, gevaar of andere doorgang.
+
+## 7. Een eigen uiterlijk en eigen muziek
+
+### Personage en avatars — beperkt
+
+Je kunt nu een personagenaam en één kleur kiezen. De kleur wordt als een tint over de bestaande speler gezet. Het figuurtje is getekend op een raster van 16 × 16 pixels en wordt twee keer zo groot getoond. Zijn contactgebied blijft 22 × 30 pixels.
+
+De speler heeft eenvoudige loopbeelden en knippert na schade. Een apart springbeeld, eigen kledingstukken en een eigen vorm zijn niet via het levelbestand te kiezen. In de lucht wordt het basisbeeld gebruikt.
+
+De twee makers krijgen ieder een naam en een kleur voor een vaste pixelavatar. Een eigen portret, kapsel of kledingvorm is **nog te bouwen**. Lever daarvoor gerust een schets aan, maar zet erbij dat het een uitbreidingswens is.
+
+### Achtergrond en objecten — beperkt
+
+Een level heeft vijf kleuren: lucht, verre heuvels, nabije heuvels, grond en accent. De zon, wolken en heuvelvormen zijn vast. De twee lagen geven diepte doordat ze op verschillende snelheden bewegen.
+
+Bij lange levels blijven de heuvels niet eindeloos doorlopen. De code tekent een beperkt aantal vormen. Verderop kunnen delen van de achtergrond daardoor leeg raken. Dit moet worden verbeterd als jullie overal een gevuld landschap willen.
+
+De afbeelding op een levelkaart is een vaste voorbeeldtekening met de kleuren van het level. Het is geen afbeelding van jullie echte route. Een eigen kaartafbeelding, achtergrondbestand, personagebestand of vijandbestand heeft nu geen invoerveld in het levelbestand. Alleen een afbeelding in de map `public/assets/` zetten is dus niet genoeg.
+
+Ook niet elk object volgt de ingestelde grootte en kleur in zijn tekening. Vooral kleine verzamelobjecten en decoraties gebruiken vaste pixelmaten. Hun contactgebied kan daardoor groter of kleiner worden dan hun beeld. Gebruik de voorbeeldmaten totdat de bouwer dit aanpast.
+
+### Muziek — een eenvoudige melodie werkt
+
+De browser maakt zelf retrotonen. Per level kun je kiezen voor:
+
+- een tempo van 60–200 tellen per minuut;
+- een herhalende reeks van 4–64 noten;
+- hoge of lage tonen binnen het toegestane bereik.
+
+Voor de bouwer zijn dit MIDI-nootnummers van 36–96. Studenten mogen de sfeer gewoon omschrijven: ‘rustig en geheimzinnig’ of ‘snel en vrolijk’. De bouwer maakt daar een korte melodie van.
+
+Iedere noot heeft dezelfde stapduur. Er is een eenvoudige lage begeleiding. Eigen instrumentkeuzes, stiltes per noot, losse nootlengtes, zang en het afspelen van een MP3 of WAV zijn **nog niet ingebouwd**.
+
+Geluiden voor springen, munten, schade, vijanden, hartjes, power-ups, deuren, checkpoints, levensverlies, Game Over, geheimen en finish bestaan. Die geluiden zijn voor alle levels hetzelfde. Muziek en effecten kunnen apart aan of uit. Er is één gezamenlijke volumeregelaar. Geluid begint pas na een gebruikersactie.
+
+## 8. Technische grenzen in gewone taal
+
+Een pixel is een klein beeldpunt. Gebruik op een schets bijvoorbeeld **één ruitje voor 32 pixels**. Je hoeft niet ieder punt precies uit te rekenen. De bouwer vertaalt jullie schets naar het level.
+
+### Lopen en springen
+
+| Onderdeel | Waarde in de huidige game |
+|---|---|
+| Gewone topsnelheid | 245 pixels per seconde |
+| Turbo | Ongeveer 355 pixels per seconde |
+| Gewone maximale spronghoogte | Ongeveer 104 pixels, ruim drie ruitjes van 32 |
+| Gewone sprongafstand | Ongeveer 200 pixels bij volle snelheid en landen op dezelfde hoogte |
+| Hoge-sprong-power-up | Ongeveer 168 pixels hoog; ongeveer 254 pixels ver bij gewone snelheid |
+| Springveer | Theoretisch ongeveer 219 pixels hoog bij een ononderbroken lancering |
+| Sturen in de lucht | Links en rechts werken ook tijdens een sprong |
+| Spatie vroeg loslaten | Remt een opwaartse beweging af en maakt de sprong korter |
+
+De hoogtes en afstanden zijn **schattingen uit de bewegingsregels**, geen gegarandeerde veilige sprongen. Aanloop, het loslaten van Spatie, platforms en het moment van landen maken verschil. Ook een lancering door een springveer kan worden afgeremd door Spatie los te laten.
+
+Ontwerp verplichte gewone sprongen daarom liever met **maximaal 80–90 pixels hoogteverschil** en **maximaal 160 pixels tussen de randen**. Een gat van 180 pixels kan moeilijk worden. Bij een hoger landingspunt kun je minder ver springen. Geef voldoende ruimte boven het hoofd en een breed landingsvlak. Een power-up die nodig is voor de route moet ook na verlies van een leven bereikbaar of overbodig zijn.
+
+Er is geen dubbele sprong, muursprong, ladder, kruipen of zwemmen. Een onderwaterthema kan wel, maar de speler beweegt daarin nog als op het land.
+
+### Grootte van het level
+
+| Onderdeel | Grens die het bestand accepteert | Advies voor jullie ontwerp |
+|---|---|---|
+| Speelbeeld | Vast 960 × 540 pixels | Teken een brede route die links-rechts doorloopt. |
+| Wereldbreedte | 960–50.000 pixels | Begin rond de voorbeelden: 5.200 en 8.800 pixels. Meet daarna de speeltijd. |
+| Wereldhoogte | 540–4.000 pixels | **Gebruik 540.** De camera volgt niet omhoog of omlaag. Een grotere ingevoerde hoogte maakt geen goed werkend verticaal level. |
+| Aantal objecten | 1–4.000 per level | Dit is geen prestatiedoel. Gebruik alleen wat nodig is en test op een schoollaptop. |
+| Objectbreedte | 8–8.000 pixels | Kleine items hebben vaste tekenmaten. Maak een lange bodem uit meerdere grondstukken. |
+| Objecthoogte | 8–800 pixels | Houd de route en belangrijke voorwerpen binnen het zichtbare scherm. |
+| Streeftijd | 10–600 seconden | Richt op 30–60 seconden. Dit is voor de bonus, niet een aftellende tijdslimiet. |
+
+De oorsprong ligt linksboven. Naar rechts neemt `x` toe, naar beneden neemt `y` toe. In de voorbeelden ligt de grond meestal op `y = 480`. De speler staat dan met zijn bovenkant rond `y = 450`.
+
+### Beweging van objecten
+
+- Beweegbare platforms en vallen gebruiken `speed` van 0–500 en `range` van 0–1.500 pixels. Ze bewegen vloeiend heen en terug, niet langs een getekende route.
+- Een bereik van 100 betekent maximaal 100 pixels aan iedere kant van het startpunt: een totale baan van 200 pixels.
+- De volledige baan moet binnen de wereld blijven. Het bestand controleert de beginplek, maar niet alle uiterste bewegingspunten.
+- De tijd voor één heen-en-terugbeweging volgt uit snelheid en bereik. Het veld `period` regelt bij deze platforms niet de omlooptijd.
+- `period` regelt wel de cyclus van verdwijnende platforms en de wachttijd van schutters: 0,5–30 seconden.
+- Maximale toegestane waarden zijn geen advies. Extreem snelle of grote objecten moeten extra worden getest.
+
+## 9. Verborgen verrassingen
+
+Deze ideeën kunnen met bestaande bouwstenen:
+
+| Idee | Zo bouw je het |
+|---|---|
+| Een geheime hoek onder een platform | Plaats daar een `secret`-gebied en eventueel munten. |
+| Een verborgen makerskamer | Maak een ruimte met muren, een ingang en een veilige uitgang. Zet er een geheimbericht in. |
+| Een geheime doorgang | Gebruik `passage` met een bestemming in hetzelfde level. Geef een kleine aanwijzing voor ↑. |
+| Een bonus achter breekbare blokken | Zet het bonusvoorwerp apart achter de blokken. Het blok zelf maakt geen voorwerp aan. |
+| Een verrassende route bovenlangs | Gebruik een springveer of hoge sprong, plus een route terug. |
+
+Een bericht bij een geheim mag maximaal 180 tekens bevatten. Meerdere geheimen mogen, met ieder een eigen object-ID. De game telt ontdekte geheimen in de uitslag. Het blijvende record onthoudt alleen **of er minstens één geheim is gevonden**, niet welke geheimen dat waren.
+
+Een geheime kamer hoort bij dezelfde speelwereld. Een aparte kamer met een eigen scherm of achtergrond, een filmpje, een gesprek met keuzes of een deur die pas na een quiz opent is **nog te bouwen**.
+
+## 10. Maximaal één nieuwe spelmechaniek
+
+Een spelmechaniek is een regel die bepaalt hoe je speelt. ‘Een rode vijand’ is een uiterlijk. ‘Een vijand die alleen beweegt als jij stilstaat’ is een nieuwe spelmechaniek.
+
+Beschrijf bij een nieuw idee:
+
+1. Wat kan de speler ermee doen?
+2. Wanneer begint het effect en wanneer stopt het?
+3. Welke bestaande toets gebruikt de speler?
+4. Wat gebeurt er bij pauze, schade, levensverlies en het verlaten van het level?
+5. Hoe leert de speler het zonder lange uitleg?
+6. Hoe kan de speler altijd verder of opnieuw proberen?
+
+**Er is al een eenvoudig voorbeeld: `wind`.** Dit duwt de speler wisselend opzij tijdens een sprong. De code bestaat, maar geen van de twee meegeleverde levels gebruikt het. Er is geen aparte windtest. De wind heeft geen instelbare zones, kracht of zichtbaar effect. Status: **beperkt en nog te testen in een eigen level**.
+
+Voor een andere mechaniek moet de bouwer code toevoegen en de toegestane lijst met mechanieken uitbreiden. Alleen een nieuwe naam in de prompt of het JSON-bestand schrijven werkt niet.
+
+De nieuwe code moet:
+
+- alleen actief zijn in het level dat haar gebruikt;
+- de vaste score, levens en basisbesturing behouden;
+- eigen tijdelijke gegevens gebruiken;
+- timers, geluid en gebeurtenissen opruimen na het level;
+- een duidelijke afspraak hebben over opnieuw starten na levensverlies;
+- apart worden getest én met de bestaande levels worden getest.
+
+De huidige koppeling biedt alleen een update tijdens het spelen en opruimen bij afsluiten. Een knopreactie, eigen objecten, extra beeld of een actie bij levensverlies kan dus ook een uitbreiding van die koppeling vragen. Isolatie is nu een programmeerafspraak, geen technische beveiligde omgeving. Laat een bouwer eerst aangeven of jullie idee past binnen één kleine uitbreiding.
+
+## 11. Deze spelregels staan vast
+
+### Besturing en gezondheid
+
+| Toets | Actie |
+|---|---|
+| ← en → | Lopen en sturen in de lucht |
+| Spatie | Springen |
+| ↑ | Deur of doorgang gebruiken |
+| ↓ | Kist oppakken of neerzetten |
+| Escape | Pauzemenu openen |
+
+Je begint ieder level met drie levens, drie hartjes, nul munten en een nieuwe score en tijd. Schade kost één hartje. Daarna knipper je en ben je 1,5 seconde beschermd. Zijn je hartjes op, dan verlies je een leven. Je krijgt drie hartjes en verschijnt bij het laatst geraakte checkpoint of het begin. Een afgrond kost direct een leven. Bij nul levens volgt Game Over.
+
+Een verloren leven wist je tijd, score en eerdere vondsten niet. Dezelfde munt, verslagen vijand of hetzelfde geheim levert binnen die poging geen tweede keer punten op. Kies je ‘Opnieuw spelen’, dan begint een nieuwe poging.
+
+De finish is het hoofddoel. Je hoeft niet alle munten te pakken of vijanden te verslaan. Een sleuteldeur kan een route afsluiten. Andere voorwaarden, zoals ‘verzamel precies tien munten’, worden niet vanzelf gecontroleerd omdat ze in het verhaal staan.
+
+### Punten
+
+| Actie | Punten |
+|---|---:|
+| Munt | 100 |
+| Vijand verslaan | 200 |
+| Geheim ontdekken | 500 |
+| Bonusvoorwerp | 500 |
+| Finish bereiken | 1.000 |
+| Ieder overgebleven hartje bij finish | 100 |
+| Ieder overgebleven leven bij finish | 250 |
+| Tijdbonus | 0–1.000 |
+
+Bij de ingestelde streeftijd krijg je 500 tijdpunten. Bij twee keer die tijd krijg je nul tijdpunten. Sneller is meer, maar langzamer geeft nooit minpunten. Voor de bouwer: `afronden(1000 × max(0, min(1, 1 − tijd / (2 × streeftijd))))`.
+
+Pauze stopt de speeltijd. Records worden na een succesvolle finish in die browser opgeslagen: beste score, snelste tijd, meeste munten, voltooid en minstens één geheim gevonden. Er is geen gezamenlijk klassement of account. Een andere browser of website-adres heeft eigen records.
+
+## 12. Dit leveren jullie in
+
+Lever één document aan per duo. Gebruik een nummer, bijvoorbeeld **duo 03**.
+
+### De prompt
+
+- Twee makersnamen die op de openbare website mogen staan.
+- Een unieke levelnaam van maximaal 80 tekens.
+- Een kort verhaal van maximaal 1.500 tekens.
+- Het doel en een beschrijving van de finish.
+- Easy, Medium of Hard, met uitleg waarom.
+- Een gewenste speelduur van ongeveer 30–60 seconden.
+- Personagenaam, kleur en eventueel een schets voor een ander uiterlijk.
+- Thema en kleuren voor lucht, achtergronden, grond en accenten.
+- De route: begin, midden, einde en eventuele zijpaden.
+- Minimaal één soort vijand, munten en één verborgen verrassing.
+- Plaats van sleutels, deuren, checkpoints en power-ups als jullie die gebruiken.
+- Twee avatar-kleuren. Eigen avatarontwerpen mogen erbij als uitbreidingswens.
+- Muzieksfeer en gewenst tempo. Een eigen melodie mag erbij.
+- Korte teksten voor bordjes of geheimen, maximaal 180 tekens per tekst.
+- Eventueel één nieuwe spelmechaniek, uitgelegd met de vragen uit hoofdstuk 10.
+
+Een level kan zonder sleutel, deur of power-up werken. Die onderdelen zijn dus keuzes. De unieke naam, het verhaal, twee makers, een personage, wereld, vijand, munten, geheim, finish en moeilijkheid horen wel bij ieder studentenontwerp.
+
+### Afbeeldingen en schetsen
+
+**Voor een level met alleen bestaande vormen zijn afbeeldingsbestanden niet technisch nodig.** Een routeschets helpt wel sterk. Gebruik bijvoorbeeld deze namen:
+
+| Bijlage | Wat moet erop staan? |
+|---|---|
+| `duo-03-route.png` | Start, finish, platforms, gevaren, sleutel, geheim en pijlen voor de looproute. Zet erbij wat één ruitje betekent. |
+| `duo-03-personage.png` | Het gewenste personage, duidelijk van opzij. Benoem de belangrijkste kleuren en vormen. |
+| `duo-03-wereld.png` | Sfeer, kleuren en achtergrondidee. Benoem wat decor is en waarop je moet kunnen staan. |
+| `duo-03-vijand.png` | Vorm, kleur en gekozen gedrag per vijand. |
+| `duo-03-avatars.png` | Twee duidelijk gelabelde avatarideeën. |
+
+Een foto van een duidelijke tekening mag ook. Leg per afbeelding uit wat de bouwer moet overnemen. Gebruik eigen werk of materiaal waarvoor je toestemming hebt. Een echte foto van de makers is niet nodig.
+
+Voor een werkelijk nieuw figuurtje zijn later losse pixelbeelden nodig voor stilstaan, lopen en eventueel springen. De bouwer spreekt eerst formaat en animaties met jullie af. Lever niet op eigen initiatief tientallen bestanden aan: er is nog geen vaste importfunctie voor zulke beelden. Hetzelfde geldt voor achtergrond- en muziekbestanden.
+
+### Voorbeeld van een bruikbare prompt
+
+> Wij zijn duo 03: Noor en Sam. Ons level heet Nacht in de winkel. Je speelt als Pip met een paarse tint. Pip zoekt de sleutel van het magazijn. De lucht is donkerblauw en de accenten zijn geel. Het level is Easy en duurt ongeveer 45 seconden.
+>
+> Begin op veilige grond met vijf munten. Daarna komen twee lage platforms en een langzaam lopende vijand. Halverwege staat een checkpoint. De sleutel ligt vóór de magazijndeur. Met ↑ open je die deur. Onder een platform ligt een geheime plek met een bonus. Het bericht is: ‘Je vond de geheime voorraad!’ Aan het einde staat de gele vlag. De muziek is rustig en spannend. We gebruiken geen nieuwe spelmechaniek.
+>
+> Bijlage 1 is onze routeschets. We willen graag echte winkelrekken in beeld. Dat is een wens voor extra vormgeving; als dat nog niet kan, gebruiken we de bestaande blokken.
+
+## 13. Wat werkt nog niet volledig en wat ontbreekt?
+
+Dit overzicht helpt om een haalbaar ontwerp te kiezen. De beperkingen zijn in deze opdracht alleen beschreven, niet aangepast.
+
+| Onderdeel | Status | Gevolg voor jullie ontwerp |
+|---|---|---|
+| Eigen personages, avatars en vijandvormen | **Beperkt:** vaste vormen met kleurvarianten | Een nieuw uiterlijk vraagt uitbreiding van de tekencode en/of het laden van beelden. |
+| Andere achtergronden en kaartafbeeldingen | **Beperkt:** vaste tekeningen | Een nieuwe kleur werkt; een eigen afbeelding nog niet. Lange achtergronden moeten beter herhalen. |
+| Grootte en kleur van alle objecten vrij kiezen | **Beperkt:** contactgebied volgt de data, beeld niet altijd | Gebruik voor kleine items de voorbeeldmaten. |
+| Springer die netjes heen en weer patrouilleert | **Beperkt:** sprong en looprichting delen een timer | Laat de precieze beweging testen voordat die belangrijk is voor een puzzel. |
+| Vallende steen die blijft liggen | **Nog bouwen** | De bestaande steen valt door de omgeving en begint later opnieuw. |
+| Kisten voor ingewikkelde puzzels | **Beperkt:** vaste draag- en neerzetafstand | Gebruik kleine kisten en vermijd verplichte stapelpuzzels zonder extra tests. |
+| Checkpoints boven elkaar | **Beperkt:** alleen de x-positie wordt vergeleken | Gebruik verschillende horizontale posities. |
+| Hoge werelden met een verticale camera | **Nog bouwen** | Gebruik één schermhoogte van 540 pixels. |
+| Eigen muziekbestanden en uitgebreid muziekritme | **Nog bouwen** | Gebruik de huidige korte toonreeks of laat nieuwe audio-ondersteuning maken. |
+| Nieuwe vijandcombinaties, eindbazen, drukplaten, schakelaars en gesprekken | **Nog bouwen** | Kies één kleine nieuwe mechaniek of gebruik bestaande bouwstenen. |
+| Zwemmen, vliegen als speler, dubbele sprong en multiplayer | **Nog bouwen** | Een bijpassend thema geeft deze bewegingen nog niet. |
+| Editor waarin studenten zelf objecten slepen of prompts uploaden | **Nog bouwen** | Lever jullie ontwerp bij de docent of bouwer in. |
+| Volledige bescherming tegen fouten in nieuwe code | **Beperkt** | Nieuwe code moet worden nagekeken en getest voor publicatie. |
+
+## 14. Kunnen tien duo’s een los level toevoegen?
+
+**Ja, voor levels met de bestaande bouwstenen is de opzet geschikt.** Elk duo krijgt een eigen gegevensbestand. De bestaande tutorial en het voorbeeldlevel hoeven daarvoor niet te worden veranderd.
+
+Een gegevensbestand, hier een **JSON-bestand**, bevat de naam, het verhaal, kleuren, muzieknoten en de lijst met objecten. De game leest die gegevens en bouwt daarmee de wereld.
+
+### Wat al goed is geregeld
+
+- Ieder level heeft een eigen ID, versie en bestand in `public/levels/`.
+- `public/levels/index.json` is de gezamenlijke lijst met bestanden. Het menu wordt uit die lijst gemaakt. Nieuwe studentenlevels krijgen `tutorial: false`.
+- De controle van het bestandsformaat staat in `src/levels/schema.ts`.
+- Eén ongeldig of ontbrekend levelbestand wordt overgeslagen. Andere geldige levels kunnen blijven laden. Een dubbel level-ID wordt niet een tweede keer toegevoegd.
+- De spelerstatus, objecten, sleutels en score worden voor iedere nieuwe poging apart gemaakt. Tijdens het spelen worden kopieën van de objectgegevens gebruikt.
+- Records worden per level-ID bewaard.
+- Bij verlaten van een level wordt de Phaser-game opgeruimd. De code verwijdert toetsen, focuslistener, muziekinterval en de actieve extra mechaniek.
+- Een bestaande test laadt 100 geldige testlevels, slaat één ongeldig bestand over en verwijdert daarna een testlevel. Dat ondersteunt de keuze voor tien extra levels.
+
+### Waar de architectuur nog grenzen heeft
+
+**1. De gezamenlijke lijst blijft belangrijk.** Als `index.json` zelf ontbreekt of ongeldig is, kan de game geen levels laden. Laat daarom één persoon wijzigingen in deze lijst samenvoegen.
+
+**2. Een geldig bestand is nog geen speelbaar level.** De controle vindt bijvoorbeeld een ontbrekende sleuteldefinitie, maar niet of de speler werkelijk bij die sleutel kan komen. Zij controleert ook niet alle bewegingsbanen, veilige doorgangen of complete objecthoogtes. Zelfs de melding ‘bereikbare sleuteldefinitie’ in de code bewijst geen bereikbaarheid.
+
+**3. Nieuwe code is niet volledig afgeschermd.** De meeste objectgedragingen en tekeningen staan samen in `GameScene.ts`. Een fout in die gedeelde code kan meerdere levels raken. Er is geen aparte foutopvang rond iedere extra mechaniek. Dat maakt de basis geschikt voor losse data, maar nog geen volledig onafhankelijk systeem voor willekeurige nieuwe code.
+
+**4. Unieke beelden vragen gedeelde uitbreidingen.** Er zijn nog geen levelvelden voor eigen beeldbestanden. Tien geheel eigen visuele werelden vragen dus eerst ondersteuning voor zulke beelden. Alleen tien JSON-bestanden toevoegen levert vooral variaties op de huidige vormen op.
+
+**5. Opruimen is niet hetzelfde als herstellen na levensverlies.** De windfunctie heeft bijvoorbeeld eigen tijd, die niet wordt gereset bij een verloren leven. Voor elke nieuwe mechaniek moet de bouwer dit gedrag bewust kiezen en testen.
+
+**6. Honderd bestanden laden is geen snelheidstest.** De test gebruikt nagebootste netwerkantwoorden. Zij bewijst niet dat 100 zware levels of 4.000 bewegende objecten soepel lopen. Tien eenvoudige levels worden na elkaar gespeeld, maar de gegevens van alle geregistreerde levels worden bij het openen geladen.
+
+### Veilige werkwijze voor de bouwer
+
+1. Geef ieder duo een uniek ID, bijvoorbeeld `duo-01-maanmarkt` tot en met `duo-10-festival`.
+2. Maak per duo een eigen branch: een aparte werkversie in Git.
+3. Voeg alleen het nieuwe bestand toe, bijvoorbeeld `public/levels/duo-01-maanmarkt.json`.
+4. Voeg die bestandsnaam toe aan `public/levels/index.json`. Verander de bestaande levelbestanden niet.
+5. Geef ieder object binnen het level een uniek ID. Bewaar eventuele nieuwe beelden in een eigen map per duo. Het laden daarvan moet wel worden ondersteund.
+6. Controleer met `npm run validate:levels`, `npm test` en `npm run build`.
+7. Speel het nieuwe level helemaal uit. Test ook pauze, doodgaan, checkpoint, sleutel, deur, geheim en herstart. Laat een ander duo dit ook doen.
+8. Controleer toevoegen én verwijderen via het register. Laat geen tijdelijke testkaart staan.
+9. Wijzigt gedeelde code? Test dan ook beide basislevels en alle eerder toegevoegde studentenlevels die geraakt kunnen worden.
+10. Laat de docent het resultaat beoordelen vóór het samenvoegen en publiceren.
+
+Voor nieuwe levels met bestaande bouwstenen hoeft de spelcode niet te veranderen. **Op de huidige Vercel-site is wel een nieuwe publicatie nodig.** Bij de Git-werkwijze worden de nieuwe bestanden gepusht en maakt Vercel een nieuwe build. De opmerking ‘zonder nieuwe enginebuild’ uit de eerdere handleiding betekent dus niet dat een bestand op je laptop vanzelf live staat.
+
+## 15. Controle vóór het inleveren
+
+- [ ] Onze twee makersnamen en avatar-kleuren staan erbij.
+- [ ] Ons level heeft een unieke naam, verhaal, personage en wereld.
+- [ ] We hebben een vijand, munten, een geheim en een finish beschreven.
+- [ ] We hebben begin, midden en einde van de route uitgelegd.
+- [ ] Gewone sprongen blijven ruim binnen de veilige afstanden.
+- [ ] Sleutels liggen vóór hun deuren en zijn bereikbaar.
+- [ ] Een geheime ruimte heeft een veilige uitgang.
+- [ ] Na een verloren leven kan de speler nog steeds verder.
+- [ ] We hebben Easy, Medium of Hard gekozen en streven naar 30–60 seconden.
+- [ ] We noemen welke wensen al werken en welke extra bouw nodig hebben.
+- [ ] We vragen maximaal één nieuwe spelmechaniek.
+- [ ] Bij iedere afbeelding staat wat de bouwer moet overnemen.
+
+## 16. Verantwoording voor docent en bouwer
+
+Deze catalogus is gemaakt na controle van de code, de twee JSON-levels, de tests en alle bestaande handleidingen. De gecontroleerde GitHub-hoofdbranch wees naar commit `b55777a96adb59d4cecfdd34fe924cf238e3a29d`.
+
+De broncode, tests, leveldata en pakketbestanden van de lokale testinstallatie zijn met bestandscontroles vergeleken met deze repository. Ze waren gelijk. Daarna zijn **20 bestaande tests opnieuw geslaagd** en zijn beide levelbestanden opnieuw geldig bevonden. Er zijn voor deze analyse geen gamebestanden aangepast en geen nieuwe levels gepubliceerd.
+
+‘Werkt’ in deze gids betekent dat de functie in de code aanwezig is, met ondersteuning van de bestaande tests waar die er zijn. Het betekent niet dat alle combinaties zijn bewezen. De volledige routes worden in de tests doorlopen met gesimuleerde toetsen. Beeld en audio worden daar niet echt afgespeeld. De test die alle bouwstenen telt, controleert alleen of ze in de voorbeelddata voorkomen.
+
+Het eerdere browsertestlog meldt een volledig uitgespeelde tutorial en een gedeeltelijk gespeeld voorbeeldlevel. Voor deze catalogus is geen nieuwe volledige browserronde uitgevoerd. De bevindingen over bijvoorbeeld de lange achtergrond en de springer komen uit de codecontrole; die zijn hier niet gerepareerd. De exacte build die Vercel nu serveert is in deze analyse niet opnieuw aan de commit gekoppeld.
+
+### Bronnen in dit project
+
+| Bron | Gebruikt voor |
+|---|---|
+| [Levelschema](src/levels/schema.ts) | Beschikbare typen, invoervelden en grenzen |
+| [Levellader](src/levels/registry.ts) | Register, foutafhandeling en toevoegen/verwijderen |
+| [Gameplay](src/scenes/GameScene.ts) | Werkelijk gedrag, botsingen, tekeningen en opruimen |
+| [Speler](src/entities/player.ts) en [botsingen](src/core/physics.ts) | Beweging en contactgebieden |
+| [Spelregels](src/core/rules.ts) | Gezondheid, score en tijdpunten |
+| [Pixelbeelden](src/entities/art.ts) en [menu’s](src/main.ts) | Personages, achtergrond, avatars en kaarten |
+| [Muziek](src/audio/audio.ts) | Melodieën, effecten en volume |
+| [Mechanieken](src/mechanics/registry.ts) | Wind en koppeling van uitbreidingen |
+| [Records](src/storage/records.ts) | Wat lokaal bewaard blijft |
+| [Gameplaytests](tests/gameplay.test.ts), [basistests](tests/core.test.ts) en [registertest](tests/registry.test.ts) | Wat automatisch wordt gecontroleerd |
+| [Eerder testlog](docs/TESTING.md) | Eerder uitgevoerde browsercontroles en grenzen daarvan |
+| [Bouwstenen](docs/BUILDING_BLOCKS.md), [schema-uitleg](docs/LEVEL_SCHEMA.md), [spelregels](docs/GAME_RULES.md), [levels toevoegen](docs/ADD_LEVEL.md), [promptformat](docs/STUDENT_PROMPT_TEMPLATE.md), [README](README.md) en [AGENTS](AGENTS.md) | Vergelijking met de documentatie en afspraken voor toekomstige bouwers |
+| [Vercel-configuratie](vercel.json) | Bouwen, publiceren en vernieuwen van levelgegevens |
+
+Als een wens uit het oorspronkelijke plan ruimer is dan wat de code nu kan, volgt deze gids de code. Bespreek een ontbrekende functie eerst met de bouwer voordat je er een verplicht deel van jullie route van maakt.
