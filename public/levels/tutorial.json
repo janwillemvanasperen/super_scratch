@@ -1,0 +1,567 @@
+{
+  "id": "tutorial",
+  "version": 1,
+  "name": "De Proeftuin",
+  "tutorial": true,
+  "story": "Welkom in de Proeftuin! Pip, de kleine ideeënverzamelaar, zet vandaag de eerste stap buiten het atelier. Ontdek hoe je beweegt en help het licht terug te brengen naar de vlag.",
+  "goal": "Vind de gouden sleutel, open de poort met ↑ en bereik de gele finishvlag.",
+  "difficulty": "Easy",
+  "makers": [
+    {
+      "name": "Super Scratch",
+      "avatar": "#f8cc71"
+    },
+    {
+      "name": "Basisgame",
+      "avatar": "#9bdbc6"
+    }
+  ],
+  "palette": {
+    "sky": "#d5e4f1",
+    "far": "#a6b5d6",
+    "near": "#7a97b9",
+    "ground": "#666a89",
+    "accent": "#d3b5ee"
+  },
+  "character": {
+    "name": "Pip de leerling",
+    "color": "#b6d2ff"
+  },
+  "music": {
+    "tempo": 100,
+    "notes": [
+      60,
+      64,
+      67,
+      64,
+      62,
+      65,
+      69,
+      65
+    ]
+  },
+  "world": {
+    "width": 5200,
+    "height": 540
+  },
+  "spawn": {
+    "x": 60,
+    "y": 420
+  },
+  "targetTime": 90,
+  "instructions": "Volg de bordjes. Probeer elke handeling zelf. Escape: stoppen of pauzeren.",
+  "objects": [
+    {
+      "id": "ground-1",
+      "kind": "ground",
+      "x": 0,
+      "y": 480,
+      "w": 2100,
+      "h": 60
+    },
+    {
+      "id": "ground-2",
+      "kind": "ground",
+      "x": 2240,
+      "y": 480,
+      "w": 2960,
+      "h": 60
+    },
+    {
+      "id": "decoration-3",
+      "kind": "decoration",
+      "x": 90,
+      "y": 398,
+      "w": 32,
+      "h": 62,
+      "text": "← → lopen. Spatie springen. Houd Spatie langer vast om hoger te springen."
+    },
+    {
+      "id": "coin-4",
+      "kind": "coin",
+      "x": 220,
+      "y": 430,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "coin-5",
+      "kind": "coin",
+      "x": 254,
+      "y": 430,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "coin-6",
+      "kind": "coin",
+      "x": 288,
+      "y": 430,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "coin-7",
+      "kind": "coin",
+      "x": 322,
+      "y": 430,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "coin-8",
+      "kind": "coin",
+      "x": 356,
+      "y": 430,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "platform-9",
+      "kind": "platform",
+      "x": 440,
+      "y": 400,
+      "w": 110,
+      "h": 20
+    },
+    {
+      "id": "coin-10",
+      "kind": "coin",
+      "x": 455,
+      "y": 360,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "coin-11",
+      "kind": "coin",
+      "x": 489,
+      "y": 360,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "coin-12",
+      "kind": "coin",
+      "x": 523,
+      "y": 360,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "decoration-13",
+      "kind": "decoration",
+      "x": 440,
+      "y": 398,
+      "w": 32,
+      "h": 62,
+      "text": "Spring op het platform en pak de munten. Je kunt in de lucht sturen."
+    },
+    {
+      "id": "walker-14",
+      "kind": "walker",
+      "x": 720,
+      "y": 450,
+      "w": 30,
+      "h": 30,
+      "range": 65,
+      "speed": 40,
+      "color": "#bc8194"
+    },
+    {
+      "id": "decoration-15",
+      "kind": "decoration",
+      "x": 620,
+      "y": 398,
+      "w": 32,
+      "h": 62,
+      "text": "Spring boven op de wandelaar om hem te verslaan. Aanraken kost een hartje."
+    },
+    {
+      "id": "spikes-16",
+      "kind": "spikes",
+      "x": 940,
+      "y": 460,
+      "w": 32,
+      "h": 20,
+      "color": "#eaa5b1"
+    },
+    {
+      "id": "heart-17",
+      "kind": "heart",
+      "x": 1040,
+      "y": 448,
+      "w": 26,
+      "h": 26
+    },
+    {
+      "id": "decoration-18",
+      "kind": "decoration",
+      "x": 860,
+      "y": 398,
+      "w": 32,
+      "h": 62,
+      "text": "Ontwijk de stekels. Gewond? Een roze hartje herstelt één hartje."
+    },
+    {
+      "id": "crate-19",
+      "kind": "crate",
+      "x": 1230,
+      "y": 452,
+      "w": 28,
+      "h": 28
+    },
+    {
+      "id": "decoration-20",
+      "kind": "decoration",
+      "x": 1150,
+      "y": 398,
+      "w": 32,
+      "h": 62,
+      "text": "Ga naast de kist staan. ↓ oppakken. Nogmaals ↓ neerzetten."
+    },
+    {
+      "id": "key-21",
+      "kind": "key",
+      "x": 1440,
+      "y": 444,
+      "w": 28,
+      "h": 25,
+      "key": "garden"
+    },
+    {
+      "id": "door-22",
+      "kind": "door",
+      "x": 1580,
+      "y": 360,
+      "w": 40,
+      "h": 120,
+      "key": "garden"
+    },
+    {
+      "id": "decoration-23",
+      "kind": "decoration",
+      "x": 1445,
+      "y": 398,
+      "w": 32,
+      "h": 62,
+      "text": "Pak de sleutel. Sta naast de paarse deur en druk ↑."
+    },
+    {
+      "id": "speed-24",
+      "kind": "speed",
+      "x": 1780,
+      "y": 448,
+      "w": 28,
+      "h": 28,
+      "duration": 8,
+      "color": "#9ae5bd"
+    },
+    {
+      "id": "checkpoint-25",
+      "kind": "checkpoint",
+      "x": 1930,
+      "y": 414,
+      "w": 32,
+      "h": 66
+    },
+    {
+      "id": "decoration-26",
+      "kind": "decoration",
+      "x": 1820,
+      "y": 398,
+      "w": 32,
+      "h": 62,
+      "text": "Turbo! Het vlaggetje is een checkpoint. Bij een verloren leven start je hier."
+    },
+    {
+      "id": "movingX-27",
+      "kind": "movingX",
+      "x": 2080,
+      "y": 443,
+      "w": 140,
+      "h": 20,
+      "range": 60,
+      "speed": 50
+    },
+    {
+      "id": "coin-28",
+      "kind": "coin",
+      "x": 2110,
+      "y": 395,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "coin-29",
+      "kind": "coin",
+      "x": 2144,
+      "y": 395,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "coin-30",
+      "kind": "coin",
+      "x": 2178,
+      "y": 395,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "decoration-31",
+      "kind": "decoration",
+      "x": 1980,
+      "y": 398,
+      "w": 32,
+      "h": 62,
+      "text": "Spring over de kloof. Het bewegende platform helpt je."
+    },
+    {
+      "id": "shield-32",
+      "kind": "shield",
+      "x": 2420,
+      "y": 448,
+      "w": 28,
+      "h": 28,
+      "duration": 15,
+      "color": "#94d7f4"
+    },
+    {
+      "id": "jumper-33",
+      "kind": "jumper",
+      "x": 2670,
+      "y": 448,
+      "w": 32,
+      "h": 32,
+      "range": 45,
+      "speed": 40,
+      "color": "#d69cce"
+    },
+    {
+      "id": "platform-34",
+      "kind": "platform",
+      "x": 2860,
+      "y": 388,
+      "w": 200,
+      "h": 20
+    },
+    {
+      "id": "secret-35",
+      "kind": "secret",
+      "x": 2880,
+      "y": 412,
+      "w": 150,
+      "h": 65,
+      "text": "Je vond de verborgen sterrenkamer! +500"
+    },
+    {
+      "id": "bonus-36",
+      "kind": "bonus",
+      "x": 2950,
+      "y": 445,
+      "w": 28,
+      "h": 28
+    },
+    {
+      "id": "decoration-37",
+      "kind": "decoration",
+      "x": 2780,
+      "y": 398,
+      "w": 32,
+      "h": 62,
+      "text": "Nieuwsgierigheid loont. Kijk onder het platform!"
+    },
+    {
+      "id": "jump-38",
+      "kind": "jump",
+      "x": 3150,
+      "y": 448,
+      "w": 28,
+      "h": 28,
+      "color": "#b7eda2"
+    },
+    {
+      "id": "platform-39",
+      "kind": "platform",
+      "x": 3300,
+      "y": 390,
+      "w": 150,
+      "h": 20
+    },
+    {
+      "id": "coin-40",
+      "kind": "coin",
+      "x": 3330,
+      "y": 350,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "coin-41",
+      "kind": "coin",
+      "x": 3364,
+      "y": 350,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "coin-42",
+      "kind": "coin",
+      "x": 3398,
+      "y": 350,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "invincible-43",
+      "kind": "invincible",
+      "x": 3550,
+      "y": 448,
+      "w": 28,
+      "h": 28,
+      "color": "#fff09a"
+    },
+    {
+      "id": "sentry-44",
+      "kind": "sentry",
+      "x": 3780,
+      "y": 450,
+      "w": 32,
+      "h": 30,
+      "color": "#ea9f86"
+    },
+    {
+      "id": "decoration-45",
+      "kind": "decoration",
+      "x": 3660,
+      "y": 398,
+      "w": 32,
+      "h": 62,
+      "text": "Sterrenkracht maakt je tijdelijk onkwetsbaar. Bekijk de resterende tijd bovenin."
+    },
+    {
+      "id": "spring-46",
+      "kind": "spring",
+      "x": 4030,
+      "y": 458,
+      "w": 32,
+      "h": 22
+    },
+    {
+      "id": "platform-47",
+      "kind": "platform",
+      "x": 4100,
+      "y": 330,
+      "w": 150,
+      "h": 20
+    },
+    {
+      "id": "coin-48",
+      "kind": "coin",
+      "x": 4120,
+      "y": 290,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "coin-49",
+      "kind": "coin",
+      "x": 4154,
+      "y": 290,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "coin-50",
+      "kind": "coin",
+      "x": 4188,
+      "y": 290,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "vanish-51",
+      "kind": "vanish",
+      "x": 4390,
+      "y": 410,
+      "w": 120,
+      "h": 20,
+      "period": 4
+    },
+    {
+      "id": "decoration-52",
+      "kind": "decoration",
+      "x": 4250,
+      "y": 398,
+      "w": 32,
+      "h": 62,
+      "text": "Dit platform verschijnt en verdwijnt. De grond eronder is veilig."
+    },
+    {
+      "id": "coin-53",
+      "kind": "coin",
+      "x": 4600,
+      "y": 430,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "coin-54",
+      "kind": "coin",
+      "x": 4634,
+      "y": 430,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "coin-55",
+      "kind": "coin",
+      "x": 4668,
+      "y": 430,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "coin-56",
+      "kind": "coin",
+      "x": 4702,
+      "y": 430,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "coin-57",
+      "kind": "coin",
+      "x": 4736,
+      "y": 430,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "coin-58",
+      "kind": "coin",
+      "x": 4770,
+      "y": 430,
+      "w": 20,
+      "h": 24
+    },
+    {
+      "id": "finish-59",
+      "kind": "finish",
+      "x": 4950,
+      "y": 365,
+      "w": 64,
+      "h": 115
+    },
+    {
+      "id": "decoration-60",
+      "kind": "decoration",
+      "x": 4770,
+      "y": 398,
+      "w": 32,
+      "h": 62,
+      "text": "Bereik de gele vlag. Je hoeft niet alle munten te verzamelen!"
+    }
+  ]
+}

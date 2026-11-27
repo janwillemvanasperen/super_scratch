@@ -1,0 +1,108 @@
+import { z } from 'zod';
+const pos = { x: z.number().min(0), y: z.number().min(0) };
+const color = z.string().regex(/^#[0-9a-fA-F]{6}$/);
+export const kinds = [
+  'ground',
+  'platform',
+  'movingX',
+  'movingY',
+  'vanish',
+  'breakable',
+  'spring',
+  'wall',
+  'spikes',
+  'trap',
+  'falling',
+  'lava',
+  'walker',
+  'chaser',
+  'jumper',
+  'flyer',
+  'shooter',
+  'sentry',
+  'coin',
+  'heart',
+  'key',
+  'bonus',
+  'invincible',
+  'jump',
+  'speed',
+  'shield',
+  'door',
+  'checkpoint',
+  'secret',
+  'passage',
+  'finish',
+  'crate',
+  'decoration',
+] as const;
+export const objectSchema = z.object({
+  id: z.string().min(1),
+  kind: z.enum(kinds),
+  ...pos,
+  w: z.number().min(8).max(8000).default(32),
+  h: z.number().min(8).max(800).default(32),
+  color: color.optional(),
+  speed: z.number().min(0).max(500).default(55),
+  range: z.number().min(0).max(1500).default(100),
+  period: z.number().min(0.5).max(30).default(3),
+  duration: z.number().min(1).max(60).default(10),
+  key: z.string().optional(),
+  target: z.object(pos).optional(),
+  text: z.string().max(180).optional(),
+});
+export const levelSchema = z
+  .object({
+    id: z.string().regex(/^[a-z0-9-]+$/),
+    version: z.number().int().positive(),
+    name: z.string().min(1).max(80),
+    story: z.string().min(1).max(1500),
+    goal: z.string().min(1),
+    difficulty: z.enum(['Easy', 'Medium', 'Hard']),
+    tutorial: z.boolean().default(false),
+    makers: z.array(z.object({ name: z.string().min(1), avatar: color })).length(2),
+    palette: z.object({ sky: color, far: color, near: color, ground: color, accent: color }),
+    character: z.object({ name: z.string(), color: color }),
+    music: z.object({
+      tempo: z.number().min(60).max(200),
+      notes: z.array(z.number().int().min(36).max(96)).min(4).max(64),
+    }),
+    world: z.object({
+      width: z.number().min(960).max(50000),
+      height: z.number().min(540).max(4000),
+    }),
+    spawn: z.object(pos),
+    targetTime: z.number().min(10).max(600),
+    mechanic: z.enum(['wind']).optional(),
+    instructions: z.string().optional(),
+    objects: z.array(objectSchema).min(1).max(4000),
+  })
+  .superRefine((l, ctx) => {
+    const ids = new Set<string>();
+    for (const o of l.objects) {
+      if (ids.has(o.id)) ctx.addIssue({ code: 'custom', message: `Dubbel object-ID: ${o.id}` });
+      ids.add(o.id);
+      if (o.x + o.w > l.world.width || o.y > l.world.height)
+        ctx.addIssue({ code: 'custom', message: `Object buiten wereld: ${o.id}` });
+      if (o.kind === 'door' && !o.key)
+        ctx.addIssue({ code: 'custom', message: 'Deur mist sleutel-ID' });
+      if (o.kind === 'door' && !l.objects.some((k) => k.kind === 'key' && k.key === o.key))
+        ctx.addIssue({
+          code: 'custom',
+          message: `Deur ${o.id} heeft geen bereikbare sleuteldefinitie`,
+        });
+    }
+    for (const kind of ['coin', 'secret', 'finish'])
+      if (!l.objects.some((o) => o.kind === kind))
+        ctx.addIssue({ code: 'custom', message: `Ontbreekt: ${kind}` });
+    if (
+      !l.objects.some((o) =>
+        ['walker', 'chaser', 'jumper', 'flyer', 'shooter', 'sentry'].includes(o.kind),
+      )
+    )
+      ctx.addIssue({ code: 'custom', message: 'Vijand ontbreekt' });
+    if (l.spawn.x >= l.world.width || l.spawn.y >= l.world.height)
+      ctx.addIssue({ code: 'custom', message: 'Start buiten wereld' });
+  });
+export type Level = z.infer<typeof levelSchema>;
+export type Block = z.infer<typeof objectSchema>;
