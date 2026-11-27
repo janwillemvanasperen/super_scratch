@@ -1,4 +1,14 @@
 import { z } from 'zod';
+import {
+  assetSchema,
+  visualSchema,
+  hitboxSchema,
+  motionSchema,
+  layerSchema,
+  atmosphereSchema,
+  presentationSchema,
+  audioSchema,
+} from '../assets/schema';
 const pos = { x: z.number().min(0), y: z.number().min(0) };
 const color = z.string().regex(/^#[0-9a-fA-F]{6}$/);
 export const kinds = [
@@ -50,6 +60,10 @@ export const objectSchema = z.object({
   key: z.string().optional(),
   target: z.object(pos).optional(),
   text: z.string().max(180).optional(),
+  visual: visualSchema.optional(),
+  hitbox: hitboxSchema.optional(),
+  motion: motionSchema.optional(),
+  solid: z.boolean().default(false),
 });
 export const levelSchema = z
   .object({
@@ -60,9 +74,18 @@ export const levelSchema = z
     goal: z.string().min(1),
     difficulty: z.enum(['Easy', 'Medium', 'Hard']),
     tutorial: z.boolean().default(false),
-    makers: z.array(z.object({ name: z.string().min(1), avatar: color })).length(2),
+    makers: z
+      .array(
+        z.object({ name: z.string().min(1), avatar: color, avatarAsset: z.string().optional() }),
+      )
+      .length(2),
     palette: z.object({ sky: color, far: color, near: color, ground: color, accent: color }),
-    character: z.object({ name: z.string(), color: color }),
+    character: z.object({
+      name: z.string(),
+      color: color,
+      visual: visualSchema.optional(),
+      hitbox: hitboxSchema.optional(),
+    }),
     music: z.object({
       tempo: z.number().min(60).max(200),
       notes: z.array(z.number().int().min(36).max(96)).min(4).max(64),
@@ -76,8 +99,27 @@ export const levelSchema = z
     mechanic: z.enum(['wind']).optional(),
     instructions: z.string().optional(),
     objects: z.array(objectSchema).min(1).max(4000),
+    assets: z.record(z.string().regex(/^[a-zA-Z0-9_-]+$/), assetSchema).optional(),
+    styles: z.record(visualSchema).optional(),
+    background: z
+      .object({
+        color: color.optional(),
+        legacy: z.boolean().default(false),
+        layers: z.array(layerSchema).max(24),
+        light: atmosphereSchema.optional(),
+      })
+      .optional(),
+    presentation: presentationSchema.optional(),
+    audio: audioSchema.optional(),
+    demo: z.boolean().default(false),
   })
   .superRefine((l, ctx) => {
+    const layerIds = new Set<string>();
+    for (const layer of l.background?.layers || []) {
+      if (layerIds.has(layer.id))
+        ctx.addIssue({ code: 'custom', message: `Dubbele achtergrondlaag: ${layer.id}` });
+      layerIds.add(layer.id);
+    }
     const ids = new Set<string>();
     for (const o of l.objects) {
       if (ids.has(o.id)) ctx.addIssue({ code: 'custom', message: `Dubbel object-ID: ${o.id}` });

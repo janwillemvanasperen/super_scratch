@@ -24,7 +24,7 @@ npm run build
 npm run preview
 ```
 
-`dist/` is de volledige publiceerbare game. De Phaser-bundel is relatief groot; de browser cachet deze na de eerste keer. Muziek is originele procedurele Web Audio. Pixelart is met code getekend. Lettertypen worden lokaal meegebundeld (Fontsource, OFL-licenties in de pakketten); de game doet geen externe fontrequests.
+`dist/` is de volledige publiceerbare game. De Phaser-bundel is relatief groot; de browser cachet deze na de eerste keer. Muziek gebruikt originele procedurele Web Audio of eigen bestanden per level. Pixelart is met code getekend. Lettertypen worden lokaal meegebundeld (Fontsource, OFL-licenties in de pakketten); de game doet geen externe fontrequests.
 
 ## Publiceren via een website
 
@@ -32,7 +32,7 @@ npm run preview
 2. Upload **de inhoud** van `dist/` naar een statische HTTPS-webhost, bijvoorbeeld de schoolwebserver, Netlify of Cloudflare Pages. Er is geen database, serverfunctie of account nodig.
 3. Bij een Git-gekoppelde host: buildcommando `npm run build`, uitvoermap `dist`, Node 22 of nieuwer.
 4. Voor hosting in een submap: `npm run build -- --base=/super-scratch/`. Zet alle bestanden onder precies die submap.
-5. Controleer de link op een tweede laptop; start beide levels, finish ze, vernieuw de pagina en controleer records.
+5. Controleer de link op een tweede laptop; start alle vier levels, finish ze, vernieuw de pagina en controleer records.
 6. Deel pas daarna de link met studenten. Een eventuele private Sites-publicatie vereist toegang; de `dist/`-map kan onafhankelijk op een openbare schoolwebsite worden geplaatst.
 
 Geef `levels/index.json` en `levels/*.json` een korte cacheduur of `Cache-Control: no-cache`. Content-hashed JavaScript/CSS mag lang gecachet worden.
@@ -52,7 +52,7 @@ Voeg een gevalideerd JSON-bestand toe aan `dist/levels/` en de bestandsnaam aan 
 - `src/audio/`: originele melodiesequencer en geluidseffecten.
 - `src/storage/`: robuuste lokale records.
 - `src/mechanics/`: factories voor geïsoleerde levelmechanieken.
-- `public/assets/`: ruimte voor toekomstige originele afbeeldingen/sprites; de basisassets worden door code getekend.
+- `public/assets/`: eigen pixelbeelden en audio per level; de standaardvormen blijven door code getekend.
 - `tests/`: automatische regressietests; `docs/`: uitbreidingshandleidingen.
 
 De engine simuleert op 120 vaste stappen per seconde, met maximaal 100 ms inhaaltijd per frame. Canvas is 960×540, pixels blijven scherp. De camera volgt horizontaal. De meegeleverde worlds gebruiken één schermhoogte. Verticale multi-screen werelden zijn geen ondersteund ontwerp in versie 1.
@@ -64,3 +64,9 @@ De Proeftuin leert alle basisacties. Scratch – The First Adventure demonstreer
 Zie [spelregels](docs/GAME_RULES.md), [schema](docs/LEVEL_SCHEMA.md), [bouwstenen](docs/BUILDING_BLOCKS.md), [levels toevoegen](docs/ADD_LEVEL.md), [studentenformat](docs/STUDENT_PROMPT_TEMPLATE.md) en [testlog](docs/TESTING.md).
 
 Huisstijl is voorlopig: de tekstvermelding Scratch / MBO Utrecht is geen officieel logo. Kleuren en typografie zijn centraal vervangbaar in `src/style.css`.
+
+## V2.1: eigen visuele werelden
+
+Eigen sprites, animaties, hitboxes, textures, parallax, decor, avatars, kaartbeelden, korte intros en muziek/effectbestanden zijn per level instelbaar. Zie [de assetgids](docs/ASSETS.md) en [de studentencatalogus](STUDENT_LEVEL_GUIDE.md). De oorspronkelijke tutorial en het voorbeeldlevel blijven ongewijzigd. Twee verwijderbare demo's, Midnight City en Deep Sea Treasure, tonen originele pixelart en audio.
+
+`src/assets/` koppelt data aan beelden; `public/assets/<level-id>/` houdt bestanden per level apart. Offline levelvalidatie controleert ook de assets. Ontbrekende bestanden krijgen tijdens het spelen een terugval. De generatoren in `scripts/generate-demo-*.mjs` bevatten de originele tekeningen, melodieën en levelindeling. Nieuwe studentenlevels gebruiken eigen bestanden; voer deze demo-generatoren daarvoor niet uit.

@@ -6,6 +6,8 @@ import { Player } from '../entities/player';
 import { makeArt, landscape } from '../entities/art';
 import type { AudioEngine } from '../audio/audio';
 import { mechanics } from '../mechanics/registry';
+import { AssetRenderer, preloadGraphics } from '../assets/renderer';
+import { objectBody, objectBounds } from '../assets/layout';
 type Obj = Block & {
   ox: number;
   oy: number;
@@ -13,6 +15,11 @@ type Obj = Block & {
   vy: number;
   phase: number;
   opened: boolean;
+  layoutWidth?: number;
+  layoutHeight?: number;
+  facing?: number;
+  attackUntil?: number;
+  defeatedAt?: number;
 };
 type Shot = Rect & { vx: number; vy: number; ttl: number };
 export type GameHooks = {
@@ -31,6 +38,8 @@ export class GameScene extends Phaser.Scene {
   checkpoint = { x: 60, y: 400 };
   keys!: Record<string, Phaser.Input.Keyboard.Key>;
   bg!: Phaser.GameObjects.Graphics;
+  assetRenderer?: AssetRenderer;
+  celebration = 0;
   fg!: Phaser.GameObjects.Graphics;
   hero!: Phaser.GameObjects.Sprite;
   cam = 0;
@@ -53,25 +62,44 @@ export class GameScene extends Phaser.Scene {
   ) {
     super('play');
   }
+  preload() {
+    preloadGraphics(this, this.definition);
+  }
+  createPlayer(x: number, y: number, visualOrigin = false) {
+    const p = new Player(x, y);
+    const h = this.level.character.hitbox;
+    if (h) {
+      p.w = h.width;
+      p.h = h.height;
+      if (visualOrigin) {
+        p.x += h.offsetX;
+        p.y += h.offsetY;
+      }
+    }
+    return p;
+  }
   create() {
     this.level = this.definition;
     this.run = new Run();
     this.objects = this.level.objects.map((b) => ({
       ...b,
-      ox: b.x,
-      oy: b.y,
+      ...objectBody(b),
+      ox: objectBody(b).x,
+      oy: objectBody(b).y,
       alive: true,
       vy: 0,
       phase: 0,
       opened: false,
     }));
-    this.p = new Player(this.level.spawn.x, this.level.spawn.y);
-    this.checkpoint = { ...this.level.spawn };
-    this.bg = this.add.graphics().setScrollFactor(0);
-    this.fg = this.add.graphics();
+    this.p = this.createPlayer(this.level.spawn.x, this.level.spawn.y, true);
+    this.checkpoint = { x: this.p.x, y: this.p.y };
+    this.bg = this.add.graphics().setScrollFactor(0).setDepth(-1000);
+    this.fg = this.add.graphics().setDepth(90);
+    this.assetRenderer = new AssetRenderer(this, this.level);
     makeArt(this);
     this.hero = this.add
       .sprite(0, 0, 'hero0')
+      .setDepth(110)
       .setOrigin(0)
       .setScale(2)
       .setTint(parseInt(this.level.character.color.slice(1), 16));
@@ -91,13 +119,14 @@ export class GameScene extends Phaser.Scene {
     this.events.once('shutdown', () => {
       this.game.events.off('blur', this.onBlur, this);
       this.audio.stop();
+      this.assetRenderer?.destroy();
       this.mechanic?.destroy();
       this.shots = [];
       this.sparkles = [];
       this.input.keyboard?.removeAllKeys(true);
     });
     if (this.level.mechanic) this.mechanic = mechanics[this.level.mechanic]();
-    this.audio.start(this.level.music.notes, this.level.music.tempo);
+    this.audio.start(this.level.music.notes, this.level.music.tempo, this.level);
     this.say(this.level.instructions || 'Volg de munten. Het avontuur wacht!', 5);
     this.renderWorld();
   }
@@ -106,8 +135,8 @@ export class GameScene extends Phaser.Scene {
   }
   setPaused(value: boolean) {
     this.paused = value;
-    if (value) this.audio.stop();
-    else this.audio.start(this.level.music.notes, this.level.music.tempo);
+    if (value) this.audio.pause();
+    else this.audio.resume();
     this.input.keyboard?.resetKeys();
   }
   say(text: string, seconds = 3) {
@@ -142,12 +171,18 @@ export class GameScene extends Phaser.Scene {
           'wall',
           'crate',
         ].includes(o.kind) ||
-          (o.kind === 'door' && !o.opened)) &&
+          (o.kind === 'door' && !o.opened) ||
+          (o.kind === 'decoration' && o.solid)) &&
         o.id !== this.p.carrying,
     );
   }
   update(_time: number, delta: number) {
-    if (this.paused || this.run.finished) return;
+    if (this.paused) return;
+    if (this.run.finished) {
+      this.celebration += Math.min(delta / 1000, 0.1);
+      this.renderWorld();
+      return;
+    }
     this.accum += Math.min(delta / 1000, 0.1);
     while (this.accum >= 1 / 120) {
       this.tick(1 / 120);
@@ -176,6 +211,14 @@ export class GameScene extends Phaser.Scene {
         prevY = o.y;
       if (o.kind === 'movingX' || o.kind === 'trap')
         o.x = o.ox + Math.sin((this.elapsed * o.speed) / Math.max(o.range, 1)) * o.range;
+      if (o.kind === 'decoration' && o.motion) {
+        const d =
+          Math.sin(
+            (this.elapsed * Math.PI * 2) / o.motion.period + (o.motion.phase * Math.PI) / 180,
+          ) * o.motion.distance;
+        o.x = o.ox + (o.motion.axis === 'x' ? d : 0);
+        o.y = o.oy + (o.motion.axis === 'y' ? d : 0);
+      }
       if (o.kind === 'movingY')
         o.y = o.oy + Math.sin((this.elapsed * o.speed) / Math.max(o.range, 1)) * o.range;
       if (o === this.standing && this.active(o)) {
@@ -226,6 +269,7 @@ export class GameScene extends Phaser.Scene {
             (p.vy > 0 && previousBottom <= o.y + 12 && o.kind !== 'sentry')
           ) {
             o.alive = false;
+            o.defeatedAt = this.elapsed;
             if (this.run.claim(o.id, 'enemy')) this.burst(o.x, o.y, 0xff967e);
             p.vy = -330;
             this.audio.play('enemy');
@@ -335,7 +379,7 @@ export class GameScene extends Phaser.Scene {
         case 'finish':
           this.run.finish(this.level.targetTime);
           this.run.finished = true;
-          this.audio.stop();
+          this.audio.stop(true);
           this.audio.play('finish');
           this.hooks.finish(this.run);
           return;
@@ -416,6 +460,7 @@ export class GameScene extends Phaser.Scene {
       Math.min(1, dt * 6);
   }
   enemy(o: Obj, dt: number) {
+    const oldX = o.x;
     o.phase += dt;
     const direction = this.p.x > o.x ? 1 : -1;
     if (o.kind === 'flyer') {
@@ -446,8 +491,11 @@ export class GameScene extends Phaser.Scene {
         o.vy = 0;
       }
     }
+    if (o.x !== oldX) o.facing = o.x > oldX ? 1 : -1;
     if (o.kind === 'shooter' && o.phase > o.period && Math.abs(this.p.x - o.x) < 650) {
       o.phase = 0;
+      o.attackUntil = this.elapsed + 0.3;
+      o.facing = direction;
       this.shots.push({
         x: o.x + o.w / 2,
         y: o.y + 8,
@@ -480,12 +528,12 @@ export class GameScene extends Phaser.Scene {
     this.audio.play('life');
     if (!this.run.loseLife()) {
       this.paused = true;
-      this.audio.stop();
+      this.audio.stop(true);
       this.audio.play('over');
       this.hooks.over();
       return;
     }
-    this.p = new Player(this.checkpoint.x, this.checkpoint.y);
+    this.p = this.createPlayer(this.checkpoint.x, this.checkpoint.y);
     this.p.invuln = 2;
     this.powers = {};
     this.shots = [];
@@ -502,7 +550,23 @@ export class GameScene extends Phaser.Scene {
   renderWorld() {
     const g = this.fg,
       p = this.p;
-    landscape(this.bg, 960, 540, this.level.palette, this.cam, this.elapsed);
+    const artTime = this.elapsed + this.celebration;
+    if (
+      !this.level.background ||
+      this.level.background.legacy ||
+      (this.level.background.layers.length > 0 &&
+        !this.level.background.layers.some((l) => this.assetRenderer?.available(l.visual)))
+    )
+      landscape(this.bg, 960, 540, this.level.palette, this.cam, this.elapsed);
+    else {
+      this.bg.clear();
+      this.bg.fillStyle(
+        parseInt((this.level.background.color || this.level.palette.sky).slice(1), 16),
+      );
+      this.bg.fillRect(0, 0, 960, 540);
+    }
+    this.assetRenderer?.begin();
+    this.assetRenderer?.layers(this.cam, artTime);
     g.clear();
     const col = (s: string) => parseInt(s.slice(1), 16);
     const rect = (x: number, y: number, w: number, h: number, c: number) => {
@@ -510,7 +574,57 @@ export class GameScene extends Phaser.Scene {
       g.fillRect(Math.round(x - this.cam), Math.round(y), w, h);
     };
     for (const o of this.objects) {
-      if (!o.alive || o.x + o.w < this.cam - 100 || o.x > this.cam + 1060) continue;
+      const visual = o.visual || this.level.styles?.[o.kind];
+      const defeated =
+        !o.alive &&
+        o.defeatedAt !== undefined &&
+        artTime - o.defeatedAt <
+          Math.min(
+            3,
+            (visual?.animations?.defeat?.frames.length || 0) /
+              (visual?.animations?.defeat?.fps || 8),
+          );
+      if ((!o.alive && !defeated) || o.x + o.w < this.cam - 200 || o.x > this.cam + 1160) continue;
+      const enemy = ['walker', 'chaser', 'jumper', 'flyer', 'shooter', 'sentry'].includes(o.kind);
+      const state = defeated
+        ? 'defeat'
+        : o.opened
+          ? 'open'
+          : o.kind === 'checkpoint' && this.checkpoint.x === o.x
+            ? 'active'
+            : (o.attackUntil || 0) > this.elapsed
+              ? 'attack'
+              : enemy
+                ? o.kind === 'flyer'
+                  ? 'fly'
+                  : o.vy < -10
+                    ? 'jump'
+                    : o.vy > 30
+                      ? 'fall'
+                      : o.kind === 'sentry' || o.kind === 'shooter'
+                        ? 'idle'
+                        : 'walk'
+                : visual?.animation || 'idle';
+      const alpha =
+        o.kind === 'vanish' && !this.active(o)
+          ? 0.15
+          : o.kind === 'secret' && !this.run.claimed.has(o.id)
+            ? 0.08
+            : 1;
+      if (
+        this.assetRenderer?.draw(
+          `object:${o.id}`,
+          objectBounds(o),
+          visual,
+          state,
+          artTime,
+          this.cam,
+          enemy ? o.facing || 1 : 1,
+          alpha,
+        )
+      )
+        continue;
+      if (defeated) continue;
       let c = o.color ? col(o.color) : col(this.level.palette.accent);
       const x = o.x,
         y = o.y;
@@ -622,8 +736,45 @@ export class GameScene extends Phaser.Scene {
         rect(x + 7, y + 7, 18, 3, 0x304159);
       }
     }
-    for (const s of this.shots) rect(s.x, s.y, s.w, s.h, 0xffbb81);
+    this.shots.forEach((s, i) => {
+      if (
+        !this.assetRenderer?.draw(
+          `shot:${i}`,
+          s,
+          this.level.styles?.projectile,
+          'idle',
+          artTime,
+          this.cam,
+          s.vx >= 0 ? 1 : -1,
+        )
+      )
+        rect(s.x, s.y, s.w, s.h, 0xffbb81);
+    });
     for (const s of this.sparkles) rect(s.x, s.y, 4, 4, s.color);
+    const heroState = this.run.finished
+      ? 'victory'
+      : p.invuln > 0
+        ? 'hurt'
+        : p.vy < -20
+          ? 'jump'
+          : !p.grounded && p.vy > 20
+            ? 'fall'
+            : Math.abs(p.vx) > 20
+              ? 'walk'
+              : 'idle';
+    const h = this.level.character.hitbox;
+    const heroDrawn = this.assetRenderer?.draw(
+      'player',
+      { x: p.x - (h?.offsetX || 0), y: p.y - (h?.offsetY || 0), w: p.w, h: p.h },
+      this.level.character.visual,
+      heroState,
+      artTime,
+      this.cam,
+      p.facing,
+      p.invuln > 0 && Math.floor(this.elapsed * 14) % 2 ? 0.25 : 1,
+      110,
+    );
+    this.hero.setVisible(!heroDrawn);
     this.hero
       .setPosition(Math.round(p.x - this.cam - 3), Math.round(p.y - 2))
       .setFlipX(p.facing < 0)
@@ -633,7 +784,8 @@ export class GameScene extends Phaser.Scene {
       .setAlpha(p.invuln > 0 && Math.floor(this.elapsed * 14) % 2 ? 0.25 : 1);
     if (this.powers.shield || this.powers.invincible) {
       g.lineStyle(2, this.powers.shield ? 0x9ee6ff : 0xffe28d);
-      g.strokeCircle(p.x - this.cam + 11, p.y + 15, 24);
+      g.strokeCircle(p.x - this.cam + p.w / 2, p.y + p.h / 2, Math.max(p.w, p.h) / 2 + 9);
     }
+    this.assetRenderer?.end();
   }
 }

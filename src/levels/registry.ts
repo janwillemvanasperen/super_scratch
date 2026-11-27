@@ -1,3 +1,4 @@
+import { assetReferenceIssues } from '../assets/catalog';
 import { levelSchema, type Level } from './schema';
 export async function loadLevels(): Promise<{ levels: Level[]; errors: string[] }> {
   const levels: Level[] = [],
@@ -19,7 +20,11 @@ export async function loadLevels(): Promise<{ levels: Level[]; errors: string[] 
   for (const r of results) {
     if (r.status === 'fulfilled') {
       if (levels.some((l) => l.id === r.value.id)) errors.push(`Dubbel level-ID ${r.value.id}`);
-      else levels.push(r.value);
+      else {
+        levels.push(r.value);
+        const warnings = assetReferenceIssues(r.value);
+        if (warnings.length) console.warn(`Assetverwijzingen ${r.value.id}:`, warnings);
+      }
     } else errors.push(String(r.reason));
   }
   return { levels, errors };

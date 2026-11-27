@@ -7,25 +7,33 @@ vi.mock('phaser', () => ({
 }));
 import { GameScene } from '../src/scenes/GameScene';
 import { Player } from '../src/entities/player';
+import { objectBody } from '../src/assets/layout';
 import { levelSchema } from '../src/levels/schema';
 import { readFileSync } from 'node:fs';
 function setup(id = 'tutorial') {
   const l = levelSchema.parse(JSON.parse(readFileSync(`public/levels/${id}.json`, 'utf8')));
-  const audio = { play: vi.fn(), stop: vi.fn(), start: vi.fn() } as any;
+  const audio = {
+    play: vi.fn(),
+    stop: vi.fn(),
+    start: vi.fn(),
+    pause: vi.fn(),
+    resume: vi.fn(),
+  } as any;
   const hooks = { hud: vi.fn(), pause: vi.fn(), finish: vi.fn(), over: vi.fn() };
   const s = new GameScene(l, audio, hooks);
   s.level = l;
   s.objects = l.objects.map((b) => ({
     ...b,
-    ox: b.x,
-    oy: b.y,
+    ...objectBody(b),
+    ox: objectBody(b).x,
+    oy: objectBody(b).y,
     alive: true,
     vy: 0,
     phase: 0,
     opened: false,
   }));
-  s.p = new Player(l.spawn.x, l.spawn.y);
-  s.checkpoint = { ...l.spawn };
+  s.p = s.createPlayer(l.spawn.x, l.spawn.y, true);
+  s.checkpoint = { x: s.p.x, y: s.p.y };
   s.keys = Object.fromEntries(
     ['left', 'right', 'up', 'down', 'jump', 'pause'].map((k) => [k, { isDown: false }]),
   ) as any;
@@ -35,6 +43,17 @@ function setup(id = 'tutorial') {
   return { s, step, hooks };
 }
 describe('gameplay integration', () => {
+  it('preserves the custom player hitbox and visual origin through respawn', () => {
+    const { s } = setup('midnight-city');
+    expect([s.p.x, s.p.y, s.p.w, s.p.h]).toEqual([73, 438, 22, 30]);
+    s.checkpoint = { x: 1800, y: 354 };
+    s.loseLife();
+    expect([s.p.x, s.p.y, s.p.w, s.p.h]).toEqual([1800, 354, 22, 30]);
+    const initial = s.createPlayer(60, 420, true);
+    s.level.character.visual!.scale = 4;
+    const scaled = s.createPlayer(60, 420, true);
+    expect(scaled).toEqual(initial);
+  });
   it('never pushes an idle player sideways when a moving platform passes overhead', () => {
     const { s, step } = setup('first-adventure');
     s.p.x = 3740;
@@ -141,7 +160,7 @@ describe('gameplay integration', () => {
     expect(hooks.finish).toHaveBeenCalledOnce();
     expect(s.run.finished).toBe(true);
   });
-  for (const id of ['tutorial', 'first-adventure'])
+  for (const id of ['tutorial', 'first-adventure', 'midnight-city', 'deep-sea-treasure'])
     it(`completes ${id} with simulated controls, no teleport`, () => {
       const { s, step } = setup(id);
       let jumpRelease = 0;

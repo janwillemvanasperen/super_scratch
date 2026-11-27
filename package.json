@@ -1,14 +1,16 @@
 {
   "name": "super-scratch",
-  "version": "1.0.0",
+  "version": "2.1.0",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "vite --host 127.0.0.1",
-    "build": "tsc --noEmit && vite build",
+    "build": "npm run validate:levels && tsc --noEmit && vite build",
     "test": "vitest run",
     "preview": "vite preview --host 127.0.0.1",
-    "validate:levels": "tsx scripts/validate-levels.ts"
+    "validate:levels": "tsx scripts/validate-levels.ts",
+    "qa:fixtures": "node scripts/qa-fixtures.mjs",
+    "qa:clean": "node scripts/qa-fixtures.mjs clean"
   },
   "dependencies": {
     "@fontsource/press-start-2p": "^5.3.0",

@@ -1,0 +1,1354 @@
+{
+  "id": "midnight-city",
+  "version": 1,
+  "name": "Midnight City",
+  "demo": true,
+  "story": "Als de stad slaapt, gaat onderhoudsrobot Nova op pad. De lichttoren heeft nieuwe energie nodig. Zoek energiecellen tussen de neongebouwen, open de werkplaatspoort en ontdek een geheime kamer. Dit is een visueel demolevel.",
+  "goal": "Verzamel energiecellen, vind de sleutel en bereik de gouden vlag.",
+  "difficulty": "Easy",
+  "makers": [
+    {
+      "name": "Super Scratch",
+      "avatar": "#69e5dc",
+      "avatarAsset": "avatar-1"
+    },
+    {
+      "name": "Visuele demo",
+      "avatar": "#ef91aa",
+      "avatarAsset": "avatar-2"
+    }
+  ],
+  "palette": {
+    "sky": "#10172f",
+    "far": "#202b4b",
+    "near": "#304365",
+    "ground": "#26364b",
+    "accent": "#fbc35b"
+  },
+  "character": {
+    "name": "Nova de robot",
+    "color": "#ffffff",
+    "hitbox": {
+      "width": 22,
+      "height": 30,
+      "offsetX": 13,
+      "offsetY": 18
+    },
+    "visual": {
+      "asset": "hero",
+      "fit": "native",
+      "animations": {
+        "idle": {
+          "frames": [
+            0,
+            1
+          ],
+          "fps": 2,
+          "repeat": -1
+        },
+        "walk": {
+          "frames": [
+            2,
+            0,
+            3,
+            1
+          ],
+          "fps": 10,
+          "repeat": -1
+        },
+        "jump": {
+          "frames": [
+            4
+          ],
+          "fps": 7,
+          "repeat": -1
+        },
+        "fall": {
+          "frames": [
+            5
+          ],
+          "fps": 7,
+          "repeat": -1
+        },
+        "hurt": {
+          "frames": [
+            6,
+            0
+          ],
+          "fps": 10,
+          "repeat": -1
+        },
+        "victory": {
+          "frames": [
+            7,
+            1
+          ],
+          "fps": 4,
+          "repeat": -1
+        }
+      }
+    }
+  },
+  "music": {
+    "tempo": 120,
+    "notes": [
+      57,
+      64,
+      69,
+      72,
+      76,
+      72,
+      69,
+      64
+    ]
+  },
+  "world": {
+    "width": 6200,
+    "height": 540
+  },
+  "spawn": {
+    "x": 60,
+    "y": 420
+  },
+  "targetTime": 60,
+  "instructions": "← → lopen · Spatie springen · ↑ interactie · ↓ kist oppakken.",
+  "objects": [
+    {
+      "id": "ground-1",
+      "kind": "ground",
+      "x": 0,
+      "y": 480,
+      "w": 2800,
+      "h": 60
+    },
+    {
+      "id": "ground-2",
+      "kind": "ground",
+      "x": 2940,
+      "y": 480,
+      "w": 3260,
+      "h": 60
+    },
+    {
+      "id": "decoration-3",
+      "kind": "decoration",
+      "x": 130,
+      "y": 384,
+      "w": 64,
+      "h": 96,
+      "text": "Verzamel energiecellen. De robot loopt en springt zoals Pip."
+    },
+    {
+      "id": "coin-4",
+      "kind": "coin",
+      "x": 300,
+      "y": 448,
+      "w": 24,
+      "h": 28
+    },
+    {
+      "id": "coin-5",
+      "kind": "coin",
+      "x": 360,
+      "y": 448,
+      "w": 24,
+      "h": 28
+    },
+    {
+      "id": "coin-6",
+      "kind": "coin",
+      "x": 420,
+      "y": 448,
+      "w": 24,
+      "h": 28
+    },
+    {
+      "id": "coin-7",
+      "kind": "coin",
+      "x": 480,
+      "y": 448,
+      "w": 24,
+      "h": 28
+    },
+    {
+      "id": "coin-8",
+      "kind": "coin",
+      "x": 540,
+      "y": 448,
+      "w": 24,
+      "h": 28
+    },
+    {
+      "id": "platform-9",
+      "kind": "platform",
+      "x": 640,
+      "y": 390,
+      "w": 160,
+      "h": 24
+    },
+    {
+      "id": "coin-10",
+      "kind": "coin",
+      "x": 670,
+      "y": 350,
+      "w": 24,
+      "h": 28
+    },
+    {
+      "id": "coin-11",
+      "kind": "coin",
+      "x": 720,
+      "y": 350,
+      "w": 24,
+      "h": 28
+    },
+    {
+      "id": "coin-12",
+      "kind": "coin",
+      "x": 770,
+      "y": 350,
+      "w": 24,
+      "h": 28
+    },
+    {
+      "id": "walker-13",
+      "kind": "walker",
+      "x": 960,
+      "y": 448,
+      "w": 32,
+      "h": 32,
+      "speed": 35,
+      "range": 45
+    },
+    {
+      "id": "crate-14",
+      "kind": "crate",
+      "x": 1170,
+      "y": 448,
+      "w": 32,
+      "h": 32
+    },
+    {
+      "id": "key-15",
+      "kind": "key",
+      "x": 1390,
+      "y": 444,
+      "w": 32,
+      "h": 32,
+      "key": "demo-gate"
+    },
+    {
+      "id": "door-16",
+      "kind": "door",
+      "x": 1600,
+      "y": 384,
+      "w": 64,
+      "h": 96,
+      "key": "demo-gate"
+    },
+    {
+      "id": "decoration-17",
+      "kind": "decoration",
+      "x": 1510,
+      "y": 384,
+      "w": 64,
+      "h": 96,
+      "text": "Gouden sleutel gevonden? Open de poort met ↑."
+    },
+    {
+      "id": "checkpoint-18",
+      "kind": "checkpoint",
+      "x": 1800,
+      "y": 384,
+      "w": 48,
+      "h": 96
+    },
+    {
+      "id": "heart-19",
+      "kind": "heart",
+      "x": 1910,
+      "y": 448,
+      "w": 28,
+      "h": 28
+    },
+    {
+      "id": "spikes-20",
+      "kind": "spikes",
+      "x": 2110,
+      "y": 456,
+      "w": 48,
+      "h": 24
+    },
+    {
+      "id": "coin-21",
+      "kind": "coin",
+      "x": 2080,
+      "y": 360,
+      "w": 24,
+      "h": 28
+    },
+    {
+      "id": "coin-22",
+      "kind": "coin",
+      "x": 2120,
+      "y": 360,
+      "w": 24,
+      "h": 28
+    },
+    {
+      "id": "coin-23",
+      "kind": "coin",
+      "x": 2160,
+      "y": 360,
+      "w": 24,
+      "h": 28
+    },
+    {
+      "id": "coin-24",
+      "kind": "coin",
+      "x": 2200,
+      "y": 360,
+      "w": 24,
+      "h": 28
+    },
+    {
+      "id": "flyer-25",
+      "kind": "flyer",
+      "x": 2420,
+      "y": 330,
+      "w": 40,
+      "h": 36,
+      "speed": 45,
+      "range": 65
+    },
+    {
+      "id": "decoration-26",
+      "kind": "decoration",
+      "x": 2630,
+      "y": 384,
+      "w": 64,
+      "h": 96,
+      "text": "Spring over de opening. Je kunt ook de bewegende brug gebruiken."
+    },
+    {
+      "id": "movingX-27",
+      "kind": "movingX",
+      "x": 2770,
+      "y": 420,
+      "w": 160,
+      "h": 20,
+      "speed": 40,
+      "range": 40
+    },
+    {
+      "id": "coin-28",
+      "kind": "coin",
+      "x": 2840,
+      "y": 370,
+      "w": 24,
+      "h": 28
+    },
+    {
+      "id": "checkpoint-29",
+      "kind": "checkpoint",
+      "x": 3050,
+      "y": 384,
+      "w": 48,
+      "h": 96
+    },
+    {
+      "id": "shield-30",
+      "kind": "shield",
+      "x": 3180,
+      "y": 448,
+      "w": 28,
+      "h": 28
+    },
+    {
+      "id": "chaser-31",
+      "kind": "chaser",
+      "x": 3430,
+      "y": 448,
+      "w": 32,
+      "h": 32,
+      "speed": 45,
+      "range": 35
+    },
+    {
+      "id": "platform-32",
+      "kind": "platform",
+      "x": 3620,
+      "y": 385,
+      "w": 160,
+      "h": 24
+    },
+    {
+      "id": "bonus-33",
+      "kind": "bonus",
+      "x": 3690,
+      "y": 340,
+      "w": 32,
+      "h": 32
+    },
+    {
+      "id": "decoration-34",
+      "kind": "decoration",
+      "x": 3780,
+      "y": 384,
+      "w": 64,
+      "h": 96,
+      "text": "De oude doorgang bij de lantaarn of het koraal verbergt een schat. Druk ↑."
+    },
+    {
+      "id": "passage-35",
+      "kind": "passage",
+      "x": 3910,
+      "y": 416,
+      "w": 48,
+      "h": 64,
+      "target": {
+        "x": 4150,
+        "y": 320
+      }
+    },
+    {
+      "id": "platform-36",
+      "kind": "platform",
+      "x": 4120,
+      "y": 370,
+      "w": 220,
+      "h": 24
+    },
+    {
+      "id": "secret-37",
+      "kind": "secret",
+      "x": 4130,
+      "y": 304,
+      "w": 180,
+      "h": 64,
+      "text": "De verborgen werkplaats! +500 punten."
+    },
+    {
+      "id": "bonus-38",
+      "kind": "bonus",
+      "x": 4230,
+      "y": 332,
+      "w": 28,
+      "h": 28
+    },
+    {
+      "id": "decoration-39",
+      "kind": "decoration",
+      "x": 4260,
+      "y": 274,
+      "w": 64,
+      "h": 96,
+      "visual": {
+        "asset": "props",
+        "frame": 4,
+        "depth": -20
+      }
+    },
+    {
+      "id": "jumper-40",
+      "kind": "jumper",
+      "x": 4500,
+      "y": 448,
+      "w": 32,
+      "h": 32,
+      "speed": 35,
+      "range": 40
+    },
+    {
+      "id": "heart-41",
+      "kind": "heart",
+      "x": 4690,
+      "y": 448,
+      "w": 28,
+      "h": 28
+    },
+    {
+      "id": "breakable-42",
+      "kind": "breakable",
+      "x": 4800,
+      "y": 370,
+      "w": 32,
+      "h": 32
+    },
+    {
+      "id": "breakable-43",
+      "kind": "breakable",
+      "x": 4832,
+      "y": 370,
+      "w": 32,
+      "h": 32
+    },
+    {
+      "id": "coin-44",
+      "kind": "coin",
+      "x": 4820,
+      "y": 330,
+      "w": 24,
+      "h": 28
+    },
+    {
+      "id": "shooter-45",
+      "kind": "shooter",
+      "x": 5110,
+      "y": 340,
+      "w": 32,
+      "h": 32,
+      "speed": 30,
+      "period": 4
+    },
+    {
+      "id": "platform-46",
+      "kind": "platform",
+      "x": 5070,
+      "y": 372,
+      "w": 120,
+      "h": 20
+    },
+    {
+      "id": "vanish-47",
+      "kind": "vanish",
+      "x": 5380,
+      "y": 390,
+      "w": 120,
+      "h": 20
+    },
+    {
+      "id": "coin-48",
+      "kind": "coin",
+      "x": 5420,
+      "y": 350,
+      "w": 24,
+      "h": 28
+    },
+    {
+      "id": "decoration-49",
+      "kind": "decoration",
+      "x": 5620,
+      "y": 384,
+      "w": 64,
+      "h": 96,
+      "text": "De finish is dichtbij. Je kunt later terugkomen voor de verborgen schat."
+    },
+    {
+      "id": "coin-50",
+      "kind": "coin",
+      "x": 5670,
+      "y": 448,
+      "w": 24,
+      "h": 28
+    },
+    {
+      "id": "coin-51",
+      "kind": "coin",
+      "x": 5720,
+      "y": 448,
+      "w": 24,
+      "h": 28
+    },
+    {
+      "id": "coin-52",
+      "kind": "coin",
+      "x": 5770,
+      "y": 448,
+      "w": 24,
+      "h": 28
+    },
+    {
+      "id": "coin-53",
+      "kind": "coin",
+      "x": 5820,
+      "y": 448,
+      "w": 24,
+      "h": 28
+    },
+    {
+      "id": "finish-54",
+      "kind": "finish",
+      "x": 5970,
+      "y": 384,
+      "w": 64,
+      "h": 96
+    },
+    {
+      "id": "decoration-55",
+      "kind": "decoration",
+      "x": 480,
+      "y": 384,
+      "w": 64,
+      "h": 96
+    },
+    {
+      "id": "decoration-56",
+      "kind": "decoration",
+      "x": 1210,
+      "y": 384,
+      "w": 64,
+      "h": 96
+    },
+    {
+      "id": "decoration-57",
+      "kind": "decoration",
+      "x": 1940,
+      "y": 384,
+      "w": 64,
+      "h": 96
+    },
+    {
+      "id": "decoration-58",
+      "kind": "decoration",
+      "x": 2670,
+      "y": 384,
+      "w": 64,
+      "h": 96
+    },
+    {
+      "id": "decoration-59",
+      "kind": "decoration",
+      "x": 3400,
+      "y": 384,
+      "w": 64,
+      "h": 96
+    },
+    {
+      "id": "decoration-60",
+      "kind": "decoration",
+      "x": 4130,
+      "y": 384,
+      "w": 64,
+      "h": 96
+    },
+    {
+      "id": "decoration-61",
+      "kind": "decoration",
+      "x": 4860,
+      "y": 384,
+      "w": 64,
+      "h": 96
+    },
+    {
+      "id": "decoration-62",
+      "kind": "decoration",
+      "x": 5590,
+      "y": 384,
+      "w": 64,
+      "h": 96
+    },
+    {
+      "id": "decoration-63",
+      "kind": "decoration",
+      "x": 720,
+      "y": 210,
+      "w": 32,
+      "h": 32,
+      "visual": {
+        "asset": "items",
+        "frame": 11,
+        "alpha": 0.5,
+        "rotation": 20,
+        "depth": -50
+      },
+      "motion": {
+        "axis": "y",
+        "distance": 24,
+        "period": 5
+      }
+    }
+  ],
+  "assets": {
+    "hero": {
+      "type": "sheet",
+      "src": "assets/midnight-city/hero.png",
+      "frameWidth": 48,
+      "frameHeight": 48,
+      "frameCount": 8
+    },
+    "enemies": {
+      "type": "sheet",
+      "src": "assets/midnight-city/enemies.png",
+      "frameWidth": 32,
+      "frameHeight": 32,
+      "frameCount": 6
+    },
+    "items": {
+      "type": "sheet",
+      "src": "assets/midnight-city/items.png",
+      "frameWidth": 32,
+      "frameHeight": 32,
+      "frameCount": 12
+    },
+    "tiles": {
+      "type": "sheet",
+      "src": "assets/midnight-city/tiles.png",
+      "frameWidth": 32,
+      "frameHeight": 32,
+      "frameCount": 6
+    },
+    "props": {
+      "type": "sheet",
+      "src": "assets/midnight-city/props.png",
+      "frameWidth": 64,
+      "frameHeight": 96,
+      "frameCount": 6
+    },
+    "intro": {
+      "type": "sheet",
+      "src": "assets/midnight-city/intro.png",
+      "frameWidth": 512,
+      "frameHeight": 288,
+      "frameCount": 4
+    },
+    "background": {
+      "type": "image",
+      "src": "assets/midnight-city/background.png"
+    },
+    "near": {
+      "type": "image",
+      "src": "assets/midnight-city/near.png"
+    },
+    "foreground": {
+      "type": "image",
+      "src": "assets/midnight-city/foreground.png"
+    },
+    "card": {
+      "type": "image",
+      "src": "assets/midnight-city/card.png"
+    },
+    "story": {
+      "type": "image",
+      "src": "assets/midnight-city/story.png"
+    },
+    "completion": {
+      "type": "image",
+      "src": "assets/midnight-city/completion.png"
+    },
+    "avatar-1": {
+      "type": "image",
+      "src": "assets/midnight-city/avatar-1.png"
+    },
+    "avatar-2": {
+      "type": "image",
+      "src": "assets/midnight-city/avatar-2.png"
+    },
+    "music": {
+      "type": "audio",
+      "src": "assets/midnight-city/music.wav"
+    },
+    "collect": {
+      "type": "audio",
+      "src": "assets/midnight-city/collect.wav"
+    },
+    "finish": {
+      "type": "audio",
+      "src": "assets/midnight-city/finish.wav"
+    }
+  },
+  "styles": {
+    "ground": {
+      "asset": "tiles",
+      "mode": "tile",
+      "frame": 0
+    },
+    "wall": {
+      "asset": "tiles",
+      "mode": "tile",
+      "frame": 0
+    },
+    "platform": {
+      "asset": "tiles",
+      "mode": "tile",
+      "frame": 1
+    },
+    "movingX": {
+      "asset": "tiles",
+      "mode": "tile",
+      "frame": 1
+    },
+    "movingY": {
+      "asset": "tiles",
+      "mode": "tile",
+      "frame": 1
+    },
+    "vanish": {
+      "asset": "tiles",
+      "mode": "tile",
+      "frame": 1
+    },
+    "breakable": {
+      "asset": "tiles",
+      "mode": "sprite",
+      "frame": 2
+    },
+    "crate": {
+      "asset": "tiles",
+      "mode": "sprite",
+      "frame": 2
+    },
+    "spikes": {
+      "asset": "tiles",
+      "mode": "tile",
+      "frame": 3
+    },
+    "trap": {
+      "asset": "tiles",
+      "mode": "sprite",
+      "frame": 3
+    },
+    "lava": {
+      "asset": "tiles",
+      "mode": "tile",
+      "frame": 4
+    },
+    "falling": {
+      "asset": "tiles",
+      "mode": "sprite",
+      "frame": 2
+    },
+    "spring": {
+      "asset": "tiles",
+      "mode": "sprite",
+      "frame": 5
+    },
+    "walker": {
+      "asset": "enemies",
+      "animations": {
+        "idle": {
+          "frames": [
+            0,
+            1
+          ],
+          "fps": 3,
+          "repeat": -1
+        },
+        "walk": {
+          "frames": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "fps": 7,
+          "repeat": -1
+        },
+        "fly": {
+          "frames": [
+            0,
+            2,
+            1,
+            3
+          ],
+          "fps": 7,
+          "repeat": -1
+        },
+        "jump": {
+          "frames": [
+            2
+          ],
+          "fps": 7,
+          "repeat": -1
+        },
+        "fall": {
+          "frames": [
+            3
+          ],
+          "fps": 7,
+          "repeat": -1
+        },
+        "attack": {
+          "frames": [
+            4
+          ],
+          "fps": 8,
+          "repeat": 0
+        },
+        "defeat": {
+          "frames": [
+            5
+          ],
+          "fps": 2,
+          "repeat": 0
+        }
+      }
+    },
+    "chaser": {
+      "asset": "enemies",
+      "animations": {
+        "idle": {
+          "frames": [
+            0,
+            1
+          ],
+          "fps": 3,
+          "repeat": -1
+        },
+        "walk": {
+          "frames": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "fps": 7,
+          "repeat": -1
+        },
+        "fly": {
+          "frames": [
+            0,
+            2,
+            1,
+            3
+          ],
+          "fps": 7,
+          "repeat": -1
+        },
+        "jump": {
+          "frames": [
+            2
+          ],
+          "fps": 7,
+          "repeat": -1
+        },
+        "fall": {
+          "frames": [
+            3
+          ],
+          "fps": 7,
+          "repeat": -1
+        },
+        "attack": {
+          "frames": [
+            4
+          ],
+          "fps": 8,
+          "repeat": 0
+        },
+        "defeat": {
+          "frames": [
+            5
+          ],
+          "fps": 2,
+          "repeat": 0
+        }
+      }
+    },
+    "jumper": {
+      "asset": "enemies",
+      "animations": {
+        "idle": {
+          "frames": [
+            0,
+            1
+          ],
+          "fps": 3,
+          "repeat": -1
+        },
+        "walk": {
+          "frames": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "fps": 7,
+          "repeat": -1
+        },
+        "fly": {
+          "frames": [
+            0,
+            2,
+            1,
+            3
+          ],
+          "fps": 7,
+          "repeat": -1
+        },
+        "jump": {
+          "frames": [
+            2
+          ],
+          "fps": 7,
+          "repeat": -1
+        },
+        "fall": {
+          "frames": [
+            3
+          ],
+          "fps": 7,
+          "repeat": -1
+        },
+        "attack": {
+          "frames": [
+            4
+          ],
+          "fps": 8,
+          "repeat": 0
+        },
+        "defeat": {
+          "frames": [
+            5
+          ],
+          "fps": 2,
+          "repeat": 0
+        }
+      }
+    },
+    "flyer": {
+      "asset": "enemies",
+      "animations": {
+        "idle": {
+          "frames": [
+            0,
+            1
+          ],
+          "fps": 3,
+          "repeat": -1
+        },
+        "walk": {
+          "frames": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "fps": 7,
+          "repeat": -1
+        },
+        "fly": {
+          "frames": [
+            0,
+            2,
+            1,
+            3
+          ],
+          "fps": 7,
+          "repeat": -1
+        },
+        "jump": {
+          "frames": [
+            2
+          ],
+          "fps": 7,
+          "repeat": -1
+        },
+        "fall": {
+          "frames": [
+            3
+          ],
+          "fps": 7,
+          "repeat": -1
+        },
+        "attack": {
+          "frames": [
+            4
+          ],
+          "fps": 8,
+          "repeat": 0
+        },
+        "defeat": {
+          "frames": [
+            5
+          ],
+          "fps": 2,
+          "repeat": 0
+        }
+      }
+    },
+    "shooter": {
+      "asset": "enemies",
+      "animations": {
+        "idle": {
+          "frames": [
+            0,
+            1
+          ],
+          "fps": 3,
+          "repeat": -1
+        },
+        "walk": {
+          "frames": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "fps": 7,
+          "repeat": -1
+        },
+        "fly": {
+          "frames": [
+            0,
+            2,
+            1,
+            3
+          ],
+          "fps": 7,
+          "repeat": -1
+        },
+        "jump": {
+          "frames": [
+            2
+          ],
+          "fps": 7,
+          "repeat": -1
+        },
+        "fall": {
+          "frames": [
+            3
+          ],
+          "fps": 7,
+          "repeat": -1
+        },
+        "attack": {
+          "frames": [
+            4
+          ],
+          "fps": 8,
+          "repeat": 0
+        },
+        "defeat": {
+          "frames": [
+            5
+          ],
+          "fps": 2,
+          "repeat": 0
+        }
+      }
+    },
+    "sentry": {
+      "asset": "enemies",
+      "animations": {
+        "idle": {
+          "frames": [
+            0,
+            1
+          ],
+          "fps": 3,
+          "repeat": -1
+        },
+        "walk": {
+          "frames": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "fps": 7,
+          "repeat": -1
+        },
+        "fly": {
+          "frames": [
+            0,
+            2,
+            1,
+            3
+          ],
+          "fps": 7,
+          "repeat": -1
+        },
+        "jump": {
+          "frames": [
+            2
+          ],
+          "fps": 7,
+          "repeat": -1
+        },
+        "fall": {
+          "frames": [
+            3
+          ],
+          "fps": 7,
+          "repeat": -1
+        },
+        "attack": {
+          "frames": [
+            4
+          ],
+          "fps": 8,
+          "repeat": 0
+        },
+        "defeat": {
+          "frames": [
+            5
+          ],
+          "fps": 2,
+          "repeat": 0
+        }
+      }
+    },
+    "coin": {
+      "asset": "items",
+      "animations": {
+        "idle": {
+          "frames": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "fps": 6,
+          "repeat": -1
+        }
+      }
+    },
+    "heart": {
+      "asset": "items",
+      "frame": 4
+    },
+    "key": {
+      "asset": "items",
+      "frame": 5
+    },
+    "bonus": {
+      "asset": "items",
+      "frame": 6
+    },
+    "invincible": {
+      "asset": "items",
+      "frame": 7
+    },
+    "jump": {
+      "asset": "items",
+      "frame": 8
+    },
+    "speed": {
+      "asset": "items",
+      "frame": 9
+    },
+    "shield": {
+      "asset": "items",
+      "frame": 10
+    },
+    "projectile": {
+      "asset": "items",
+      "frame": 11
+    },
+    "door": {
+      "asset": "props",
+      "frame": 0,
+      "animations": {
+        "idle": {
+          "frames": [
+            0
+          ],
+          "fps": 7,
+          "repeat": -1
+        },
+        "open": {
+          "frames": [
+            1
+          ],
+          "fps": 7,
+          "repeat": -1
+        }
+      }
+    },
+    "checkpoint": {
+      "asset": "props",
+      "frame": 2,
+      "animations": {
+        "idle": {
+          "frames": [
+            2
+          ],
+          "fps": 7,
+          "repeat": -1
+        },
+        "active": {
+          "frames": [
+            3
+          ],
+          "fps": 7,
+          "repeat": -1
+        }
+      }
+    },
+    "finish": {
+      "asset": "props",
+      "frame": 3
+    },
+    "secret": {
+      "asset": "items",
+      "frame": 6
+    },
+    "passage": {
+      "asset": "props",
+      "frame": 1
+    },
+    "decoration": {
+      "asset": "props",
+      "frame": 5,
+      "depth": -30
+    }
+  },
+  "background": {
+    "color": "#10172f",
+    "layers": [
+      {
+        "id": "distance",
+        "visual": {
+          "asset": "background"
+        },
+        "width": 1024,
+        "height": 540,
+        "parallax": 0.15
+      },
+      {
+        "id": "near",
+        "visual": {
+          "asset": "near"
+        },
+        "width": 1024,
+        "height": 540,
+        "parallax": 0.4
+      },
+      {
+        "id": "foreground",
+        "visual": {
+          "asset": "foreground",
+          "alpha": 0.8
+        },
+        "width": 1024,
+        "height": 540,
+        "parallax": 1.15,
+        "foreground": true
+      }
+    ],
+    "light": {
+      "color": "#182947",
+      "alpha": 0.04
+    }
+  },
+  "presentation": {
+    "card": "card",
+    "story": "story",
+    "completion": "completion",
+    "intro": {
+      "asset": "intro",
+      "duration": 2,
+      "animation": {
+        "frames": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "fps": 4,
+        "repeat": -1
+      }
+    }
+  },
+  "audio": {
+    "music": "music",
+    "loop": true,
+    "musicVolume": 0.65,
+    "effectsVolume": 0.9,
+    "effects": {
+      "coin": "collect",
+      "finish": "finish"
+    }
+  }
+}

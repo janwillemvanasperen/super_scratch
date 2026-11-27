@@ -75,8 +75,10 @@ export function landscape(
   }
   for (let layer = 0; layer < 2; layer++) {
     g.fillStyle(c(layer ? palette.near : palette.far));
-    for (let i = -2; i < 10; i++) {
-      const x = i * 190 - camera * (layer ? 0.35 : 0.16);
+    const offset = camera * (layer ? 0.35 : 0.16);
+    const first = Math.floor(offset / 190) - 1;
+    for (let i = first; i < first + Math.ceil(width / 190) + 3; i++) {
+      const x = i * 190 - offset;
       const y = height - 100 - layer * 30 - (i % 3) * 25;
       g.fillRect(x, y, 190, height - y);
       g.fillRect(x + 24, y - 32, 140, 34);

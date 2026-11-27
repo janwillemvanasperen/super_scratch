@@ -53,3 +53,7 @@ Wat deze mechaniek doet en wanneer hij stopt: …
 Voeg hier tekeningen, screenshots, kleurvoorbeelden of een plattegrond toe. Zet bij iedere afbeelding wat de AI moet overnemen: sfeer, vorm, indeling of kleur. Gebruik eigen werk of materiaal waarvoor je toestemming hebt.
 
 **Voor de bouwende AI:** behoud de vaste besturing, levens en scores. Gebruik originele 8-bit assets. Vertaal ons idee naar een apart gevalideerd JSON-level, zonder andere levels te wijzigen. Meld technische beperkingen eerlijk. Test de route van start tot finish en volg `AGENTS.md` en `docs/ADD_LEVEL.md`.
+
+## Extra vormgeving vanaf V2.1
+
+Beschrijf eigen speler- en vijandbeelden, animaties, verzamelobjecten, herhaalbare vloer, achtergrondlagen en decor. Voeg twee avatars en kaartbeelden toe als jullie die hebben. Vermeld per bestand formaat, grootte, doel en gebruiksrecht. Geef bij muziek aan of die moet herhalen. Een nieuwe vorm is geen nieuwe spelmechaniek: een vis kan gewoon het gedrag van een wandelaar gebruiken.
