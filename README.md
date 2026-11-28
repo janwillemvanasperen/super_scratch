@@ -80,3 +80,7 @@ Het interne lab staat buiten het publieke register: start Vite en open `/tests/b
 ## V2.3
 
 [De technische handleiding voor vijanden en doelen](docs/ENEMIES_AND_GOALS.md) beschrijft de mogelijkheden van De Kristalwerkplaats.
+
+## V2.4
+
+[Camera, controles en bouwersmodus](docs/RELIABILITY.md) legt uit hoe je een hoge wereld maakt, een level in een eigen map zet en het los test.

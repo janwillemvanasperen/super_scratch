@@ -59,6 +59,7 @@ export class AssetRenderer {
         .rectangle(0, 0, 960, 540, parseInt(l.color.slice(1), 16), l.alpha)
         .setOrigin(0)
         .setDepth(400);
+      this.light.setScrollFactor?.(0);
     }
     if (this.issues.length) console.warn(`Assets ${level.id}:`, this.issues);
   }
@@ -118,6 +119,7 @@ export class AssetRenderer {
       return false;
     }
     const obj = e.object;
+    obj.setScrollFactor?.(id.startsWith('layer:') ? 0 : 1);
     obj.setFrame(frame);
     e.seen = true;
     obj
@@ -139,11 +141,11 @@ export class AssetRenderer {
     else obj.setScale(v.scale);
     return true;
   }
-  layers(camera: number, time: number) {
+  layers(camera: number, time: number, cameraY = 0) {
     for (const layer of this.level.background?.layers || []) {
       if (!this.available(layer.visual)) continue;
       const x = layer.x - camera * layer.parallax + time * layer.scrollX,
-        y = layer.y + time * layer.scrollY;
+        y = layer.y - cameraY * layer.parallaxY + time * layer.scrollY;
       // Modulo anchoring means layers repeat forever, including negative scroll speeds.
       const xs = repeatPositions(x, layer.width, 960, layer.repeatX),
         ys = repeatPositions(y, layer.height, 540, layer.repeatY);

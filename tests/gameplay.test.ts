@@ -368,3 +368,20 @@ describe('V2.3 combat and objectives', () => {
     }
   });
 });
+
+it('activates checkpoints on distinct floors at the same x and preserves a dropped enhanced crate on life loss',()=>{
+  const {s,step}=setup('crystal-workshop');
+  const original=s.objects.find(o=>o.kind==='checkpoint')!;
+  const top={...original,id:'above',y:250,oy:250,respawn:{x:original.x+24,y:220}};
+  const crate={...original,id:'delivery',kind:'crate' as const,x:700,y:450,ox:630,oy:450,w:24,h:24,
+    carry:{throwable:true,weight:1,throwSpeed:340,throwLift:180,defeatsEnemies:true}};
+  s.objects.push(top,crate);
+  s.systems=new WorldSystem(s,()=>{});
+  s.p.x=original.x;s.p.y=450;step(1);
+  expect(s.checkpointId).toBe(original.id);
+  s.p.x=top.x;s.p.y=top.y;step(1);
+  expect(s.checkpointId).toBe('above');
+  s.loseLife();
+  expect(s.p.y).toBe(220);
+  expect(crate.x).toBe(700);
+});

@@ -1,7 +1,7 @@
 # Super Scratch — ontwerp- en bouwcatalogus
 
 **Voor de tien studentenduo’s van Scratch, MBO Utrecht**  
-Gecontroleerd op 27 november 2026. Bijgewerkt voor **Super Scratch V2.2**. Zie [het testlog](docs/TESTING.md) voor de uitgevoerde controles.
+Gecontroleerd op 27 november 2026. Bijgewerkt voor **Super Scratch V2.4**. Zie [het testlog](docs/TESTING.md) voor de uitgevoerde controles.
 
 ## 1. Jullie opdracht
 
@@ -144,7 +144,7 @@ Deze onderdelen **werken in de code** en zijn getest in een intern testlevel. Ze
 |---|---|---|
 | Schakelaar (`switch`) | Druk op ↑ om bijvoorbeeld een deur, val, brug of lift aan te sturen. | Kies: aan/uit, zolang je ↑ vasthoudt, een vaste tijd of blijvend aan. |
 | Drukplaat (`pressurePlate`) | Een speler, kist of beide activeren de plaat. | Je kunt een minimumgewicht kiezen. De speler telt als 1. Een gedragen kist telt niet mee. Zet de plaat op een bereikbare plek. |
-| Ladder (`ladder`) | Klim met ↑ en ↓. Spring weg met Spatie. | Kies plaats, hoogte, beeld en klimsnelheid. De camera gaat niet omhoog. |
+| Ladder (`ladder`) | Klim met ↑ en ↓. Spring weg met Spatie. | Kies plaats, hoogte, beeld en klimsnelheid. Zet bij een hoge klimroute de verticale camera aan. |
 | Lift (`elevator`) | Een lift met meerdere haltes, snelheid en wachttijd. | Automatisch, met ↑, alleen met een speler erop of via een schakelaar. Een handbediende lift rijdt na iedere druk één halte verder. |
 | Routeplatform (`pathPlatform`) | Een platform volgt rechte lijnen langs jouw punten. | Heen en terug of een rondje. Ook aan te zetten met een schakelaar. Laat de hele route vrij. |
 | Instortend platform (`collapsePlatform`) | Na erop landen valt het platform weg. | Kies de vertraging en de terugkeertijd. Je kunt terugkeer ook uitzetten. Het verschijnt pas terug als de plek vrij is. |
@@ -246,7 +246,7 @@ Ladders en zwemmen werken in V2.2. Een waterzone moet wel echt worden toegevoegd
 |---|---|---|
 | Speelbeeld | Vast 960 × 540 pixels | Teken een brede route die links-rechts doorloopt. |
 | Wereldbreedte | 960–50.000 pixels | Begin rond de voorbeelden: 5.200 en 8.800 pixels. Meet daarna de speeltijd. |
-| Wereldhoogte | 540–4.000 pixels | **Gebruik 540.** De camera volgt niet omhoog of omlaag. Een grotere ingevoerde hoogte maakt geen goed werkend verticaal level. |
+| Wereldhoogte | 540–12.000 pixels | Gebruik 540 voor een horizontale route. Vraag bij een hoge wereld om verticale camerabeweging. |
 | Aantal objecten | 1–4.000 per level | Dit is geen prestatiedoel. Gebruik alleen wat nodig is en test op een schoollaptop. |
 | Objectbreedte | 8–8.000 pixels | Gebruik eigen beelden op passende grootte. Maak een lange bodem uit meerdere grondstukken. |
 | Objecthoogte | 8–800 pixels | Houd de route en belangrijke voorwerpen binnen het zichtbare scherm. |
@@ -404,8 +404,8 @@ Dit overzicht helpt om een haalbaar ontwerp te kiezen. V2.2 voegt spelgedrag toe
 | Springer die netjes heen en weer patrouilleert | **Beperkt:** sprong en looprichting delen een timer | Laat de precieze beweging testen voordat die belangrijk is voor een puzzel. |
 | Vallende steen die blijft liggen | **Nog bouwen** | De bestaande steen valt door de omgeving en begint later opnieuw. |
 | Kisten voor ingewikkelde puzzels | **Beperkt:** vaste draag- en neerzetafstand | Gebruik kleine kisten en vermijd verplichte stapelpuzzels zonder extra tests. |
-| Checkpoints boven elkaar | **Beperkt:** alleen de x-positie wordt vergeleken | Gebruik verschillende horizontale posities. |
-| Hoge werelden met een verticale camera | **Nog bouwen** | Gebruik één schermhoogte van 540 pixels. |
+| Checkpoints boven elkaar | **Werkt.** Elk checkpoint heeft een eigen ID. | Kies voor elk checkpoint een veilige terugkeerplek. |
+| Hoge werelden met een verticale camera | **Werkt.** Schakel verticale camerabeweging per level in. | Test zicht, valroutes en checkpoints. |
 | Eigen muziekbestanden en effecten | **Werkt** | MP3, OGG of WAV; aparte volumes en terugvalgeluid. Een muziekeditor is er niet. |
 | Drukplaten, schakelaars, liften, water en korte gesprekken | **Werkt** | Zie hoofdstuk 6A voor de instellingen en grenzen. |
 | Nieuwe vijand-AI, eindbazen en gesprekken met keuzemenu | **Nog bouwen** | Kies hoogstens één kleine extra mechaniek. |
@@ -523,3 +523,9 @@ Je kunt de finish koppelen aan munten, specifieke voorwerpen, verslagen vijanden
 Beschrijf bij iedere vijand waar hij begint, hoe hij beweegt, wat hij doet zodra hij de speler ziet en hoe hij te verslaan is. Geef voor een baas ook per fase aan wat verandert. Schrijf voor elk doel op wanneer het klaar is, hoe de speler dit merkt en welke uitgang erbij hoort. Teken een veilige route vanaf ieder checkpoint.
 
 In **De Kristalwerkplaats** verzamel je drie kristallen, zet je een machine aan en versla je een baas. Daarna kun je via twee uitgangen finishen. De [technische handleiding](docs/ENEMIES_AND_GOALS.md) bevat de instellingen voor de bouwer.
+
+## V2.4 – Ook omhoog en omlaag bouwen
+
+Je kunt een level met meerdere verdiepingen maken. Vraag in je ontwerp om een camera die boven en beneden volgt. Teken per verdieping de in- en uitgang, een veilige plek om te landen en de weg terug na verlies van een leven. Een checkpoint mag nu recht boven een ander checkpoint staan. Laat één persoon de route testen vanaf elk punt. De automatische controle helpt bij fouten in het bestand, maar speelt jullie puzzel niet uit.
+
+Jullie level kan in een eigen map. Geef de bouwer een unieke naam, alle beelden en de route. Met de bouwersmodus kan de bouwer naar iedere verdieping gaan en de contactgebieden bekijken. Testpogingen slaan geen records op. Zie [camera en bouwersmodus](docs/RELIABILITY.md).

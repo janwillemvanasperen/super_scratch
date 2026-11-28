@@ -1,3 +1,6 @@
+import { safeRespawn } from '../core/respawn';
+import { impactTime } from '../core/physics';
+import { cameraPosition } from '../core/camera';
 import { Challenges } from '../mechanics/challenges';
 import { WorldSystem } from '../mechanics/world-system';
 import { drawBuilding } from '../mechanics/draw-building';
@@ -9,7 +12,7 @@ import { overlap, moveBody, type Rect } from '../core/physics';
 import { Player } from '../entities/player';
 import { makeArt, landscape } from '../entities/art';
 import type { AudioEngine } from '../audio/audio';
-import { mechanics } from '../mechanics/registry';
+import { mechanics, MechanicSession } from '../mechanics/registry';
 import { AssetRenderer, preloadGraphics } from '../assets/renderer';
 import { objectBody, objectBounds } from '../assets/layout';
 type Obj = Block & {
@@ -56,12 +59,15 @@ export class GameScene extends Phaser.Scene {
   fg!: Phaser.GameObjects.Graphics;
   hero!: Phaser.GameObjects.Sprite;
   cam = 0;
+  camY = 0;
+  checkpointId?: string;
   elapsed = 0;
   accum = 0;
   message = '';
   messageUntil = 0;
   paused = false;
-  mechanic?: ReturnType<typeof mechanics.wind>;
+  mechanic?: MechanicSession;
+  mechanicErrors: string[] = [];
   sparkles: { x: number; y: number; vx: number; vy: number; t: number; color: number }[] = [];
   wasUp = false;
   wasDown = false;
@@ -93,6 +99,7 @@ export class GameScene extends Phaser.Scene {
   }
   create() {
     this.level = this.definition;
+    this.mechanicErrors = [];
     this.challenge = new Challenges(this);
     this.run = new Run();
     this.objects = this.level.objects.map((b) => ({
@@ -107,6 +114,8 @@ export class GameScene extends Phaser.Scene {
     }));
     this.p = this.createPlayer(this.level.spawn.x, this.level.spawn.y, true);
     this.checkpoint = { x: this.p.x, y: this.p.y };
+    this.checkpointId = undefined;
+    this.updateCamera(0, true);
     this.systems = new WorldSystem(this, (name) => this.audio.play(name));
     this.bg = this.add.graphics().setScrollFactor(0).setDepth(-1000);
     this.fg = this.add.graphics().setDepth(90);
@@ -135,13 +144,23 @@ export class GameScene extends Phaser.Scene {
       this.game.events.off('blur', this.onBlur, this);
       this.audio.stop();
       this.assetRenderer?.destroy();
-      this.mechanic?.destroy();
+      this.mechanic?.event({ type: 'exit' });
+      this.mechanic?.dispose();
       this.systems?.destroy();
       this.shots = [];
       this.sparkles = [];
       this.input.keyboard?.removeAllKeys(true);
     });
-    if (this.level.mechanic) this.mechanic = mechanics[this.level.mechanic]();
+    if (this.level.mechanic)
+      this.mechanic = new MechanicSession(
+        mechanics[this.level.mechanic],
+        { player: () => this.p, say: (text) => this.say(text) },
+        (error) => {
+          this.mechanicErrors.push(String(error));
+          console.error('Levelmechaniek uitgeschakeld', error);
+        },
+      );
+
     this.audio.start(this.level.music.notes, this.level.music.tempo, this.level);
     this.say(this.level.instructions || 'Volg de munten. Het avontuur wacht!', 5);
     this.renderWorld();
@@ -150,6 +169,7 @@ export class GameScene extends Phaser.Scene {
     if (!this.paused && !this.run.finished) this.hooks.pause();
   }
   setPaused(value: boolean) {
+    if (this.paused !== value) this.mechanic?.event({ type: value ? 'pause' : 'resume' });
     this.paused = value;
     if (value) this.audio.pause();
     else this.audio.resume();
@@ -265,6 +285,7 @@ export class GameScene extends Phaser.Scene {
         p.y += o.y - prevY;
       }
     }
+    this.mechanic?.event({ type: 'input', controls: { ...controls } });
     const threw = this.systems?.before(dt, controls) ?? false;
     if (threw) {
       p.buffer = 0;
@@ -293,6 +314,13 @@ export class GameScene extends Phaser.Scene {
     );
     const collision = moveBody(p, dt, solids);
     p.grounded = collision.grounded;
+    if (collision.grounded || collision.ceiling || collision.wall)
+      this.mechanic?.event({
+        type: 'collision',
+        grounded: collision.grounded,
+        ceiling: !!collision.ceiling,
+        wall: !!collision.wall,
+      });
     this.standing = solids.find(
       (o) => Math.abs(p.y + p.h - o.y) < 1 && p.x + p.w > o.x && p.x < o.x + o.w,
     );
@@ -361,6 +389,7 @@ export class GameScene extends Phaser.Scene {
       }
       if (o.kind === 'decoration' && o.text && Math.abs(p.x - o.x) < 120) this.say(o.text, 0.2);
       if (!overlap(p, o)) continue;
+      const collectedBefore = o.alive;
       switch (o.kind) {
         case 'coin':
         case 'bonus':
@@ -418,8 +447,10 @@ export class GameScene extends Phaser.Scene {
           }
           break;
         case 'checkpoint':
-          if (this.checkpoint.x !== o.x) {
-            this.checkpoint = { x: o.x, y: o.y - p.h };
+          if (this.checkpointId !== o.id) {
+            this.checkpointId = o.id;
+            this.checkpoint = o.respawn ?? { x: o.x, y: o.y - p.h };
+            this.mechanic?.event({ type: 'checkpoint', id: o.id });
             this.audio.play('checkpoint');
             this.say('Checkpoint! Hier ga je verder na een verloren leven.');
             this.burst(o.x, o.y, 0x8cf3cc);
@@ -433,7 +464,8 @@ export class GameScene extends Phaser.Scene {
           }
           break;
         case 'finish':
-          if (this.level.goals?.length || o.requirements?.length || this.level.events?.length) break;
+          if (this.level.goals?.length || o.requirements?.length || this.level.events?.length)
+            break;
           this.run.finish(this.level.targetTime);
           this.run.finished = true;
           this.audio.stop(true);
@@ -451,12 +483,15 @@ export class GameScene extends Phaser.Scene {
           }
           break;
       }
+      if (collectedBefore && !o.alive && this.run.claimed.has(o.id))
+        this.mechanic?.event({ type: 'collect', id: o.id });
     }
     if (up && !this.wasUp) {
       for (const o of this.objects)
         if (
           o.kind === 'door' &&
           !o.opened &&
+          this.active(o) &&
           Math.abs(p.x - o.x) < 75 &&
           Math.abs(p.y - o.y) < 130
         ) {
@@ -527,15 +562,21 @@ export class GameScene extends Phaser.Scene {
     }
     this.wasUp = up;
     this.wasDown = down;
+    const shotSolids = this.shots.length ? this.solids() : [];
     this.shots = this.shots.filter((s) => {
-      s.x += s.vx * dt;
-      s.y += s.vy * dt;
-      s.ttl -= dt;
-      if (overlap(p, s)) {
+      const dx = s.vx * dt,
+        dy = s.vy * dt;
+      const wall = shotSolids.reduce((t, b) => Math.min(t, impactTime(s, dx, dy, b)), Infinity);
+      const hit = impactTime(s, dx, dy, p);
+      if (hit < wall) {
         if (s.damage !== 0) this.hurt(s.x, s.damage);
         return false;
       }
-      return s.ttl > 0 && !this.solids().some((b) => overlap(s, b));
+      if (wall !== Infinity || this.p !== p) return false;
+      s.x += dx;
+      s.y += dy;
+      s.ttl -= dt;
+      return s.ttl > 0;
     });
     this.sparkles = this.sparkles.filter((s) => {
       s.t -= dt;
@@ -544,9 +585,20 @@ export class GameScene extends Phaser.Scene {
       s.vy += 150 * dt;
       return s.t > 0;
     });
-    this.cam +=
-      (Phaser.Math.Clamp(p.x - 320, 0, this.level.world.width - 960) - this.cam) *
-      Math.min(1, dt * 6);
+    this.updateCamera(dt);
+  }
+  updateCamera(dt: number, snap = false) {
+    const at = cameraPosition(
+      this.p,
+      this.level.world,
+      this.level.camera,
+      { x: this.cam, y: this.camY },
+      dt,
+      snap,
+    );
+    this.cam = at.x;
+    this.camY = at.y;
+    if (this.cameras?.main) this.cameras.main.scrollY = at.y;
   }
   enemy(o: Obj, dt: number) {
     const oldX = o.x;
@@ -610,6 +662,7 @@ export class GameScene extends Phaser.Scene {
       return;
     }
     this.run.hearts = Math.max(0, this.run.hearts - damage);
+    this.mechanic?.event({ type: 'damage', amount: damage });
     this.audio.play('hurt');
     this.burst(p.x, p.y, 0xff7676);
     p.invuln = 1.5;
@@ -618,6 +671,7 @@ export class GameScene extends Phaser.Scene {
     if (this.run.hearts <= 0) this.loseLife();
   }
   loseLife() {
+    this.mechanic?.event({ type: 'life' });
     this.audio.play('life');
     if (!this.run.loseLife()) {
       this.paused = true;
@@ -626,19 +680,54 @@ export class GameScene extends Phaser.Scene {
       this.hooks.over();
       return;
     }
-    this.p = this.createPlayer(this.checkpoint.x, this.checkpoint.y);
-    this.p.invuln = 2;
+
+    const carried = this.p.carrying;
+    this.p.carrying = undefined;
     this.powers = {};
     this.shots = [];
     this.standing = undefined;
     for (const o of this.objects) {
-      if (o.kind === 'crate' || o.kind === 'falling') {
+      if (
+        (o.kind === 'crate' && (!o.carry || o.resetOnDeath || o.id === carried)) ||
+        o.kind === 'falling'
+      ) {
         o.x = o.ox;
         o.y = o.oy;
         o.vy = 0;
       }
     }
     this.systems?.respawn();
+    const spawn = this.createPlayer(this.level.spawn.x, this.level.spawn.y, true);
+    const hazards = this.objects.filter(
+      (o) =>
+        o.alive &&
+        this.active(o) &&
+        [
+          'spikes',
+          'lava',
+          'trap',
+          'falling',
+          'enemy',
+          'walker',
+          'chaser',
+          'jumper',
+          'flyer',
+          'shooter',
+          'sentry',
+        ].includes(o.kind),
+    );
+    const destination = safeRespawn(this.checkpoint, spawn, this.p, this.level.world, [
+      ...this.solids(),
+      ...hazards,
+    ]);
+    if (!destination) {
+      this.checkpointId = undefined;
+      this.checkpoint = { x: spawn.x, y: spawn.y };
+      console.warn('Geen vrije respawnruimte gevonden', this.level.id);
+    }
+    this.p = this.createPlayer(destination?.x ?? spawn.x, destination?.y ?? spawn.y);
+    this.p.invuln = 2;
+    if (this.level.camera) this.updateCamera(0, true);
     this.say('Nieuw leven. Je verzamelde punten blijven behouden.');
   }
   renderWorld() {
@@ -664,7 +753,7 @@ export class GameScene extends Phaser.Scene {
       this.bg.fillRect(0, 0, 960, 540);
     }
     this.assetRenderer?.begin();
-    this.assetRenderer?.layers(this.cam, artTime);
+    this.assetRenderer?.layers(this.cam, artTime, this.camY);
     g.clear();
     const col = (s: string) => parseInt(s.slice(1), 16);
     const rect = (x: number, y: number, w: number, h: number, c: number) => {
@@ -672,6 +761,7 @@ export class GameScene extends Phaser.Scene {
       g.fillRect(Math.round(x - this.cam), Math.round(y), w, h);
     };
     for (const o of this.objects) {
+      if (o.y + o.h < this.camY - 200 || o.y > this.camY + 740) continue;
       if (this.systems && !this.systems.visible(o)) continue;
       if (this.challenge.hidden(o)) continue;
       if (o.enemy && o.alive && (o.enemy.bar ?? o.enemy.boss)) {
@@ -690,7 +780,14 @@ export class GameScene extends Phaser.Scene {
             (visual?.animations?.defeat?.frames.length || 0) /
               (visual?.animations?.defeat?.fps || 8),
           );
-      if ((!o.alive && !defeated) || o.x + o.w < this.cam - 200 || o.x > this.cam + 1160) continue;
+      if (
+        (!o.alive && !defeated) ||
+        o.x + o.w < this.cam - 200 ||
+        o.x > this.cam + 1160 ||
+        o.y + o.h < this.camY - 200 ||
+        o.y > this.camY + 740
+      )
+        continue;
       const enemy =
         !!o.enemy || ['walker', 'chaser', 'jumper', 'flyer', 'shooter', 'sentry'].includes(o.kind);
       const state =
@@ -699,7 +796,7 @@ export class GameScene extends Phaser.Scene {
           ? 'defeat'
           : o.opened
             ? 'open'
-            : o.kind === 'checkpoint' && this.checkpoint.x === o.x
+            : o.kind === 'checkpoint' && this.checkpointId === o.id
               ? 'active'
               : (o.attackUntil || 0) > this.elapsed
                 ? 'attack'
@@ -788,7 +885,7 @@ export class GameScene extends Phaser.Scene {
         rect(x, y + o.h - 8, 45, 8, 0xd39b51);
       } else if (o.kind === 'checkpoint') {
         rect(x + 8, y, 4, o.h, 0xffefca);
-        rect(x + 12, y, 27, 20, this.checkpoint.x === o.x ? 0x8af2c6 : 0x657aa6);
+        rect(x + 12, y, 27, 20, this.checkpointId === o.id ? 0x8af2c6 : 0x657aa6);
       } else if (['spikes', 'lava', 'trap'].includes(o.kind)) {
         if (o.kind === 'lava') {
           rect(x, y, o.w, o.h, 0xf46c57);
@@ -922,7 +1019,10 @@ export class GameScene extends Phaser.Scene {
         .setDepth(500);
       this.speechLabel
         .setText(speech.text)
-        .setPosition(Math.max(8, Math.min(700, o.x - this.cam - 70)), Math.max(80, o.y - 85))
+        .setPosition(
+          Math.max(8, Math.min(700, o.x - this.cam - 70)),
+          Math.max(this.camY + 80, o.y - 85),
+        )
         .setVisible(true);
     } else this.speechLabel?.setVisible(false);
     this.assetRenderer?.end();
