@@ -76,3 +76,7 @@ Eigen sprites, animaties, hitboxes, textures, parallax, decor, avatars, kaartbee
 Schakelaars, drukplaten, ladders, liften, water, speciale vloeren, omgevingszones, teleporters, routeplatforms, instortende platforms, werpbare kisten, schatkisten en korte NPC-gesprekken zijn per level instelbaar. De vier bestaande levelbestanden blijven ongewijzigd. Zie [studentencatalogus](STUDENT_LEVEL_GUIDE.md), [technische instellingen](docs/BUILDING_SYSTEMS.md) en [releaseverslag](docs/RELEASE_V2_2.md).
 
 Het interne lab staat buiten het publieke register: start Vite en open `/tests/building-lab.html`. Kies een station en klik Start station. De pagina en fixture komen niet in de productiebuild.
+
+## V2.3
+
+[De technische handleiding voor vijanden en doelen](docs/ENEMIES_AND_GOALS.md) beschrijft de mogelijkheden van De Kristalwerkplaats.

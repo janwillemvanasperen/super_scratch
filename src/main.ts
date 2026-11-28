@@ -188,6 +188,7 @@ function updateHud(
   powers: Record<string, number>,
   message: string,
   oxygen?: { remaining: number; total: number },
+  objectives?: string[],
 ) {
   const el = document.querySelector('#hud');
   if (!el) return;
@@ -201,6 +202,13 @@ function updateHud(
     .join(
       ' · ',
     )}${oxygen ? '<span class="oxygen">Zuurstof ' + Math.ceil(oxygen.remaining) + 's <meter min="0" max="' + oxygen.total + '" value="' + oxygen.remaining + '" aria-label="Zuurstof"></meter></span>' : ''}</div>`;
+  if (objectives?.length)
+    el.insertAdjacentHTML(
+      'beforeend',
+      '<div class="objective-hud">' +
+        objectives.map((text) => '<span>' + esc(text) + '</span>').join('') +
+        '</div>',
+    );
   document.querySelector('#hint')!.textContent = message;
 }
 function overlay(html: string) {

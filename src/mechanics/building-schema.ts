@@ -36,8 +36,16 @@ export const actionSchema = z.discriminatedUnion('type', [
       'stop',
       'toggle',
       'reset',
+      'damage',
+      'talk',
     ]),
   }),
+  z.object({
+    type: z.literal('music'),
+    tempo: z.number().min(60).max(200),
+    notes: z.array(z.number().int().min(36).max(96)).min(4).max(64),
+  }),
+  z.object({ type: z.literal('background'), color: z.string().regex(/^#[0-9a-f]{6}$/i) }),
   z.object({ type: z.literal('message'), text: z.string().min(1).max(180) }),
   z.object({ type: z.literal('reward'), reward: rewardSchema }),
 ]);

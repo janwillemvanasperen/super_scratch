@@ -1,0 +1,343 @@
+{
+  "id": "crystal-workshop",
+  "version": 1,
+  "name": "De Kristalwerkplaats",
+  "tutorial": false,
+  "story": "Verzamel drie kristallen en herstel de werkplaats. Versla de Wachter om de uitgang vrij te maken.",
+  "goal": "Verzamel drie kristallen, zet de machine aan en versla de Wachter.",
+  "difficulty": "Medium",
+  "makers": [
+    {
+      "name": "Super Scratch",
+      "avatar": "#f8cc71"
+    },
+    {
+      "name": "Basisgame",
+      "avatar": "#9bdbc6"
+    }
+  ],
+  "palette": {
+    "sky": "#d5e4f1",
+    "far": "#a6b5d6",
+    "near": "#7a97b9",
+    "ground": "#666a89",
+    "accent": "#d3b5ee"
+  },
+  "character": {
+    "name": "Pip de leerling",
+    "color": "#b6d2ff"
+  },
+  "music": {
+    "tempo": 100,
+    "notes": [
+      60,
+      64,
+      67,
+      64,
+      62,
+      65,
+      69,
+      65
+    ]
+  },
+  "world": {
+    "width": 2100,
+    "height": 540
+  },
+  "spawn": {
+    "x": 60,
+    "y": 420
+  },
+  "targetTime": 60,
+  "instructions": "Verzamel de drie kristallen. Druk ↑ bij de machine.",
+  "objects": [
+    {
+      "id": "floor",
+      "kind": "ground",
+      "x": 0,
+      "y": 480,
+      "w": 2100,
+      "h": 60
+    },
+    {
+      "id": "crystal-0",
+      "kind": "coin",
+      "x": 175,
+      "y": 447,
+      "w": 18,
+      "h": 23
+    },
+    {
+      "id": "crystal-1",
+      "kind": "coin",
+      "x": 260,
+      "y": 447,
+      "w": 18,
+      "h": 23
+    },
+    {
+      "id": "crystal-2",
+      "kind": "coin",
+      "x": 350,
+      "y": 447,
+      "w": 18,
+      "h": 23
+    },
+    {
+      "id": "guide-zone",
+      "kind": "objective",
+      "x": 90,
+      "y": 380,
+      "w": 100,
+      "h": 100
+    },
+    {
+      "id": "mechanic",
+      "kind": "npc",
+      "x": 110,
+      "y": 435,
+      "w": 30,
+      "h": 45,
+      "npc": {
+        "lines": [
+          "De drie kristallen geven de machine stroom."
+        ]
+      }
+    },
+    {
+      "id": "machine",
+      "kind": "switch",
+      "x": 450,
+      "y": 440,
+      "w": 32,
+      "h": 40,
+      "trigger": {
+        "mode": "once",
+        "on": [
+          {
+            "type": "message",
+            "text": "De Wachter ontwaakt."
+          }
+        ]
+      }
+    },
+    {
+      "id": "safe",
+      "kind": "checkpoint",
+      "x": 530,
+      "y": 428,
+      "w": 24,
+      "h": 52
+    },
+    {
+      "id": "jump-pad",
+      "kind": "platform",
+      "x": 670,
+      "y": 420,
+      "w": 100,
+      "h": 16
+    },
+    {
+      "id": "boss",
+      "kind": "enemy",
+      "x": 880,
+      "y": 428,
+      "w": 72,
+      "h": 52,
+      "enabled": false,
+      "enemy": {
+        "boss": true,
+        "name": "De Wachter",
+        "hp": 3,
+        "intro": "De Wachter is wakker. Spring op zijn bovenkant!",
+        "music": {
+          "tempo": 145,
+          "notes": [
+            48,
+            55,
+            51,
+            55,
+            48,
+            60,
+            58,
+            55
+          ]
+        },
+        "hitDelay": 0.7,
+        "accepts": [
+          "stomp"
+        ],
+        "weakSpot": {
+          "x": 0,
+          "y": 0,
+          "w": 1,
+          "h": 0.4
+        },
+        "behavior": {
+          "move": "patrol",
+          "speed": 35,
+          "range": 70,
+          "detect": 330,
+          "interval": 3.2,
+          "shoot": {
+            "speed": 105
+          }
+        },
+        "phases": [
+          {
+            "at": 0.66,
+            "behavior": {
+              "move": "patrol",
+              "speed": 55,
+              "range": 85,
+              "interval": 2.8,
+              "shoot": {
+                "speed": 120,
+                "direction": "horizontal",
+                "pattern": "spread"
+              }
+            }
+          }
+        ],
+        "defeated": [
+          {
+            "type": "reward",
+            "reward": {
+              "kind": "bonus"
+            }
+          },
+          {
+            "type": "message",
+            "text": "Werkplaats gered! Volg een van de twee uitgangen."
+          }
+        ]
+      }
+    },
+    {
+      "id": "secret",
+      "kind": "secret",
+      "x": 1320,
+      "y": 440,
+      "w": 40,
+      "h": 40
+    },
+    {
+      "id": "bridge",
+      "kind": "surface",
+      "x": 1430,
+      "y": 405,
+      "w": 440,
+      "h": 16,
+      "surface": {
+        "type": "oneWay"
+      }
+    },
+    {
+      "id": "finish-upper",
+      "kind": "finish",
+      "x": 1790,
+      "y": 348,
+      "w": 35,
+      "h": 57
+    },
+    {
+      "id": "finish-lower",
+      "kind": "finish",
+      "x": 1980,
+      "y": 420,
+      "w": 35,
+      "h": 60
+    }
+  ],
+  "demo": true,
+  "goals": [
+    {
+      "label": "Kristallen",
+      "condition": {
+        "type": "items",
+        "ids": [
+          "crystal-0",
+          "crystal-1",
+          "crystal-2"
+        ]
+      }
+    },
+    {
+      "label": "Zet de machine aan",
+      "condition": {
+        "type": "switches",
+        "ids": [
+          "machine"
+        ]
+      }
+    },
+    {
+      "label": "Versla de Wachter",
+      "condition": {
+        "type": "enemies",
+        "ids": [
+          "boss"
+        ]
+      }
+    }
+  ],
+  "events": [
+    {
+      "id": "welcome",
+      "when": [
+        {
+          "label": "Langs de monteur",
+          "condition": {
+            "type": "visit",
+            "ids": [
+              "guide-zone"
+            ]
+          }
+        }
+      ],
+      "actions": [
+        {
+          "type": "object",
+          "target": "mechanic",
+          "action": "talk"
+        }
+      ]
+    },
+    {
+      "id": "wake",
+      "when": [
+        {
+          "label": "Kristallen",
+          "condition": {
+            "type": "items",
+            "ids": [
+              "crystal-0",
+              "crystal-1",
+              "crystal-2"
+            ]
+          }
+        },
+        {
+          "label": "Zet de machine aan",
+          "condition": {
+            "type": "switches",
+            "ids": [
+              "machine"
+            ]
+          }
+        }
+      ],
+      "actions": [
+        {
+          "type": "object",
+          "target": "boss",
+          "action": "enable"
+        },
+        {
+          "type": "background",
+          "color": "#a86682"
+        }
+      ]
+    }
+  ]
+}

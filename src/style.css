@@ -1302,6 +1302,15 @@ kbd {
   margin-bottom: 10px;
 }
 
+.objective-hud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  grid-column: 1/-1;
+}
+.objective-hud span {
+  color: #dbf3ef;
+}
 .oxygen {
   display: inline-flex;
   flex-direction: column;
