@@ -153,6 +153,7 @@ function launch(l: Level) {
   );
 }
 function play(l: Level) {
+  if (current?.id === l.id) scene?.mechanic?.event({ type: 'restart' });
   clean();
   current = l;
   root.innerHTML = `<div class="play-shell"><div class="play-top"><a class="brand" href="#" data-action="home">SUPER SCRATCH</a><span>${esc(l.name)}</span>${button('Ⅱ Pauze', 'pause')}</div><div class="game-wrap"><div id="hud" aria-live="off"></div><div id="game"></div><div id="hint">De wereld wordt geladen…</div><div id="overlay"></div></div><div class="controls"><span><kbd>←</kbd><kbd>→</kbd> Lopen</span><span><kbd>SPATIE</kbd> Springen</span><span><kbd>↑</kbd> Interactie${l.objects.some((o) => o.ladder || o.water) ? ' / klimmen / zwemmen' : ''}</span><span><kbd>↓</kbd> Oppakken${l.objects.some((o) => o.carry?.throwable) ? ' · ↓ + Spatie: gooien' : ''}</span><span><kbd>ESC</kbd> Pauze</span></div></div>`;

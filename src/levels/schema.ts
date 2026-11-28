@@ -1,3 +1,4 @@
+import { cameraSchema } from '../core/camera';
 import { enemySchema, eventSchema, goalSchema } from '../mechanics/challenge-schema';
 import { validateChallenges } from '../mechanics/validate-challenges';
 import {
@@ -95,6 +96,7 @@ export const objectSchema = z.object({
   motion: motionSchema.optional(),
   solid: z.boolean().default(false),
   enabled: z.boolean().default(true),
+  respawn: z.object(pos).optional(),
   resetOnDeath: z.boolean().default(false),
   trigger: triggerSchema.optional(),
   route: routeSchema.optional(),
@@ -134,7 +136,7 @@ const levelDataSchema = z.object({
   }),
   world: z.object({
     width: z.number().min(960).max(50000),
-    height: z.number().min(540).max(4000),
+    height: z.number().min(540).max(12000),
   }),
   spawn: z.object(pos),
   targetTime: z.number().min(10).max(600),
@@ -142,6 +144,7 @@ const levelDataSchema = z.object({
   instructions: z.string().optional(),
   goals: z.array(goalSchema).max(16).optional(),
   events: z.array(eventSchema).max(32).optional(),
+  camera: cameraSchema.optional(),
   objects: z.array(objectSchema).min(1).max(4000),
   assets: z.record(z.string().regex(/^[a-zA-Z0-9_-]+$/), assetSchema).optional(),
   styles: z.record(visualSchema).optional(),
@@ -167,8 +170,37 @@ export const levelSchema = levelDataSchema.superRefine((l, ctx) => {
       ctx.addIssue({ code: 'custom', message: `Dubbele achtergrondlaag: ${layer.id}` });
     layerIds.add(layer.id);
   }
+  const b = l.camera?.bounds;
+  if (
+    b &&
+    (b.right > l.world.width ||
+      b.bottom > l.world.height ||
+      b.right - b.left < 960 ||
+      b.bottom - b.top < 540)
+  )
+    ctx.addIssue({
+      code: 'custom',
+      message: 'Cameragrenzen moeten binnen de wereld liggen en een volledig scherm omvatten',
+    });
+  for (const z of l.camera?.zones ?? [])
+    if (
+      z.x + z.w > l.world.width ||
+      z.y + z.h > l.world.height ||
+      z.viewX + 960 > l.world.width ||
+      z.viewY + 540 > l.world.height
+    )
+      ctx.addIssue({ code: 'custom', message: 'Camerazone of kijkpositie buiten wereld' });
   const ids = new Set<string>();
   for (const o of l.objects) {
+    if (
+      o.respawn &&
+      (o.kind !== 'checkpoint' ||
+        o.respawn.x + (l.character.hitbox?.width ?? 22) > l.world.width ||
+        o.respawn.y + (l.character.hitbox?.height ?? 30) > l.world.height)
+    )
+      ctx.addIssue({ code: 'custom', message: 'Ongeldig respawnpunt: ' + o.id });
+    if (o.kind === 'finish' && o.y + o.h > l.world.height)
+      ctx.addIssue({ code: 'custom', message: 'Finish buiten wereld: ' + o.id });
     if (ids.has(o.id)) ctx.addIssue({ code: 'custom', message: `Dubbel object-ID: ${o.id}` });
     ids.add(o.id);
     if (o.x + o.w > l.world.width || o.y > l.world.height)

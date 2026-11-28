@@ -74,6 +74,7 @@ export const layerSchema = z.object({
   y: z.number().default(0),
   width: z.number().min(64).max(50000),
   height: z.number().min(64).max(4000),
+  parallaxY: z.number().min(-2).max(2).default(0),
   parallax: z.number().min(-2).max(2).default(0.2),
   scrollX: z.number().min(-500).max(500).default(0),
   scrollY: z.number().min(-500).max(500).default(0),

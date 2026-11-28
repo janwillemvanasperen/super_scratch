@@ -109,3 +109,20 @@ De hoofdgame is apart geopend: tutorial gestart, lopen/springen, vijf munten/500
 76 automatische tests geslaagd. Alle vier eerdere levels zijn volledig uitgespeeld met gesimuleerde toetsen. De nieuwe integratietests gebruiken echte simulatiestappen en plaatsen de speler gericht bij de testobjecten. Ze controleren het volledige eindbaasgevecht met drie treffers, fasewisseling, een blokkade vóór de doelen, een checkpoint en levensverlies, plus een eenmalige eindscore. De zeven basisbewegingen en de zes extra gedragingen zijn getest, waaronder een vliegende schutter en een achtervolger die zich verstopt. Ongeldige combinaties en doelverwijzingen zijn afgewezen.
 
 Levelvalidatie, TypeScript en de productiebuild slagen voor vijf levels. Vite meldt de bestaande waarschuwing voor de grote Phaser-bundel. Het eindbaasgevecht is automatisch getest, niet handmatig in een browser uitgespeeld.
+
+## V2.4 – 28 november 2026
+
+83 automatische tests in 8 bestanden. De vier bestaande routes zijn volledig uitgespeeld in simulatie. De Kristalwerkplaats is getest met gerichte spelstappen, inclusief het volledige baasgevecht en de finish. Nieuwe controles dekken de camera, botsingen bij hoge snelheid, checkpoints op dezelfde X, herstel van een geblokkeerd punt, behoud van een neergezette kist en opruimen na een fout in een mechaniek.
+
+Echte browser via de bouwersmodus. Alle vijf levels gestart met de echte renderer en audio-engine. Gemeten na start, circa 2,2 seconden per scène. De hoge testwereld is apart bestuurd met vrij vliegen, een ingestelde positie en herstart bij het bovenste checkpoint. Camera Y ging van 1660 naar 670 en daarna naar 484. Hitboxes stonden bij die bediening aan. Tijdens de meetreeks stond de overlay uit.
+
+| Wereld | Objecten | Start ms | p95 frame ms | p95 update ms |
+|---|---:|---:|---:|---:|
+| Tutorial | 60 | 150 | 16,64 | 1,40 |
+| Eerste avontuur | 114 | 205 | 16,64 | 1,60 |
+| Midnight City | 63 | 348 | 16,66 | 3,40 |
+| Deep Sea Treasure | 63 | 349 | 16,65 | 2,20 |
+| Kristalwerkplaats | 14 | 166 | 16,65 | 0,70 |
+| Hoge testwereld | 1.118 | 181 | 16,64 | 5,50 |
+
+Bij alle wissels één actief canvas en geen JavaScript-consolefouten. Deze korte meting gebruikt een lokale ontwikkelserver. De twee beeld- en audiodemo's zijn gestart, maar V2.4 heeft audio niet opnieuw afgeluisterd of afzonderlijk gedecodeerde bestanden geteld. Er was geen heap-profiel. Het aantal actieve canvassen is alleen een controle op zichtbare opruiming. Geen volledige handmatige speelronde van de vijf levels in deze V2.4-browsertest. Testresultaten uit eerdere versies blijven historisch.

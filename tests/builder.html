@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="nl">
+  <head>
+    <meta charset="utf-8" />
+    <title>Super Scratch bouwersmodus</title>
+    <style>
+      body {
+        font: 15px system-ui;
+        background: #182034;
+        color: #eee;
+        margin: 16px;
+      }
+      button,
+      input,
+      select,
+      label {
+        margin: 4px;
+      }
+      #game {
+        width: 800px;
+        height: 450px;
+        max-width: 100%;
+        position: relative;
+      }
+      pre {
+        white-space: pre-wrap;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Bouwersmodus</h1>
+    <label>Levelbestand <input id="file" value="crystal-workshop.json" /></label>
+    <button id="start">Start / doelen resetten</button><button id="stress">Hoge testwereld</button
+    ><button id="measure">Meet alle vijf levels en testwereld</button>
+    <label><input id="fly" type="checkbox" />Vrij vliegen</label
+    ><label><input id="safe" type="checkbox" />Onkwetsbaar</label
+    ><label><input id="boxes" type="checkbox" checked />Hitboxes, routes en zones</label>
+    <div>
+      <label>X <input type="number" id="x" value="60" /></label
+      ><label>Y <input type="number" id="y" value="420" /></label
+      ><button id="go">Ga naar positie</button
+      ><label
+        >Checkpoint
+        <select id="checkpoints"></select></label
+      ><button id="respawn">Herstart vanaf punt</button>
+    </div>
+    <div id="game"></div>
+    <pre id="stats">Kies een level.</pre>
+    <pre id="errors"></pre>
+    <pre id="perf"></pre>
+    <script type="module" src="./builder.ts"></script>
+  </body>
+</html>
