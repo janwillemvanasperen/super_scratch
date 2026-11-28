@@ -84,3 +84,7 @@ Het interne lab staat buiten het publieke register: start Vite en open `/tests/b
 ## V2.4
 
 [Camera, controles en bouwersmodus](docs/RELIABILITY.md) legt uit hoe je een hoge wereld maakt, een level in een eigen map zet en het los test.
+
+## V2.5 – Playground
+
+Het startscherm opent een interactieve tentoonstelling met zestien oefenzones. De vijf reguliere levels blijven beschikbaar. Oefenzones gebruiken dezelfde engine, maar hebben een eigen menu, onbeperkte levens en geen records. De definitieve [studentencatalogus](STUDENT_LEVEL_GUIDE.md) verwijst naar de zones. De drie voorbeelden zijn Midnight City, Deep Sea Treasure en De Kristalwerkplaats. De laatste heeft in V2.5 beelden voor speler, baas, omgeving en kaart gekregen.

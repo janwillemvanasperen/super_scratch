@@ -53,3 +53,7 @@ Alle bovenstaande soorten ondersteunen een eigen afbeelding of spritesheet via `
 Zie [bouwsystemen](BUILDING_SYSTEMS.md) voor de twaalf nieuwe objecttypen en de uitbreiding van kisten en doorgangen. Deze bestaande functies mogen gecombineerd worden zonder nieuwe spelcode. Beschrijf object-ID, bediening, gekoppelde doelen, duur, terugkeer bij levensverlies en benodigde beelden. De actuele [studentencatalogus](../STUDENT_LEVEL_GUIDE.md) bevat uitleg op taalniveau 2F.
 
 V2.3 voegt modulaire vijanden, eindbazen, doelgebieden en finishvoorwaarden toe. Zie [vijanden en doelen](ENEMIES_AND_GOALS.md).
+
+## V2.5 – Bouwstenen uitproberen
+
+Open Super Scratch Playground op het startscherm. De zestien zones dekken samen alle ondersteunde objecttypen. Bij iedere groep staat een kaart met werking, instelbare keuzes, combinaties, grenzen en een ontwerpidee. Een oefenzone hoeft geen complete avonturenroute te vormen. De vijf reguliere levels worden apart geregistreerd en kunnen records opslaan.

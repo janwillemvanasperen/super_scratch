@@ -126,3 +126,31 @@ Echte browser via de bouwersmodus. Alle vijf levels gestart met de echte rendere
 | Hoge testwereld | 1.118 | 181 | 16,64 | 5,50 |
 
 Bij alle wissels één actief canvas en geen JavaScript-consolefouten. Deze korte meting gebruikt een lokale ontwikkelserver. De twee beeld- en audiodemo's zijn gestart, maar V2.4 heeft audio niet opnieuw afgeluisterd of afzonderlijk gedecodeerde bestanden geteld. Er was geen heap-profiel. Het aantal actieve canvassen is alleen een controle op zichtbare opruiming. Geen volledige handmatige speelronde van de vijf levels in deze V2.4-browsertest. Testresultaten uit eerdere versies blijven historisch.
+
+## V2.5 – 28 november 2026
+
+101 automatische tests in 9 bestanden. De vier V2.1-werelden zijn weer van start tot finish doorgelopen met gesimuleerde toetsen. De Kristalwerkplaats is getest met gerichte spelstappen voor de drie doelen, checkpoint, het volledige eindbaasgevecht, de fasewisseling, het eenmalige scoremoment en de finish. De nieuwe tests controleren alle zestien zonebestanden, veilige starts, een schone reset, alle 47 objecttypen samen, afwezigheid van verplichte tijdslimieten en herhaald terugkeren zonder levens af te schrijven. De bestaande automatische tests voor records, assets, fysica en V2.2-bouwstenen zijn opnieuw gedraaid.
+
+### Echte browser
+
+- Startscherm geopend en de Playground-knop gebruikt. Informatiekaart opengeklapt en de vijf kaartonderdelen gecontroleerd.
+- Alle zestien zones geopend via hun eigen knop. Iedere zone toonde één canvas en onbeperkte levens. Via het vaste menu teruggegaan.
+- Doelzone met toetsen afgerond. De eerste finish meldde twee ontbrekende doelen. Drie munten gepakt, de schakelaar geactiveerd en de finish bereikt. Herstart zette de doelen terug op nul.
+- Recordlijst na oefenen bevatte alleen de vijf reguliere levels. De oefenfinish gebruikt een eigen resultaatvenster zonder opslaan.
+- Waterroute met toetsen doorkruist en de zuurstofmeter in het diepe bad gezien. Ladder beklommen en verticale camera gezien. Schade, pauzemenu en terugkeer na levensverlies in de baaszone gecontroleerd. De baaszone is niet handmatig uitgespeeld.
+- Lokale bouwersmodus gestart en bij het bovenste checkpoint herstart. Geen JavaScript-consolefouten.
+
+### Prestatiemeting
+
+Echte Phaser-renderer in de lokale browser. Circa 2,2 seconden per wereld vanaf de start, circa 132–135 frames per meting. Eén actief canvas na iedere wissel.
+
+| Wereld | Objecten | Start ms | p95 frame ms | p95 update ms |
+|---|---:|---:|---:|---:|
+| De Proeftuin | 60 | 131 | 16,63 | 1,60 |
+| First Adventure | 114 | 150 | 16,63 | 1,90 |
+| Midnight City | 63 | 216 | 16,65 | 3,20 |
+| Deep Sea Treasure | 63 | 198 | 16,65 | 3,30 |
+| De Kristalwerkplaats | 14 | 188 | 16,65 | 1,30 |
+| Hoge testwereld | 1.118 | 192 | 16,64 | 5,50 |
+
+Dit is geen langdurige geheugentest of meting op een tweede schoollaptop. Niet ieder zoneonderdeel is handmatig uitgespeeld. De productiebuild bevat de Playground, maar geen lokale bouwerspagina, stresswereld of testlab. De bestaande Vite-waarschuwing voor de grote gamebundel blijft staan.

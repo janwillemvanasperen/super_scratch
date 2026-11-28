@@ -23,3 +23,12 @@ Volg [ASSETS.md](ASSETS.md). Voeg eigen bestanden toe onder `public/assets/<id>/
 ## Aanvulling V2.2
 
 Zie [bouwsystemen](BUILDING_SYSTEMS.md) voor de twaalf nieuwe objecttypen en de uitbreiding van kisten en doorgangen. Deze bestaande functies mogen gecombineerd worden zonder nieuwe spelcode. Beschrijf object-ID, bediening, gekoppelde doelen, duur, terugkeer bij levensverlies en benodigde beelden. De actuele [studentencatalogus](../STUDENT_LEVEL_GUIDE.md) bevat uitleg op taalniveau 2F.
+
+## V2.5 – Werkwijze met tien duo’s
+
+1. Geef elk duo een uniek level-ID, bijvoorbeeld duo-01-maanmarkt. Gebruik public/levels/duo-01/level.json en public/assets/duo-01/ voor het bestand en de eigen media.
+2. Gebruik de Playground om een bestaande bouwsteen of combinatie te kiezen. Vraag alleen een programmeeruitbreiding als het gedrag buiten de catalogus valt. Registreer die in de vertrouwde mechaniekregistry en test de levenscyclus.
+3. Valideer met npm run validate:levels. Controleer ook waarschuwingen. Open tests/builder.html via npm run dev en laad het bestand rechtstreeks.
+4. Voeg het bestand aan public/levels/index.json toe. Gebruik enabled:false om het tijdelijk buiten het menu te houden. Speel het daarna ook via het normale menu en controleer de finish en eventuele terugwegen.
+5. Verwerk feedback in een eigen commit per level of wijziging. Noteer waar de feedback over ging en test dat stuk opnieuw. Behoud het ID als records eerlijk vergelijkbaar blijven.
+6. Zet voor herstel het oude levelbestand, de eigen assetmap en zo nodig de registerregel terug uit Git. Laat andere duo’s en de spelengine ongemoeid.

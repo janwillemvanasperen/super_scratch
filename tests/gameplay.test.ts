@@ -369,19 +369,55 @@ describe('V2.3 combat and objectives', () => {
   });
 });
 
-it('activates checkpoints on distinct floors at the same x and preserves a dropped enhanced crate on life loss',()=>{
-  const {s,step}=setup('crystal-workshop');
-  const original=s.objects.find(o=>o.kind==='checkpoint')!;
-  const top={...original,id:'above',y:250,oy:250,respawn:{x:original.x+24,y:220}};
-  const crate={...original,id:'delivery',kind:'crate' as const,x:700,y:450,ox:630,oy:450,w:24,h:24,
-    carry:{throwable:true,weight:1,throwSpeed:340,throwLift:180,defeatsEnemies:true}};
-  s.objects.push(top,crate);
-  s.systems=new WorldSystem(s,()=>{});
-  s.p.x=original.x;s.p.y=450;step(1);
+it('activates checkpoints on distinct floors at the same x and preserves a dropped enhanced crate on life loss', () => {
+  const { s, step } = setup('crystal-workshop');
+  const original = s.objects.find((o) => o.kind === 'checkpoint')!;
+  const top = {
+    ...original,
+    id: 'above',
+    y: 250,
+    oy: 250,
+    respawn: { x: original.x + 24, y: 220 },
+  };
+  const crate = {
+    ...original,
+    id: 'delivery',
+    kind: 'crate' as const,
+    x: 700,
+    y: 450,
+    ox: 630,
+    oy: 450,
+    w: 24,
+    h: 24,
+    carry: { throwable: true, weight: 1, throwSpeed: 340, throwLift: 180, defeatsEnemies: true },
+  };
+  s.objects.push(top, crate);
+  s.systems = new WorldSystem(s, () => {});
+  s.p.x = original.x;
+  s.p.y = 450;
+  step(1);
   expect(s.checkpointId).toBe(original.id);
-  s.p.x=top.x;s.p.y=top.y;step(1);
+  s.p.x = top.x;
+  s.p.y = top.y;
+  step(1);
   expect(s.checkpointId).toBe('above');
   s.loseLife();
   expect(s.p.y).toBe(220);
   expect(crate.x).toBe(700);
+});
+
+it('restores health and respawns after repeated practice falls without reducing lives', () => {
+  const { s } = setup('crystal-workshop');
+  s.practice = true;
+  s.run.claim('test-coin', 'coin');
+  s.powers.shield = 4;
+  for (let n = 0; n < 6; n++) {
+    s.run.hearts = 0;
+    s.loseLife();
+    expect(s.run.hearts).toBe(3);
+    expect(s.run.lives).toBe(3);
+    expect(s.paused).toBe(false);
+  }
+  expect(s.run.coins).toBe(1);
+  expect(s.powers.shield).toBeUndefined();
 });

@@ -13,3 +13,6 @@
 - Gebruik Git-branches/commits voor herstel. Commit geen node_modules, dist of credentials. Behoud .openai/hosting.json wanneer dit project via Sites wordt gepubliceerd.
 
 - V2.2-bouwstenen in WorldSystem zijn vertrouwde ingebouwde functies, vrij combineerbaar per level. De grens van één extra mechaniek geldt voor nieuwe programmeeruitbreidingen buiten deze catalogus. Lees docs/BUILDING_SYSTEMS.md voor combinaties en lifecycle.
+
+- V2.5: oefenzones staan in src/playground/zones.ts. Houd ze buiten het publieke avonturenregister en buiten opslag van records. Test start, bediening, reset, terugkeer naar het menu en de informatiekaart. Voeg alleen gedemonstreerd gedrag toe aan de studentencatalogus.
+- Gebruik voor de tien duo’s afzonderlijke mappen en een uniek level-ID. Leg wijzigingen vast per duo. Controleer na feedback zowel de aangepaste route als herstel vanaf checkpoints.

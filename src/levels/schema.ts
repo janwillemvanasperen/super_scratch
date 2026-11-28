@@ -161,7 +161,7 @@ const levelDataSchema = z.object({
   demo: z.boolean().default(false),
 });
 export type Level = z.infer<typeof levelDataSchema>;
-export const levelSchema = levelDataSchema.superRefine((l, ctx) => {
+function validateLevel(l: Level, ctx: z.RefinementCtx, practice = false) {
   for (const message of [...validateBuildingLinks(l), ...validateChallenges(l)])
     ctx.addIssue({ code: 'custom', message });
   const layerIds = new Set<string>();
@@ -241,10 +241,11 @@ export const levelSchema = levelDataSchema.superRefine((l, ctx) => {
         message: `Deur ${o.id} heeft geen bereikbare sleuteldefinitie`,
       });
   }
-  for (const kind of ['coin', 'secret', 'finish'])
+  for (const kind of practice ? [] : ['coin', 'secret', 'finish'])
     if (!l.objects.some((o) => o.kind === kind))
       ctx.addIssue({ code: 'custom', message: `Ontbreekt: ${kind}` });
   if (
+    !practice &&
     !l.objects.some((o) =>
       ['walker', 'chaser', 'jumper', 'flyer', 'shooter', 'sentry', 'enemy'].includes(o.kind),
     )
@@ -252,6 +253,10 @@ export const levelSchema = levelDataSchema.superRefine((l, ctx) => {
     ctx.addIssue({ code: 'custom', message: 'Vijand ontbreekt' });
   if (l.spawn.x >= l.world.width || l.spawn.y >= l.world.height)
     ctx.addIssue({ code: 'custom', message: 'Start buiten wereld' });
-});
+}
+export const levelSchema = levelDataSchema.superRefine((l, ctx) => validateLevel(l, ctx));
+export const playgroundSchema = levelDataSchema.superRefine((l, ctx) =>
+  validateLevel(l, ctx, true),
+);
 
 export type Block = z.infer<typeof objectSchema>;

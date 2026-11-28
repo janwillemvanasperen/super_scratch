@@ -1321,3 +1321,63 @@ kbd {
   width: 100px;
   height: 12px;
 }
+
+.practice-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+  align-items: start;
+  gap: 20px;
+}
+.practice-card,
+.practice-reference {
+  padding: clamp(16px, 3vw, 28px);
+  border: 1px solid #365851;
+  border-radius: 12px;
+  background: #142a2e;
+  color: #edf8f5;
+}
+.practice-card > small {
+  color: #a6dccf;
+}
+.practice-card h2 {
+  margin: 8px 0;
+}
+.practice-card p,
+.practice-reference p {
+  line-height: 1.55;
+}
+.building-list {
+  margin-top: 16px;
+}
+.building-card {
+  border-top: 1px solid #42635e;
+  padding: 8px 0;
+}
+.building-card summary {
+  cursor: pointer;
+  font-weight: 700;
+  padding: 6px;
+  color: #b4efe0;
+}
+.building-card dl {
+  display: grid;
+  gap: 8px;
+  margin: 12px 0;
+}
+.building-card dt {
+  font-weight: 700;
+  color: #f3cd89;
+}
+.building-card dd {
+  margin: 2px 0 0;
+}
+.practice-reference {
+  margin: 20px auto;
+  width: min(100%, 960px);
+}
+.play-top {
+  flex-wrap: wrap;
+}
+.hero-buttons {
+  flex-wrap: wrap;
+}
