@@ -1301,3 +1301,14 @@ kbd {
   font-size: 20px;
   margin-bottom: 10px;
 }
+
+.oxygen {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 4px;
+  color: #d5f5ff;
+}
+.oxygen meter {
+  width: 100px;
+  height: 12px;
+}

@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="nl">
+  <meta charset="utf-8" /><title>Intern bouwstenenlab V2.2</title
+  ><style>
+    body {
+      margin: 16px;
+      background: #122239;
+      color: #e5f3ed;
+      font: 15px system-ui;
+    }
+    h1 {
+      font-size: 22px;
+      margin: 0 0 12px;
+    }
+    button,
+    select {
+      padding: 10px;
+      margin: 0 8px 10px 0;
+    }
+    #game {
+      width: 800px;
+      height: 450px;
+      max-width: 100%;
+      position: relative;
+    }
+    #game canvas {
+      max-width: 100%;
+    }
+    #hud {
+      padding: 10px;
+      background: #263f55;
+      max-width: 940px;
+    }
+    #hint {
+      min-height: 24px;
+    }
+    pre {
+      font-size: 12px;
+      max-height: 200px;
+      overflow: auto;
+      white-space: pre-wrap;
+    }
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+    }
+  </style>
+  <h1>Intern bouwstenenlab V2.2</h1>
+  <p>Ontwikkeltest — deze pagina en het testlevel worden niet gepubliceerd.</p>
+  <div class="actions">
+    <select id="station" aria-label="Teststation"></select
+    ><button id="start">Start station</button><button id="pause">Pauze / verder</button
+    ><button id="restart">Herstart</button>
+  </div>
+  <div id="hud">Kies een station.</div>
+  <div id="hint"></div>
+  <div id="game"></div>
+  <pre id="state"></pre>
+  <script type="module" src="./building-lab.ts"></script>
+</html>

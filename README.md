@@ -70,3 +70,9 @@ Huisstijl is voorlopig: de tekstvermelding Scratch / MBO Utrecht is geen officie
 Eigen sprites, animaties, hitboxes, textures, parallax, decor, avatars, kaartbeelden, korte intros en muziek/effectbestanden zijn per level instelbaar. Zie [de assetgids](docs/ASSETS.md) en [de studentencatalogus](STUDENT_LEVEL_GUIDE.md). De oorspronkelijke tutorial en het voorbeeldlevel blijven ongewijzigd. Twee verwijderbare demo's, Midnight City en Deep Sea Treasure, tonen originele pixelart en audio.
 
 `src/assets/` koppelt data aan beelden; `public/assets/<level-id>/` houdt bestanden per level apart. Offline levelvalidatie controleert ook de assets. Ontbrekende bestanden krijgen tijdens het spelen een terugval. De generatoren in `scripts/generate-demo-*.mjs` bevatten de originele tekeningen, melodieën en levelindeling. Nieuwe studentenlevels gebruiken eigen bestanden; voer deze demo-generatoren daarvoor niet uit.
+
+## V2.2 — herbruikbare spelbouwstenen
+
+Schakelaars, drukplaten, ladders, liften, water, speciale vloeren, omgevingszones, teleporters, routeplatforms, instortende platforms, werpbare kisten, schatkisten en korte NPC-gesprekken zijn per level instelbaar. De vier bestaande levelbestanden blijven ongewijzigd. Zie [studentencatalogus](STUDENT_LEVEL_GUIDE.md), [technische instellingen](docs/BUILDING_SYSTEMS.md) en [releaseverslag](docs/RELEASE_V2_2.md).
+
+Het interne lab staat buiten het publieke register: start Vite en open `/tests/building-lab.html`. Kies een station en klik Start station. De pagina en fixture komen niet in de productiebuild.

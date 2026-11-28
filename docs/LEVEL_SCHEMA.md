@@ -179,3 +179,7 @@ De uitgebreide werkende definities staan in `public/levels/tutorial.json` en `pu
 ## Optionele uitbreiding V2.1
 
 De verplichte velden hierboven blijven geldig. Optioneel: `assets`, `styles`, `background`, `presentation`, `audio`, `demo`; daarnaast `character.visual/hitbox`, `makers[].avatarAsset` en `objects[].visual/hitbox/motion/solid`. Volledige uitleg en grenzen: [ASSETS.md](ASSETS.md). Alle 33 objectsoorten kunnen dezelfde visuele instellingen gebruiken. `motion` is alleen voor decor; `solid` maakt alleen decor massief. De oude tekeningen blijven terugval.
+
+## Aanvulling V2.2
+
+Zie [bouwsystemen](BUILDING_SYSTEMS.md) voor de twaalf nieuwe objecttypen en de uitbreiding van kisten en doorgangen. Deze bestaande functies mogen gecombineerd worden zonder nieuwe spelcode. Beschrijf object-ID, bediening, gekoppelde doelen, duur, terugkeer bij levensverlies en benodigde beelden. De actuele [studentencatalogus](../STUDENT_LEVEL_GUIDE.md) bevat uitleg op taalniveau 2F.

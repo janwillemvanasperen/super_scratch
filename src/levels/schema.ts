@@ -1,3 +1,17 @@
+import {
+  triggerSchema,
+  routeSchema,
+  ladderSchema,
+  waterSchema,
+  surfaceSchema,
+  zoneSchema,
+  portalSchema,
+  collapseSchema,
+  carrySchema,
+  chestSchema,
+  npcSchema,
+} from '../mechanics/building-schema';
+import { validateBuildingLinks } from '../mechanics/validate-buildings';
 import { z } from 'zod';
 import {
   assetSchema,
@@ -45,6 +59,18 @@ export const kinds = [
   'finish',
   'crate',
   'decoration',
+  'switch',
+  'pressurePlate',
+  'ladder',
+  'elevator',
+  'water',
+  'surface',
+  'zone',
+  'teleporter',
+  'pathPlatform',
+  'collapsePlatform',
+  'chest',
+  'npc',
 ] as const;
 export const objectSchema = z.object({
   id: z.string().min(1),
@@ -64,6 +90,19 @@ export const objectSchema = z.object({
   hitbox: hitboxSchema.optional(),
   motion: motionSchema.optional(),
   solid: z.boolean().default(false),
+  enabled: z.boolean().default(true),
+  resetOnDeath: z.boolean().default(false),
+  trigger: triggerSchema.optional(),
+  route: routeSchema.optional(),
+  ladder: ladderSchema.optional(),
+  water: waterSchema.optional(),
+  surface: surfaceSchema.optional(),
+  zone: zoneSchema.optional(),
+  portal: portalSchema.optional(),
+  collapse: collapseSchema.optional(),
+  carry: carrySchema.optional(),
+  chest: chestSchema.optional(),
+  npc: npcSchema.optional(),
 });
 export const levelSchema = z
   .object({
@@ -114,6 +153,7 @@ export const levelSchema = z
     demo: z.boolean().default(false),
   })
   .superRefine((l, ctx) => {
+    for (const message of validateBuildingLinks(l)) ctx.addIssue({ code: 'custom', message });
     const layerIds = new Set<string>();
     for (const layer of l.background?.layers || []) {
       if (layerIds.has(layer.id))
@@ -126,9 +166,29 @@ export const levelSchema = z
       ids.add(o.id);
       if (o.x + o.w > l.world.width || o.y > l.world.height)
         ctx.addIssue({ code: 'custom', message: `Object buiten wereld: ${o.id}` });
-      if (o.kind === 'door' && !o.key)
+      if (
+        o.kind === 'door' &&
+        !o.key &&
+        !l.objects.some((t) =>
+          [...(t.trigger?.on || []), ...(t.trigger?.off || []), ...(t.npc?.actions || [])].some(
+            (a) => a.type === 'object' && a.target === o.id,
+          ),
+        )
+      )
         ctx.addIssue({ code: 'custom', message: 'Deur mist sleutel-ID' });
-      if (o.kind === 'door' && !l.objects.some((k) => k.kind === 'key' && k.key === o.key))
+      if (
+        o.kind === 'door' &&
+        o.key &&
+        !l.objects.some(
+          (k) =>
+            (k.kind === 'key' && k.key === o.key) ||
+            k.chest?.rewards.some((r) => r.kind === 'key' && r.key === o.key) ||
+            (k.npc?.reward?.kind === 'key' && k.npc.reward.key === o.key) ||
+            [...(k.trigger?.on || []), ...(k.trigger?.off || []), ...(k.npc?.actions || [])].some(
+              (a) => a.type === 'reward' && a.reward.kind === 'key' && a.reward.key === o.key,
+            ),
+        )
+      )
         ctx.addIssue({
           code: 'custom',
           message: `Deur ${o.id} heeft geen bereikbare sleuteldefinitie`,

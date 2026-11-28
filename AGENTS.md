@@ -11,3 +11,5 @@
 - Test één tijdelijke registertoevoeging én verwijdering, zonder blijvende testkaart.
 - Laat geen debugging-, teleport- of onkwetsbaarheidshooks in de productiegame achter. Ruim listeners, timers en audio op bij scene-shutdown.
 - Gebruik Git-branches/commits voor herstel. Commit geen node_modules, dist of credentials. Behoud .openai/hosting.json wanneer dit project via Sites wordt gepubliceerd.
+
+- V2.2-bouwstenen in WorldSystem zijn vertrouwde ingebouwde functies, vrij combineerbaar per level. De grens van één extra mechaniek geldt voor nieuwe programmeeruitbreidingen buiten deze catalogus. Lees docs/BUILDING_SYSTEMS.md voor combinaties en lifecycle.

@@ -47,3 +47,7 @@ Opruimen: scene-shutdown verwijdert focuslistener, toetsen, muziekinterval en me
 ## Visuele uitbreiding V2.1
 
 Alle bovenstaande soorten ondersteunen een eigen afbeelding of spritesheet via `styles.<kind>` of `object.visual`, met een optionele afzonderlijke `hitbox`. Spelgedrag blijft gelijk. Decoratie ondersteunt nu willekeurige beelden, animatie, transforms en sinusbeweging, zonder botsing tenzij `solid:true`. Zie [ASSETS.md](ASSETS.md).
+
+## Aanvulling V2.2
+
+Zie [bouwsystemen](BUILDING_SYSTEMS.md) voor de twaalf nieuwe objecttypen en de uitbreiding van kisten en doorgangen. Deze bestaande functies mogen gecombineerd worden zonder nieuwe spelcode. Beschrijf object-ID, bediening, gekoppelde doelen, duur, terugkeer bij levensverlies en benodigde beelden. De actuele [studentencatalogus](../STUDENT_LEVEL_GUIDE.md) bevat uitleg op taalniveau 2F.

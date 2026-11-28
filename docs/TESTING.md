@@ -70,3 +70,36 @@ De tijdelijke corrupte bestanden zijn na de uitgevoerde meting verwijderd. Valid
 - Willekeurige nieuwe kunst vereist controle op uitstraling en passend contactgebied. Validatie bewijst geen speelbaarheid of veilige bewegingsbaan.
 - Geen zwemmen, verticale camera, video-intro, uploadeditor of nieuwe vijand-AI toegevoegd.
 - De Phaser-productiebundel blijft ongeveer 1,6 MB ongecomprimeerd / 373 kB gzip, naast lokale fonts en levelassets. Grote beelden/audio laden per level, kaartbeelden kunnen al in het menu laden.
+
+## V2.2 — 27 november 2026
+
+De bovenstaande V2.1-resultaten zijn historisch. V2.2 voegt zwemmen en andere bouwstenen toe.
+
+- `npm test`: 61 geslaagde tests, 7 bestanden. 22 gerichte tests voor alle twaalf nieuwe typen, triggerkoppelingen, kistplaat/deur, liften, ladders, water/zuurstof, oppervlakken, zones, geheime poorten, lusbeveiliging, instorten, gooien, schatkisten, NPC-beloningen/ontvangst, pauze/reset/opruiming en veilige botsingen.
+- Alle vier bestaande levels worden in gameplaytests van start tot finish gespeeld met gesimuleerde toetsen, zonder verplaatsingshook. De gerichte mechaniektests plaatsen de speler wel bij een specifieke testopstelling; die tests zijn geen volledige speelroute.
+- Registertest laadt 100 levels, isoleert een fout bestand en verwijdert een tijdelijke toevoeging. Publiek register blijft vier levels.
+- `npm run build`: levelvalidatie, TypeScript en Vite geslaagd. Bundel circa 1,62 MB / 381 kB gzip; bekende chunkwaarschuwing.
+- Git-vergelijking met herstelpunt: public/levels, public/assets, src/core en src/entities ongewijzigd.
+
+### Werkelijke browsertests
+
+Lokale echte Phaser-game via `/tests/building-lab.html`, met toetsen en stationkeuze:
+
+- Kist opgepakt, op plaat neergezet: plaat actief en deur open.
+- Ladder met ↑ beklommen: y 450 naar 304, klimstand actief.
+- Water met stroming en ↓: zwemstand actief, zuurstof liep terug en verdween na verlaten van de zone.
+- Geheime poort heen én terug met ↑; eenmaal beloning voor poort en aparte geheime ruimte.
+- NPC toont eigen figuur en zichtbare tekstballon. Na tweede zin sleutel ontvangen.
+- Schakelaar start meerpuntslift. Pauze bevriest positie ondanks toetsinvoer; herstart herstelt beginstand.
+- Windzone verplaatst speler en routeplatform beweegt onafhankelijk.
+- Gedragen kist met ↓ + Spatie naar vijand gegooid: 200 punten.
+- Schatkist geopend: drie munten, bonus en schild ontvangen; apart geheimgebied telt ook mee.
+- Geen JavaScript-consolefouten tijdens deze interacties.
+
+Dit zijn gerichte browserproeven. De automatische tests dekken daarnaast randgevallen en overige instellingen; niet iedere mogelijke combinatie is handmatig gespeeld. Geen nieuwe browser-/hardwareprestatiemeting voor V2.2 en geen garantie voor het maximum van 4.000 objecten. De tijdelijke testpagina en fixture staan buiten de productie-entry en het publieke register.
+
+### Volledige V2.2-labroute en hoofdmenu
+
+Daarna is het interne lab in de echte browser van begin tot finish uitgespeeld, zonder stationwissel of debugverplaatsing. De spelpoorten zijn wel gebruikt. Eindresultaat: 4.986 punten, 4 munten, 3 geheimen, 3 hartjes en 3 levens; circa 159 seconden inclusief observatiepauzes. Doorlopen: kistplaat/deur, werpgebied, water met stroming, ijs/modder/transportband/veer, zones, geheime en automatische poort, platform op gewicht, instortende brug, handbediende lift, NPC-sleutel en deur, sleutel inleveren, tijdelijke schakelaar, permanente schakelaar, beloningskist en finish. Niet iedere optionele route is in deze ene run benut; losse stations en automatische tests vullen dat aan.
+
+De hoofdgame is apart geopend: tutorial gestart, lopen/springen, vijf munten/500 punten en Escape-pauzemenu gecontroleerd. Geen consolefouten. Een testlabweergave na ontwikkelherladen reageerde tijdelijk niet op toetsen; na een schone paginaherlading werkte de volledige route. Dit is geen waargenomen fout in de productieflow. De testlab-HUD is aangepast zodat de finishmelding niet door de laatste HUD-update verdwijnt.

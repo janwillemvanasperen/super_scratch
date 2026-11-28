@@ -57,3 +57,7 @@ Voeg hier tekeningen, screenshots, kleurvoorbeelden of een plattegrond toe. Zet 
 ## Extra vormgeving vanaf V2.1
 
 Beschrijf eigen speler- en vijandbeelden, animaties, verzamelobjecten, herhaalbare vloer, achtergrondlagen en decor. Voeg twee avatars en kaartbeelden toe als jullie die hebben. Vermeld per bestand formaat, grootte, doel en gebruiksrecht. Geef bij muziek aan of die moet herhalen. Een nieuwe vorm is geen nieuwe spelmechaniek: een vis kan gewoon het gedrag van een wandelaar gebruiken.
+
+## Aanvulling V2.2
+
+Zie [bouwsystemen](BUILDING_SYSTEMS.md) voor de twaalf nieuwe objecttypen en de uitbreiding van kisten en doorgangen. Deze bestaande functies mogen gecombineerd worden zonder nieuwe spelcode. Beschrijf object-ID, bediening, gekoppelde doelen, duur, terugkeer bij levensverlies en benodigde beelden. De actuele [studentencatalogus](../STUDENT_LEVEL_GUIDE.md) bevat uitleg op taalniveau 2F.

@@ -19,3 +19,7 @@ Gebruik bij vervanging hetzelfde level-ID uitsluitend voor een update van hetzel
 ## Eigen beelden en audio in V2.1
 
 Volg [ASSETS.md](ASSETS.md). Voeg eigen bestanden toe onder `public/assets/<id>/` en koppel ze in het eigen JSON-bestand. Hiervoor is geen centrale enginewijziging nodig. Test zowel correcte bestanden als een ontbrekende verwijzing, animaties, contactgebieden en pauze/herstart met audio. Gebruik aparte muziek- en effectenregelaars. Houd de standaardkleuren en toonreeks als terugval. Bij Git/Vercel blijft een nieuwe publicatie nodig, ook voor een wijziging die alleen leveldata betreft.
+
+## Aanvulling V2.2
+
+Zie [bouwsystemen](BUILDING_SYSTEMS.md) voor de twaalf nieuwe objecttypen en de uitbreiding van kisten en doorgangen. Deze bestaande functies mogen gecombineerd worden zonder nieuwe spelcode. Beschrijf object-ID, bediening, gekoppelde doelen, duur, terugkeer bij levensverlies en benodigde beelden. De actuele [studentencatalogus](../STUDENT_LEVEL_GUIDE.md) bevat uitleg op taalniveau 2F.

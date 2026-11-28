@@ -1,7 +1,7 @@
 # Super Scratch — ontwerp- en bouwcatalogus
 
 **Voor de tien studentenduo’s van Scratch, MBO Utrecht**  
-Gecontroleerd op 27 november 2026. Bijgewerkt voor **Super Scratch V2.1**. Zie [het testlog](docs/TESTING.md) voor de uitgevoerde controles.
+Gecontroleerd op 27 november 2026. Bijgewerkt voor **Super Scratch V2.2**. Zie [het testlog](docs/TESTING.md) voor de uitgevoerde controles.
 
 ## 1. Jullie opdracht
 
@@ -35,7 +35,7 @@ De namen tussen haakjes, zoals `ground`, zijn voor de bouwer. In jullie prompt m
 | Personage | Naam, kleur en een ontwerpidee | **Werkt.** Eigen afbeeldingen, animaties en een apart contactgebied zijn instelbaar. |
 | Makers | Twee namen en eigen avatarbeelden | **Werkt.** Lever twee eigen pixelportretten aan. Kleuren blijven een terugvaloptie. |
 | Muziek | Sfeer, tempo en een korte melodie | **Werkt.** Een eenvoudige toonreeks of een eigen muziekbestand. |
-| Extra spelmechaniek | Maximaal één nieuwe manier van spelen | **Nog bouwen**, tenzij de bestaande windfunctie past. Zie hoofdstuk 10. |
+| Extra spelmechaniek | Maximaal één nieuwe manier van spelen | **Nog bouwen** als het idee buiten de bestaande bouwstenen valt. De nieuwe bouwstenen hieronder mag je combineren. Zie hoofdstuk 10. |
 
 Een schets is een ontwerpvoorstel. Een bruikbaar pixelbestand kan de bouwer nu rechtstreeks aan jullie level koppelen. Spreek formaat en animaties vooraf af.
 
@@ -106,7 +106,7 @@ Je kunt de eerste vijf typen verslaan door er tijdens het dalen bovenop te lande
 | Sleutel (`key`) | Voegt een sleutelcode toe aan je sleutelbos. Kan bij een of meer deuren horen. | **Werkt** |
 | Bonusvoorwerp (`bonus`) | Geeft 500 punten. Verhoogt het aantal munten niet. | **Werkt** |
 
-Voor deze voorwerpen zijn geen vrij instelbare puntwaarden. Munten, hartjes en sleutels hebben vaste tekenvormen en kleuren. Een sleutel wordt bij gebruik niet verbruikt. De HUD toont alleen een sleutelteken, geen lijst met alle gevonden sleutels.
+Voor deze voorwerpen zijn geen vrij instelbare puntwaarden. Munten, hartjes en sleutels mogen eigen beelden krijgen. Een deur verbruikt geen sleutel. Een NPC kan een sleutel wel innemen als dit is ingesteld. De HUD toont alleen een sleutelteken, geen lijst met alle gevonden sleutels.
 
 ### De vier power-ups
 
@@ -128,13 +128,56 @@ Verschillende power-ups kunnen tegelijk actief zijn. Een tweede power-up van het
 | Sleuteldeur (`door`) | Verzamel de passende sleutel en druk naast de deur op ↑. | **Werkt.** De deur blijft open. Alle deuren van dit type vereisen een sleutel. De kleur verandert direct; er is geen uitgebreide openanimatie. |
 | Geheime doorgang (`passage`) | Ga in de opening staan en druk op ↑. Je verschijnt op een opgegeven plek. | **Werkt.** Alleen verplaatsen binnen hetzelfde level. Een doorgang zonder sleutel kan hiermee worden gemaakt. |
 | Checkpoint (`checkpoint`) | Raak het vlaggetje aan. Hier begin je na verlies van een leven. | **Werkt met beperking.** Geef ieder checkpoint een andere horizontale positie. De code vergelijkt alleen die positie. |
-| Kist (`crate`) | Druk dichtbij op ↓ om hem boven je hoofd te dragen. Druk opnieuw op ↓ om hem neer te zetten. | **Werkt met beperking.** Eén kist tegelijk. Geen werpen, schakelaar of drukplaat. Houd kisten rond de voorbeeldgrootte van 28 × 28 pixels. |
+| Kist (`crate`) | Druk dichtbij op ↓ om hem boven je hoofd te dragen. Druk opnieuw op ↓ om hem neer te zetten. | **Werkt.** Eén kist tegelijk. Met de nieuwe draaginstellingen kun je gooien met ↓ + Spatie, een drukplaat activeren en vijf soorten vijanden raken. De stekelwachter is beschermd. Houd kisten klein, ongeveer 28 × 28 pixels. |
 | Geheim gebied (`secret`) | Loop of spring erin. Je krijgt een bericht, lichteffect en 500 punten. | **Werkt.** Eén beloning per geheim per poging. Het vak is vooraf al heel vaag zichtbaar. |
 | Finish (`finish`) | Raak het finishgebied aan. | **Werkt.** Geeft de uitslag en slaat het resultaat op. Standaard is het beeld een gele vlag; een eigen finishbeeld mag ook. |
 
 Bij verlies van een leven worden kisten en vallende blokken teruggezet. Deuren blijven open, gebroken blokken blijven kapot en eerder verzamelde beloningen blijven weg.
 
 **Plaatsingstips:** zet een checkpoint boven veilige, vaste grond. Zet een sleutel vóór de deur die hij opent. Geef iedere geheime kamer een uitgang. Plaats de bestemming van een doorgang niet in een muur, gevaar of andere doorgang.
+
+## 6A. Nieuwe bouwstenen in V2.2
+
+Deze onderdelen **werken in de code** en zijn getest in een intern testlevel. Ze staan nog niet in de vier bestaande speelwerelden. Een nieuw studentenlevel kan ze gebruiken zonder nieuwe spelcode. De bouwer stelt het gedrag in. Het testlog vermeldt welke controles zijn uitgevoerd; een Git-versie is pas live als de website die versie ook laadt.
+
+| Bouwsteen | Wat kun je ontwerpen? | Let hierop |
+|---|---|---|
+| Schakelaar (`switch`) | Druk op ↑ om bijvoorbeeld een deur, val, brug of lift aan te sturen. | Kies: aan/uit, zolang je ↑ vasthoudt, een vaste tijd of blijvend aan. |
+| Drukplaat (`pressurePlate`) | Een speler, kist of beide activeren de plaat. | Je kunt een minimumgewicht kiezen. De speler telt als 1. Een gedragen kist telt niet mee. Zet de plaat op een bereikbare plek. |
+| Ladder (`ladder`) | Klim met ↑ en ↓. Spring weg met Spatie. | Kies plaats, hoogte, beeld en klimsnelheid. De camera gaat niet omhoog. |
+| Lift (`elevator`) | Een lift met meerdere haltes, snelheid en wachttijd. | Automatisch, met ↑, alleen met een speler erop of via een schakelaar. Een handbediende lift rijdt na iedere druk één halte verder. |
+| Routeplatform (`pathPlatform`) | Een platform volgt rechte lijnen langs jouw punten. | Heen en terug of een rondje. Ook aan te zetten met een schakelaar. Laat de hele route vrij. |
+| Instortend platform (`collapsePlatform`) | Na erop landen valt het platform weg. | Kies de vertraging en de terugkeertijd. Je kunt terugkeer ook uitzetten. Het verschijnt pas terug als de plek vrij is. |
+| Water (`water`) | Zwem met de pijltjes. Spatie geeft een zwemslag. Bij het oppervlak kun je eruit springen. | Kies snelheid, zwaartekracht en stroming. Zuurstof is optioneel: 2–120 seconden. Zonder zuurstofinstelling mag je onbeperkt onder water blijven. |
+| Speciale vloer (`surface`) | IJs, modder, transportband, verende vloer, eigen wrijving of eenrichtingsplatform. | Kies effect en kracht. Eenrichtingsplatforms laten de speler van onderaf door. Kisten botsen er van beide kanten tegen. |
+| Omgevingszone (`zone`) | Wind, lage of hoge zwaartekracht, zijwaartse of verticale beweging, tijdelijke snelheid. | Kies het gebied en het effect. Buiten de zone stopt het effect. Je mag ook een nawerking van maximaal 30 seconden kiezen. Resterende snelheid remt daarna normaal af. |
+| Teleporter (`teleporter`) | Ga automatisch of met ↑ naar een andere plek in hetzelfde level. | Eén richting of twee gekoppelde poorten. Een sleutel of actieve schakelaar kan nodig zijn. Er is bescherming tegen eindeloos heen en weer springen. |
+| Uitgebreide kist (`crate`) | Oppakken, dragen, neerzetten en gooien. | ↓ pakt op of zet neer. Houd ↓ vast en druk Spatie om te gooien. Een muur kan een worp blokkeren. Je kunt één kist dragen. |
+| Schatkist (`chest`) | Open met ↑. Geef munten, een sleutel, hartjes, bonus, geheim of power-up. | De inhoud krijg je één keer per poging. Een sleutel of actieve schakelaar kan nodig zijn. |
+| Personage voor een gesprek (`npc`) | Een eigen figuur met tekstballon, aanwijzing, beloning of actie. | Maximaal zes zinnen van 140 tekens. Druk voor iedere zin opnieuw ↑. Een NPC kan een sleutel of gedragen kist aannemen. Er is geen keuzevenster of uitgebreide inventaris. |
+
+### Zo beschrijf je een koppeling
+
+Geef ieder object een herkenbare naam. Bijvoorbeeld: **plaat-magazijn** en **deur-magazijn**. Beschrijf wat er bij aanzetten én bij uitzetten gebeurt:
+
+> De drukplaat reageert alleen op een kist. Zolang de kist erop staat, blijft deur-magazijn open. Als je de kist weghaalt, gaat de deur dicht. De speler mag nooit in de deur vast komen te zitten.
+
+Een deur wacht met sluiten zolang er iemand of een kist in staat. Een lift stopt bij een blokkade. Een brug die iemand zou insluiten, wordt niet ingeschakeld: zorg dat de schakelaar opnieuw te gebruiken is. Deze bescherming maakt niet iedere puzzel oplosbaar. Geef altijd een terugweg.
+
+### Combinaties en grenzen
+
+- Een kist op een drukplaat kan een deur openen. Een schakelaar kan een lift starten, een val uitzetten of een brug tonen.
+- Een routeplatform mag door een windzone gaan. De wind beïnvloedt de speler, niet het platform.
+- Een geheime poort kan naar een beloning leiden. Teken ook de terugweg. Een geheime poort en een apart geheimgebied tellen als twee geheimen.
+- Een NPC kan een sleutel geven. Een tweede NPC kan die innemen en een route openen. Zorg dat de ingenomen sleutel niet later opnieuw verplicht is.
+- Speciale vloeren mogen ook op grond, gewone platforms, oude bewegende platforms, liften, routeplatforms en instortende platforms.
+- In water gelden de zweminstellingen. Wind en snelheidszones nemen daar de zwemregeling niet over. Bij overlappende waterzones geldt de eerste in het levelbestand. Combineer water en ladders liever niet; de ladder krijgt voorrang op de beweging.
+- Nieuwe bouwstenen kunnen dezelfde eigen beelden en animaties gebruiken als andere objecten. Geef ook aan hoe een open deur, actieve plaat of pratende NPC eruitziet. Zonder eigen beeld gebruikt de game een eenvoudige standaardtekening.
+- Bij levensverlies blijft de wereld normaal in dezelfde stand. De bouwer kan per object terugzetten aanzetten. Zuurstof, gesprekken en tijdelijke zone-effecten worden opgeruimd. Ontvangen beloningen worden niet opnieuw gegeven. Bij een volledige herstart begint alles opnieuw.
+
+### Extra gegevens bij jullie ontwerp
+
+Lever voor ieder nieuw object de naam, plaats, grootte, bediening en het gewenste gedrag aan. Teken bij routes alle haltes en de wachttijd. Geef bij water aan of er stroming en zuurstof is. Schrijf bij een schakelaar welke objecten veranderen en hoelang. Schrijf bij een poort de bestemming en terugweg. Geef bij een schatkist de inhoud; bij een NPC alle zinnen en wat het personage geeft of ontvangt. Lever bij eigen beelden ook de verschillende standen aan, zoals open/dicht of rustig/praten.
 
 ## 7. Een eigen uiterlijk en eigen muziek
 
@@ -195,7 +238,7 @@ De hoogtes en afstanden zijn **schattingen uit de bewegingsregels**, geen gegara
 
 Ontwerp verplichte gewone sprongen daarom liever met **maximaal 80–90 pixels hoogteverschil** en **maximaal 160 pixels tussen de randen**. Een gat van 180 pixels kan moeilijk worden. Bij een hoger landingspunt kun je minder ver springen. Geef voldoende ruimte boven het hoofd en een breed landingsvlak. Een power-up die nodig is voor de route moet ook na verlies van een leven bereikbaar of overbodig zijn.
 
-Er is geen dubbele sprong, muursprong, ladder, kruipen of zwemmen. Een onderwaterthema kan wel, maar de speler beweegt daarin nog als op het land.
+Ladders en zwemmen werken in V2.2. Een waterzone moet wel echt worden toegevoegd: alleen een blauwe achtergrond verandert de beweging niet. Dubbele sprong, muursprong en kruipen zijn nog niet gebouwd. De sprongmaten hierboven gelden op gewone grond. Wind, water, een verende vloer of andere zwaartekracht verandert het bereik.
 
 ### Grootte van het level
 
@@ -213,12 +256,14 @@ De oorsprong ligt linksboven. Naar rechts neemt `x` toe, naar beneden neemt `y` 
 
 ### Beweging van objecten
 
-- Beweegbare platforms en vallen gebruiken `speed` van 0–500 en `range` van 0–1.500 pixels. Ze bewegen vloeiend heen en terug, niet langs een getekende route.
+- De oude beweegbare platforms (`movingX`, `movingY`) en vallen gebruiken `speed` van 0–500 en `range` van 0–1.500 pixels. Ze bewegen vloeiend heen en terug, niet langs een getekende route.
 - Een bereik van 100 betekent maximaal 100 pixels aan iedere kant van het startpunt: een totale baan van 200 pixels.
 - De volledige baan moet binnen de wereld blijven. Het bestand controleert de beginplek, maar niet alle uiterste bewegingspunten.
 - De tijd voor één heen-en-terugbeweging volgt uit snelheid en bereik. Het veld `period` regelt bij deze platforms niet de omlooptijd.
 - `period` regelt wel de cyclus van verdwijnende platforms en de wachttijd van schutters: 0,5–30 seconden.
 - Maximale toegestane waarden zijn geen advies. Extreem snelle of grote objecten moeten extra worden getest.
+
+Voor een nieuwe lift of routeplatform teken je 2 tot 32 stopplaatsen. De snelheid is 5–400 pixels per seconde. De wachttijd is 0–30 seconden per stop. Laat voldoende ruimte voor het platform, de speler en een gedragen kist. Nieuwe liften stoppen bij een botsing; geef de speler altijd een veilige weg terug.
 
 ## 9. Verborgen verrassingen
 
@@ -249,7 +294,7 @@ Beschrijf bij een nieuw idee:
 5. Hoe leert de speler het zonder lange uitleg?
 6. Hoe kan de speler altijd verder of opnieuw proberen?
 
-**Er is al een eenvoudig voorbeeld: `wind`.** Dit duwt de speler wisselend opzij tijdens een sprong. De code bestaat, maar geen van de vier meegeleverde levels gebruikt het. Er is geen aparte windtest. De wind heeft geen instelbare zones, kracht of zichtbaar effect. Status: **beperkt en nog te testen in een eigen level**.
+**De bestaande bouwstenen tellen niet als nieuwe mechaniek.** Je mag bijvoorbeeld water, een drukplaat, een lift en een NPC in één level combineren. Ze gebruiken instellingen in jullie eigen levelbestand. Voor wind kies je de nieuwe omgevingszone. De oude extra mechaniek `wind` blijft alleen beschikbaar voor oude ontwerpen.
 
 Voor een andere mechaniek moet de bouwer code toevoegen en de toegestane lijst met mechanieken uitbreiden. Alleen een nieuwe naam in de prompt of het JSON-bestand schrijven werkt niet.
 
@@ -349,7 +394,7 @@ Voor een nieuw figuurtje lever je een transparante PNG of een spritesheet: meerd
 
 ## 13. Wat werkt nog niet volledig en wat ontbreekt?
 
-Dit overzicht helpt om een haalbaar ontwerp te kiezen. V2.1 breidt beelden en audio uit. De beperkingen van het spelgedrag blijven bestaan.
+Dit overzicht helpt om een haalbaar ontwerp te kiezen. V2.2 voegt spelgedrag toe. Eigen beelden en audio uit V2.1 blijven bruikbaar.
 
 | Onderdeel | Status | Gevolg voor jullie ontwerp |
 |---|---|---|
@@ -362,8 +407,9 @@ Dit overzicht helpt om een haalbaar ontwerp te kiezen. V2.1 breidt beelden en au
 | Checkpoints boven elkaar | **Beperkt:** alleen de x-positie wordt vergeleken | Gebruik verschillende horizontale posities. |
 | Hoge werelden met een verticale camera | **Nog bouwen** | Gebruik één schermhoogte van 540 pixels. |
 | Eigen muziekbestanden en effecten | **Werkt** | MP3, OGG of WAV; aparte volumes en terugvalgeluid. Een muziekeditor is er niet. |
-| Nieuwe vijandcombinaties, eindbazen, drukplaten, schakelaars en gesprekken | **Nog bouwen** | Kies één kleine nieuwe mechaniek of gebruik bestaande bouwstenen. |
-| Zwemmen, vliegen als speler, dubbele sprong en multiplayer | **Nog bouwen** | Een bijpassend thema geeft deze bewegingen nog niet. |
+| Drukplaten, schakelaars, liften, water en korte gesprekken | **Werkt** | Zie hoofdstuk 6A voor de instellingen en grenzen. |
+| Nieuwe vijand-AI, eindbazen en gesprekken met keuzemenu | **Nog bouwen** | Kies hoogstens één kleine extra mechaniek. |
+| Vrij vliegen als speler, dubbele sprong en multiplayer | **Nog bouwen** | Een bijpassend thema geeft deze bewegingen nog niet. |
 | Editor waarin studenten zelf objecten slepen of prompts uploaden | **Nog bouwen** | Lever jullie ontwerp bij de docent of bouwer in. |
 | Volledige bescherming tegen fouten in nieuwe code | **Beperkt** | Nieuwe code moet worden nagekeken en getest voor publicatie. |
 
@@ -394,7 +440,7 @@ Een gegevensbestand, hier een **JSON-bestand**, bevat de naam, het verhaal, kleu
 
 **4. Unieke beelden passen nu in losse levelbestanden.** Geef ieder duo een eigen assetmap en verwijs ernaar in het eigen JSON-bestand. De standaardweergave blijft beschikbaar bij een ontbrekend beeld. Grote beelden laden pas bij het starten van het betreffende level; kaartbeelden kunnen al in het menu laden.
 
-**5. Opruimen is niet hetzelfde als herstellen na levensverlies.** De windfunctie heeft bijvoorbeeld eigen tijd, die niet wordt gereset bij een verloren leven. Voor elke nieuwe mechaniek moet de bouwer dit gedrag bewust kiezen en testen.
+**5. Spreek af wat na levensverlies teruggaat naar de start.** De nieuwe bouwstenen kunnen hun stand bewaren of teruggaan naar hun beginstand. Ontvangen beloningen blijven verbruikt. Een volledige herstart begint alles opnieuw. Voor eigen nieuwe code blijft een aparte controle nodig.
 
 **6. Honderd bestanden laden is geen snelheidstest.** De test gebruikt nagebootste netwerkantwoorden. Zij bewijst niet dat 100 zware levels of 4.000 bewegende objecten soepel lopen. Tien eenvoudige levels worden na elkaar gespeeld, maar de gegevens van alle geregistreerde levels worden bij het openen geladen.
 

@@ -155,7 +155,7 @@ function launch(l: Level) {
 function play(l: Level) {
   clean();
   current = l;
-  root.innerHTML = `<div class="play-shell"><div class="play-top"><a class="brand" href="#" data-action="home">SUPER SCRATCH</a><span>${esc(l.name)}</span>${button('Ⅱ Pauze', 'pause')}</div><div class="game-wrap"><div id="hud" aria-live="off"></div><div id="game"></div><div id="hint">De wereld wordt geladen…</div><div id="overlay"></div></div><div class="controls"><span><kbd>←</kbd><kbd>→</kbd> Lopen</span><span><kbd>SPATIE</kbd> Springen</span><span><kbd>↑</kbd> Interactie</span><span><kbd>↓</kbd> Oppakken</span><span><kbd>ESC</kbd> Pauze</span></div></div>`;
+  root.innerHTML = `<div class="play-shell"><div class="play-top"><a class="brand" href="#" data-action="home">SUPER SCRATCH</a><span>${esc(l.name)}</span>${button('Ⅱ Pauze', 'pause')}</div><div class="game-wrap"><div id="hud" aria-live="off"></div><div id="game"></div><div id="hint">De wereld wordt geladen…</div><div id="overlay"></div></div><div class="controls"><span><kbd>←</kbd><kbd>→</kbd> Lopen</span><span><kbd>SPATIE</kbd> Springen</span><span><kbd>↑</kbd> Interactie${l.objects.some((o) => o.ladder || o.water) ? ' / klimmen / zwemmen' : ''}</span><span><kbd>↓</kbd> Oppakken${l.objects.some((o) => o.carry?.throwable) ? ' · ↓ + Spatie: gooien' : ''}</span><span><kbd>ESC</kbd> Pauze</span></div></div>`;
   bind();
   scene = new GameScene(l, audio, {
     hud: updateHud,
@@ -183,7 +183,12 @@ function play(l: Level) {
     loader: { maxParallelDownloads: 4 },
   });
 }
-function updateHud(run: Run, powers: Record<string, number>, message: string) {
+function updateHud(
+  run: Run,
+  powers: Record<string, number>,
+  message: string,
+  oxygen?: { remaining: number; total: number },
+) {
   const el = document.querySelector('#hud');
   if (!el) return;
   el.innerHTML = `<div><span class="hud-label">GEZONDHEID</span><b class="hearts">${'♥'.repeat(run.hearts)}<span>${'♡'.repeat(3 - run.hearts)}</span></b></div><div><span class="hud-label">LEVENS</span><b>× ${run.lives}</b></div><div><span class="hud-label">MUNTEN</span><b class="gold">● ${String(run.coins).padStart(2, '0')}</b></div><div><span class="hud-label">SCORE</span><b>${String(run.score).padStart(6, '0')}</b></div><div><span class="hud-label">TIJD</span><b>${time(run.seconds)}</b></div><div class="power-hud">${run.keys.size ? '⚿ ' : ''}${Object.entries(
@@ -193,7 +198,9 @@ function updateHud(run: Run, powers: Record<string, number>, message: string) {
       ([key, t]) =>
         `${({ shield: 'Schild', jump: 'Sprong', speed: 'Turbo', invincible: 'Ster' } as Record<string, string>)[key]} ${Math.ceil(t)}s`,
     )
-    .join(' · ')}</div>`;
+    .join(
+      ' · ',
+    )}${oxygen ? '<span class="oxygen">Zuurstof ' + Math.ceil(oxygen.remaining) + 's <meter min="0" max="' + oxygen.total + '" value="' + oxygen.remaining + '" aria-label="Zuurstof"></meter></span>' : ''}</div>`;
   document.querySelector('#hint')!.textContent = message;
 }
 function overlay(html: string) {
@@ -228,8 +235,9 @@ function settings(inGame = false) {
 function finish(run: Run) {
   const l = current!,
     isNew = records.save(l.id, run);
+  const extraRewards = l.objects.some((o) => o.chest || o.npc || o.trigger || o.portal?.secret);
   overlay(
-    `<div class="completion-art">${l.presentation?.completion ? art(l, false, 'completion') : ''}</div><div class="confetti">✦ · ✧ · ✦ · ✧</div><div class="eyebrow">${isNew ? 'NIEUW PERSOONLIJK RECORD!' : 'AVONTUUR VOLTOOID!'}</div><h1>Goed gespeeld.</h1><div class="big-score">${fmt(run.score)} <small>PTS</small></div><div class="result-grid"><span>Munten<b>${run.coins} / ${l.objects.filter((o) => o.kind === 'coin').length}</b></span><span>Speeltijd<b>${time(run.seconds)}</b></span><span>Vijanden<b>${run.kills}</b></span><span>Geheimen<b>${run.secrets} / ${l.objects.filter((o) => o.kind === 'secret').length}</b></span><span>Hartjes<b>${'♥'.repeat(run.hearts)}</b></span><span>Levens<b>${run.lives}</b></span></div>${!records.available ? '<p>Let op: je browser kan dit record niet blijvend opslaan.</p>' : ''}${button('Opnieuw spelen', `start:${l.id}`, 'primary')}${button('Een ander level spelen', `next:${l.id}`, 'secondary')}${button('Terug naar het levelmenu', 'levels', 'text-button')}`,
+    `<div class="completion-art">${l.presentation?.completion ? art(l, false, 'completion') : ''}</div><div class="confetti">✦ · ✧ · ✦ · ✧</div><div class="eyebrow">${isNew ? 'NIEUW PERSOONLIJK RECORD!' : 'AVONTUUR VOLTOOID!'}</div><h1>Goed gespeeld.</h1><div class="big-score">${fmt(run.score)} <small>PTS</small></div><div class="result-grid"><span>Munten<b>${run.coins}${extraRewards ? '' : ' / ' + l.objects.filter((o) => o.kind === 'coin').length}</b></span><span>Speeltijd<b>${time(run.seconds)}</b></span><span>Vijanden<b>${run.kills}</b></span><span>Geheimen<b>${run.secrets}${extraRewards ? '' : ' / ' + l.objects.filter((o) => o.kind === 'secret').length}</b></span><span>Hartjes<b>${'♥'.repeat(run.hearts)}</b></span><span>Levens<b>${run.lives}</b></span></div>${!records.available ? '<p>Let op: je browser kan dit record niet blijvend opslaan.</p>' : ''}${button('Opnieuw spelen', `start:${l.id}`, 'primary')}${button('Een ander level spelen', `next:${l.id}`, 'secondary')}${button('Terug naar het levelmenu', 'levels', 'text-button')}`,
   );
 }
 function showRecords() {

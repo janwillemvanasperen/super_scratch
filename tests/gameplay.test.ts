@@ -6,6 +6,7 @@ vi.mock('phaser', () => ({
   },
 }));
 import { GameScene } from '../src/scenes/GameScene';
+import {WorldSystem} from '../src/mechanics/world-system';
 import { Player } from '../src/entities/player';
 import { objectBody } from '../src/assets/layout';
 import { levelSchema } from '../src/levels/schema';
@@ -34,6 +35,7 @@ function setup(id = 'tutorial') {
   }));
   s.p = s.createPlayer(l.spawn.x, l.spawn.y, true);
   s.checkpoint = { x: s.p.x, y: s.p.y };
+  s.systems=new WorldSystem(s,()=>{});
   s.keys = Object.fromEntries(
     ['left', 'right', 'up', 'down', 'jump', 'pause'].map((k) => [k, { isDown: false }]),
   ) as any;
