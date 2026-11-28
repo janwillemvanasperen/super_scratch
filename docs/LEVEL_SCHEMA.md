@@ -1,4 +1,4 @@
-# Levelschema v1
+# Levelschema — basis en V2.1
 
 De uitvoerbare waarheid is `src/levels/schema.ts` (Zod). De loader valideert ieder bestand afzonderlijk. Eén foutief bestand blokkeert andere levels niet. JSON bevat data, nooit uitvoerbare scripts. Object-ID's moeten uniek zijn binnen het level; level-ID's binnen het register.
 
@@ -175,3 +175,11 @@ Dit is een compacte technisch geldige startwereld; breid hem uit tot de gewenste
 ```
 
 De uitgebreide werkende definities staan in `public/levels/tutorial.json` en `public/levels/first-adventure.json`. Je hoeft niet alle optionele objectvelden over te nemen: validatie vult de standaardwaarden in.
+
+## Optionele uitbreiding V2.1
+
+De verplichte velden hierboven blijven geldig. Optioneel: `assets`, `styles`, `background`, `presentation`, `audio`, `demo`; daarnaast `character.visual/hitbox`, `makers[].avatarAsset` en `objects[].visual/hitbox/motion/solid`. Volledige uitleg en grenzen: [ASSETS.md](ASSETS.md). Alle 33 objectsoorten kunnen dezelfde visuele instellingen gebruiken. `motion` is alleen voor decor; `solid` maakt alleen decor massief. De oude tekeningen blijven terugval.
+
+## Aanvulling V2.2
+
+Zie [bouwsystemen](BUILDING_SYSTEMS.md) voor de twaalf nieuwe objecttypen en de uitbreiding van kisten en doorgangen. Deze bestaande functies mogen gecombineerd worden zonder nieuwe spelcode. Beschrijf object-ID, bediening, gekoppelde doelen, duur, terugkeer bij levensverlies en benodigde beelden. De actuele [studentencatalogus](../STUDENT_LEVEL_GUIDE.md) bevat uitleg op taalniveau 2F.

@@ -43,3 +43,11 @@ Afgronden maak je door grond weg te laten. Een geheime ruimte ontstaat uit platf
 Het schema kent maximaal één `mechanic` per level. `wind` is een voorbeeldfactory: alleen invloed op de eigen speler in de lucht, eigen lokale tijd en `destroy()`. Registreer nieuwe vertrouwde TypeScript-factories in `src/mechanics/registry.ts` en breid de schema-enum uit. Dit vereist een eenmalige enginebuild. JSON wordt nooit als JavaScript geëvalueerd. Alleen extra levels met bestaande bouwstenen kunnen zonder enginebuild worden toegevoegd.
 
 Opruimen: scene-shutdown verwijdert focuslistener, toetsen, muziekinterval en mechaniekstatus. Phaser ruimt scene-objecten op. Menunavigatie vernietigt de volledige game-instance. Web Audio-oscillatoren hebben korte eindtijden, zodat er geen blijvende stemmen achterblijven.
+
+## Visuele uitbreiding V2.1
+
+Alle bovenstaande soorten ondersteunen een eigen afbeelding of spritesheet via `styles.<kind>` of `object.visual`, met een optionele afzonderlijke `hitbox`. Spelgedrag blijft gelijk. Decoratie ondersteunt nu willekeurige beelden, animatie, transforms en sinusbeweging, zonder botsing tenzij `solid:true`. Zie [ASSETS.md](ASSETS.md).
+
+## Aanvulling V2.2
+
+Zie [bouwsystemen](BUILDING_SYSTEMS.md) voor de twaalf nieuwe objecttypen en de uitbreiding van kisten en doorgangen. Deze bestaande functies mogen gecombineerd worden zonder nieuwe spelcode. Beschrijf object-ID, bediening, gekoppelde doelen, duur, terugkeer bij levensverlies en benodigde beelden. De actuele [studentencatalogus](../STUDENT_LEVEL_GUIDE.md) bevat uitleg op taalniveau 2F.

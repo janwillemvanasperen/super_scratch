@@ -1,0 +1,1 @@
+Original pixel art and original synthesized melodies created for Super Scratch V2.1. Source: scripts/generate-demo-assets.mjs. No third-party images, samples or characters. Demonstration maker avatars, not real student portraits.

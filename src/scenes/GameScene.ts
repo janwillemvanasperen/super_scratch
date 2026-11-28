@@ -1,3 +1,6 @@
+import { WorldSystem } from '../mechanics/world-system';
+import { drawBuilding } from '../mechanics/draw-building';
+import type { Controls } from '../mechanics/world-types';
 import Phaser from 'phaser';
 import type { Level, Block } from '../levels/schema';
 import { Run, RULES } from '../core/rules';
@@ -6,6 +9,8 @@ import { Player } from '../entities/player';
 import { makeArt, landscape } from '../entities/art';
 import type { AudioEngine } from '../audio/audio';
 import { mechanics } from '../mechanics/registry';
+import { AssetRenderer, preloadGraphics } from '../assets/renderer';
+import { objectBody, objectBounds } from '../assets/layout';
 type Obj = Block & {
   ox: number;
   oy: number;
@@ -13,16 +18,28 @@ type Obj = Block & {
   vy: number;
   phase: number;
   opened: boolean;
+  layoutWidth?: number;
+  layoutHeight?: number;
+  facing?: number;
+  attackUntil?: number;
+  defeatedAt?: number;
 };
 type Shot = Rect & { vx: number; vy: number; ttl: number };
 export type GameHooks = {
-  hud: (run: Run, powers: Record<string, number>, message: string) => void;
+  hud: (
+    run: Run,
+    powers: Record<string, number>,
+    message: string,
+    oxygen?: { remaining: number; total: number },
+  ) => void;
   pause: () => void;
   finish: (run: Run) => void;
   over: () => void;
 };
 export class GameScene extends Phaser.Scene {
   level!: Level;
+  systems?: WorldSystem;
+  speechLabel?: Phaser.GameObjects.Text;
   run = new Run();
   p!: Player;
   objects: Obj[] = [];
@@ -31,6 +48,8 @@ export class GameScene extends Phaser.Scene {
   checkpoint = { x: 60, y: 400 };
   keys!: Record<string, Phaser.Input.Keyboard.Key>;
   bg!: Phaser.GameObjects.Graphics;
+  assetRenderer?: AssetRenderer;
+  celebration = 0;
   fg!: Phaser.GameObjects.Graphics;
   hero!: Phaser.GameObjects.Sprite;
   cam = 0;
@@ -53,25 +72,45 @@ export class GameScene extends Phaser.Scene {
   ) {
     super('play');
   }
+  preload() {
+    preloadGraphics(this, this.definition);
+  }
+  createPlayer(x: number, y: number, visualOrigin = false) {
+    const p = new Player(x, y);
+    const h = this.level.character.hitbox;
+    if (h) {
+      p.w = h.width;
+      p.h = h.height;
+      if (visualOrigin) {
+        p.x += h.offsetX;
+        p.y += h.offsetY;
+      }
+    }
+    return p;
+  }
   create() {
     this.level = this.definition;
     this.run = new Run();
     this.objects = this.level.objects.map((b) => ({
       ...b,
-      ox: b.x,
-      oy: b.y,
+      ...objectBody(b),
+      ox: objectBody(b).x,
+      oy: objectBody(b).y,
       alive: true,
       vy: 0,
       phase: 0,
       opened: false,
     }));
-    this.p = new Player(this.level.spawn.x, this.level.spawn.y);
-    this.checkpoint = { ...this.level.spawn };
-    this.bg = this.add.graphics().setScrollFactor(0);
-    this.fg = this.add.graphics();
+    this.p = this.createPlayer(this.level.spawn.x, this.level.spawn.y, true);
+    this.checkpoint = { x: this.p.x, y: this.p.y };
+    this.systems = new WorldSystem(this, (name) => this.audio.play(name));
+    this.bg = this.add.graphics().setScrollFactor(0).setDepth(-1000);
+    this.fg = this.add.graphics().setDepth(90);
+    this.assetRenderer = new AssetRenderer(this, this.level);
     makeArt(this);
     this.hero = this.add
       .sprite(0, 0, 'hero0')
+      .setDepth(110)
       .setOrigin(0)
       .setScale(2)
       .setTint(parseInt(this.level.character.color.slice(1), 16));
@@ -91,13 +130,15 @@ export class GameScene extends Phaser.Scene {
     this.events.once('shutdown', () => {
       this.game.events.off('blur', this.onBlur, this);
       this.audio.stop();
+      this.assetRenderer?.destroy();
       this.mechanic?.destroy();
+      this.systems?.destroy();
       this.shots = [];
       this.sparkles = [];
       this.input.keyboard?.removeAllKeys(true);
     });
     if (this.level.mechanic) this.mechanic = mechanics[this.level.mechanic]();
-    this.audio.start(this.level.music.notes, this.level.music.tempo);
+    this.audio.start(this.level.music.notes, this.level.music.tempo, this.level);
     this.say(this.level.instructions || 'Volg de munten. Het avontuur wacht!', 5);
     this.renderWorld();
   }
@@ -106,8 +147,8 @@ export class GameScene extends Phaser.Scene {
   }
   setPaused(value: boolean) {
     this.paused = value;
-    if (value) this.audio.stop();
-    else this.audio.start(this.level.music.notes, this.level.music.tempo);
+    if (value) this.audio.pause();
+    else this.audio.resume();
     this.input.keyboard?.resetKeys();
   }
   say(text: string, seconds = 3) {
@@ -126,7 +167,11 @@ export class GameScene extends Phaser.Scene {
       });
   }
   active(o: Obj) {
-    return o.alive && (o.kind !== 'vanish' || this.elapsed % o.period < o.period * 0.72);
+    return (
+      o.alive &&
+      (this.systems?.active(o) ?? true) &&
+      (o.kind !== 'vanish' || this.elapsed % o.period < o.period * 0.72)
+    );
   }
   solids() {
     return this.objects.filter(
@@ -142,12 +187,19 @@ export class GameScene extends Phaser.Scene {
           'wall',
           'crate',
         ].includes(o.kind) ||
-          (o.kind === 'door' && !o.opened)) &&
+          (o.kind === 'door' && !o.opened) ||
+          (o.kind === 'decoration' && o.solid) ||
+          this.systems?.solid(o)) &&
         o.id !== this.p.carrying,
     );
   }
   update(_time: number, delta: number) {
-    if (this.paused || this.run.finished) return;
+    if (this.paused) return;
+    if (this.run.finished) {
+      this.celebration += Math.min(delta / 1000, 0.1);
+      this.renderWorld();
+      return;
+    }
     this.accum += Math.min(delta / 1000, 0.1);
     while (this.accum >= 1 / 120) {
       this.tick(1 / 120);
@@ -155,7 +207,12 @@ export class GameScene extends Phaser.Scene {
       if (this.paused || this.run.finished) break;
     }
     this.renderWorld();
-    this.hooks.hud(this.run, this.powers, this.elapsed < this.messageUntil ? this.message : '');
+    this.hooks.hud(
+      this.run,
+      this.powers,
+      this.elapsed < this.messageUntil ? this.message : '',
+      this.systems?.oxygen,
+    );
   }
   tick(dt: number) {
     this.elapsed += dt;
@@ -168,22 +225,53 @@ export class GameScene extends Phaser.Scene {
     const jump = this.keys.jump.isDown,
       up = this.keys.up.isDown,
       down = this.keys.down.isDown;
+    const controls: Controls = {
+      left: this.keys.left.isDown,
+      right: this.keys.right.isDown,
+      up,
+      down,
+      jump,
+      jumpPressed: jump && !this.wasJump,
+      interact: up && !this.wasUp,
+      downPressed: down && !this.wasDown,
+    };
     if (jump && !this.wasJump) p.buffer = 0.13;
     if (!jump && this.wasJump && p.vy < -200) p.vy = -200;
     this.wasJump = jump;
     for (const o of this.objects) {
+      const motionTime = this.systems?.clock(o, dt) ?? this.elapsed;
+      if (this.systems && !this.systems.moving(o)) continue;
       const prevX = o.x,
         prevY = o.y;
       if (o.kind === 'movingX' || o.kind === 'trap')
-        o.x = o.ox + Math.sin((this.elapsed * o.speed) / Math.max(o.range, 1)) * o.range;
+        o.x = o.ox + Math.sin((motionTime * o.speed) / Math.max(o.range, 1)) * o.range;
+      if (o.kind === 'decoration' && o.motion) {
+        const d =
+          Math.sin(
+            (motionTime * Math.PI * 2) / o.motion.period + (o.motion.phase * Math.PI) / 180,
+          ) * o.motion.distance;
+        o.x = o.ox + (o.motion.axis === 'x' ? d : 0);
+        o.y = o.oy + (o.motion.axis === 'y' ? d : 0);
+      }
       if (o.kind === 'movingY')
-        o.y = o.oy + Math.sin((this.elapsed * o.speed) / Math.max(o.range, 1)) * o.range;
+        o.y = o.oy + Math.sin((motionTime * o.speed) / Math.max(o.range, 1)) * o.range;
       if (o === this.standing && this.active(o)) {
         p.x += o.x - prevX;
         p.y += o.y - prevY;
       }
     }
-    p.tick(dt, Number(this.keys.right.isDown) - Number(this.keys.left.isDown), !!this.powers.speed);
+    const threw = this.systems?.before(dt, controls) ?? false;
+    if (threw) {
+      p.buffer = 0;
+      controls.jumpPressed = false;
+    }
+    if (this.systems) this.systems.playerStep(dt, controls, !!this.powers.speed);
+    else
+      p.tick(
+        dt,
+        Number(this.keys.right.isDown) - Number(this.keys.left.isDown),
+        !!this.powers.speed,
+      );
     this.mechanic?.update(dt, p);
     if (p.buffer > 0 && p.coyote > 0) {
       p.vy = -RULES.jump * (this.powers.jump ? 1.27 : 1);
@@ -195,7 +283,7 @@ export class GameScene extends Phaser.Scene {
     const previousBottom = p.y + p.h;
     const solids = this.solids().filter(
       (o) =>
-        !['movingX', 'movingY', 'vanish'].includes(o.kind) ||
+        !(['movingX', 'movingY', 'vanish'].includes(o.kind) || this.systems?.oneWay(o)) ||
         (p.vy >= 0 && previousBottom <= o.y + 3),
     );
     const collision = moveBody(p, dt, solids);
@@ -203,6 +291,7 @@ export class GameScene extends Phaser.Scene {
     this.standing = solids.find(
       (o) => Math.abs(p.y + p.h - o.y) < 1 && p.x + p.w > o.x && p.x < o.x + o.w,
     );
+    this.systems?.afterMovement();
     if (collision.ceiling) {
       const b = collision.ceiling as Obj;
       if (b.kind === 'breakable') {
@@ -217,7 +306,7 @@ export class GameScene extends Phaser.Scene {
       return;
     }
     for (const o of this.objects) {
-      if (!o.alive) continue;
+      if (!o.alive || (this.systems && !this.systems.active(o))) continue;
       if (['walker', 'chaser', 'jumper', 'flyer', 'shooter', 'sentry'].includes(o.kind)) {
         this.enemy(o, dt);
         if (overlap(p, o)) {
@@ -226,6 +315,7 @@ export class GameScene extends Phaser.Scene {
             (p.vy > 0 && previousBottom <= o.y + 12 && o.kind !== 'sentry')
           ) {
             o.alive = false;
+            o.defeatedAt = this.elapsed;
             if (this.run.claim(o.id, 'enemy')) this.burst(o.x, o.y, 0xff967e);
             p.vy = -330;
             this.audio.play('enemy');
@@ -243,7 +333,7 @@ export class GameScene extends Phaser.Scene {
           }
         }
       }
-      if (o.kind === 'crate' && p.carrying !== o.id) {
+      if (o.kind === 'crate' && !o.carry && p.carrying !== o.id) {
         o.vy += RULES.gravity * dt;
         const body = { x: o.x, y: o.y, w: o.w, h: o.h, vx: 0, vy: o.vy };
         moveBody(
@@ -335,11 +425,12 @@ export class GameScene extends Phaser.Scene {
         case 'finish':
           this.run.finish(this.level.targetTime);
           this.run.finished = true;
-          this.audio.stop();
+          this.audio.stop(true);
           this.audio.play('finish');
           this.hooks.finish(this.run);
           return;
         case 'passage':
+          if (o.portal) break;
           if (up && !this.wasUp && o.target) {
             p.x = o.target.x;
             p.y = o.target.y;
@@ -366,10 +457,15 @@ export class GameScene extends Phaser.Scene {
           } else this.say('Je hebt een sleutel nodig.');
         }
     }
-    if (down && !this.wasDown) {
+    if (down && !this.wasDown && !threw) {
       if (p.carrying) {
         const o = this.objects.find((o) => o.id === p.carrying)!;
-        const pos = { x: p.x + p.facing * 38, y: p.y, w: o.w, h: o.h };
+        const pos = {
+          x: o.carry ? (p.facing > 0 ? p.x + p.w + 4 : p.x - o.w - 4) : p.x + p.facing * 38,
+          y: o.carry ? p.y + p.h - o.h : p.y,
+          w: o.w,
+          h: o.h,
+        };
         if (!this.solids().some((b) => overlap(pos, b))) {
           o.x = Phaser.Math.Clamp(pos.x, 0, this.level.world.width - o.w);
           o.y = pos.y;
@@ -379,7 +475,11 @@ export class GameScene extends Phaser.Scene {
       } else {
         const o = this.objects.find(
           (o) =>
-            o.kind === 'crate' && o.alive && Math.abs(p.x - o.x) < 60 && Math.abs(p.y - o.y) < 60,
+            o.kind === 'crate' &&
+            o.alive &&
+            (this.systems?.active(o) ?? true) &&
+            Math.abs(p.x - o.x) < 60 &&
+            Math.abs(p.y - o.y) < 60,
         );
         if (o) {
           p.carrying = o.id;
@@ -390,8 +490,10 @@ export class GameScene extends Phaser.Scene {
     if (p.carrying) {
       const o = this.objects.find((o) => o.id === p.carrying)!;
       o.x = p.x;
-      o.y = p.y - 28;
+      o.y = p.y - (o.carry ? o.h + 3 : 28);
     }
+    this.systems?.after(dt, controls);
+    if (this.p !== p) return;
     this.wasUp = up;
     this.wasDown = down;
     this.shots = this.shots.filter((s) => {
@@ -416,6 +518,7 @@ export class GameScene extends Phaser.Scene {
       Math.min(1, dt * 6);
   }
   enemy(o: Obj, dt: number) {
+    const oldX = o.x;
     o.phase += dt;
     const direction = this.p.x > o.x ? 1 : -1;
     if (o.kind === 'flyer') {
@@ -446,8 +549,11 @@ export class GameScene extends Phaser.Scene {
         o.vy = 0;
       }
     }
+    if (o.x !== oldX) o.facing = o.x > oldX ? 1 : -1;
     if (o.kind === 'shooter' && o.phase > o.period && Math.abs(this.p.x - o.x) < 650) {
       o.phase = 0;
+      o.attackUntil = this.elapsed + 0.3;
+      o.facing = direction;
       this.shots.push({
         x: o.x + o.w / 2,
         y: o.y + 8,
@@ -480,12 +586,12 @@ export class GameScene extends Phaser.Scene {
     this.audio.play('life');
     if (!this.run.loseLife()) {
       this.paused = true;
-      this.audio.stop();
+      this.audio.stop(true);
       this.audio.play('over');
       this.hooks.over();
       return;
     }
-    this.p = new Player(this.checkpoint.x, this.checkpoint.y);
+    this.p = this.createPlayer(this.checkpoint.x, this.checkpoint.y);
     this.p.invuln = 2;
     this.powers = {};
     this.shots = [];
@@ -497,12 +603,29 @@ export class GameScene extends Phaser.Scene {
         o.vy = 0;
       }
     }
+    this.systems?.respawn();
     this.say('Nieuw leven. Je verzamelde punten blijven behouden.');
   }
   renderWorld() {
     const g = this.fg,
       p = this.p;
-    landscape(this.bg, 960, 540, this.level.palette, this.cam, this.elapsed);
+    const artTime = this.elapsed + this.celebration;
+    if (
+      !this.level.background ||
+      this.level.background.legacy ||
+      (this.level.background.layers.length > 0 &&
+        !this.level.background.layers.some((l) => this.assetRenderer?.available(l.visual)))
+    )
+      landscape(this.bg, 960, 540, this.level.palette, this.cam, this.elapsed);
+    else {
+      this.bg.clear();
+      this.bg.fillStyle(
+        parseInt((this.level.background.color || this.level.palette.sky).slice(1), 16),
+      );
+      this.bg.fillRect(0, 0, 960, 540);
+    }
+    this.assetRenderer?.begin();
+    this.assetRenderer?.layers(this.cam, artTime);
     g.clear();
     const col = (s: string) => parseInt(s.slice(1), 16);
     const rect = (x: number, y: number, w: number, h: number, c: number) => {
@@ -510,7 +633,62 @@ export class GameScene extends Phaser.Scene {
       g.fillRect(Math.round(x - this.cam), Math.round(y), w, h);
     };
     for (const o of this.objects) {
-      if (!o.alive || o.x + o.w < this.cam - 100 || o.x > this.cam + 1060) continue;
+      if (this.systems && !this.systems.visible(o)) continue;
+      const visual = o.visual || this.level.styles?.[o.kind];
+      const defeated =
+        !o.alive &&
+        o.defeatedAt !== undefined &&
+        artTime - o.defeatedAt <
+          Math.min(
+            3,
+            (visual?.animations?.defeat?.frames.length || 0) /
+              (visual?.animations?.defeat?.fps || 8),
+          );
+      if ((!o.alive && !defeated) || o.x + o.w < this.cam - 200 || o.x > this.cam + 1160) continue;
+      const enemy = ['walker', 'chaser', 'jumper', 'flyer', 'shooter', 'sentry'].includes(o.kind);
+      const state =
+        this.systems?.animation(o) ||
+        (defeated
+          ? 'defeat'
+          : o.opened
+            ? 'open'
+            : o.kind === 'checkpoint' && this.checkpoint.x === o.x
+              ? 'active'
+              : (o.attackUntil || 0) > this.elapsed
+                ? 'attack'
+                : enemy
+                  ? o.kind === 'flyer'
+                    ? 'fly'
+                    : o.vy < -10
+                      ? 'jump'
+                      : o.vy > 30
+                        ? 'fall'
+                        : o.kind === 'sentry' || o.kind === 'shooter'
+                          ? 'idle'
+                          : 'walk'
+                  : visual?.animation || 'idle');
+      const alpha =
+        o.kind === 'vanish' && !this.active(o)
+          ? 0.15
+          : o.kind === 'secret' && !this.run.claimed.has(o.id)
+            ? 0.08
+            : 1;
+      if (
+        this.assetRenderer?.draw(
+          `object:${o.id}`,
+          objectBounds(o),
+          visual,
+          state,
+          artTime,
+          this.cam,
+          enemy ? o.facing || 1 : 1,
+          alpha * (this.systems && !this.systems.active(o) ? 0.2 : 1),
+        )
+      )
+        continue;
+      if (defeated) continue;
+      if (this.systems && drawBuilding(g, o, this.systems.state(o), this.cam, this.elapsed))
+        continue;
       let c = o.color ? col(o.color) : col(this.level.palette.accent);
       const x = o.x,
         y = o.y;
@@ -622,8 +800,49 @@ export class GameScene extends Phaser.Scene {
         rect(x + 7, y + 7, 18, 3, 0x304159);
       }
     }
-    for (const s of this.shots) rect(s.x, s.y, s.w, s.h, 0xffbb81);
+    this.shots.forEach((s, i) => {
+      if (
+        !this.assetRenderer?.draw(
+          `shot:${i}`,
+          s,
+          this.level.styles?.projectile,
+          'idle',
+          artTime,
+          this.cam,
+          s.vx >= 0 ? 1 : -1,
+        )
+      )
+        rect(s.x, s.y, s.w, s.h, 0xffbb81);
+    });
     for (const s of this.sparkles) rect(s.x, s.y, 4, 4, s.color);
+    const heroState = this.run.finished
+      ? 'victory'
+      : this.systems?.climbing
+        ? 'climb'
+        : this.systems?.swimming
+          ? 'swim'
+          : p.invuln > 0
+            ? 'hurt'
+            : p.vy < -20
+              ? 'jump'
+              : !p.grounded && p.vy > 20
+                ? 'fall'
+                : Math.abs(p.vx) > 20
+                  ? 'walk'
+                  : 'idle';
+    const h = this.level.character.hitbox;
+    const heroDrawn = this.assetRenderer?.draw(
+      'player',
+      { x: p.x - (h?.offsetX || 0), y: p.y - (h?.offsetY || 0), w: p.w, h: p.h },
+      this.level.character.visual,
+      heroState,
+      artTime,
+      this.cam,
+      p.facing,
+      p.invuln > 0 && Math.floor(this.elapsed * 14) % 2 ? 0.25 : 1,
+      110,
+    );
+    this.hero.setVisible(!heroDrawn);
     this.hero
       .setPosition(Math.round(p.x - this.cam - 3), Math.round(p.y - 2))
       .setFlipX(p.facing < 0)
@@ -633,7 +852,26 @@ export class GameScene extends Phaser.Scene {
       .setAlpha(p.invuln > 0 && Math.floor(this.elapsed * 14) % 2 ? 0.25 : 1);
     if (this.powers.shield || this.powers.invincible) {
       g.lineStyle(2, this.powers.shield ? 0x9ee6ff : 0xffe28d);
-      g.strokeCircle(p.x - this.cam + 11, p.y + 15, 24);
+      g.strokeCircle(p.x - this.cam + p.w / 2, p.y + p.h / 2, Math.max(p.w, p.h) / 2 + 9);
     }
+    const speech = this.systems?.speech;
+    if (speech) {
+      const o = this.objects.find((o) => o.id === speech.id)!;
+      this.speechLabel ??= this.add
+        .text(0, 0, '', {
+          fontFamily: 'monospace',
+          fontSize: '14px',
+          color: '#172039',
+          backgroundColor: '#fff3ce',
+          padding: { x: 10, y: 8 },
+          wordWrap: { width: 230 },
+        })
+        .setDepth(500);
+      this.speechLabel
+        .setText(speech.text)
+        .setPosition(Math.max(8, Math.min(700, o.x - this.cam - 70)), Math.max(80, o.y - 85))
+        .setVisible(true);
+    } else this.speechLabel?.setVisible(false);
+    this.assetRenderer?.end();
   }
 }

@@ -1,0 +1,1613 @@
+{
+  "id": "internal-building-lab",
+  "version": 1,
+  "name": "Intern bouwstenenlab V2.2",
+  "demo": true,
+  "story": "Interne testwereld. Elke gemarkeerde zone test een bouwsteen of combinatie.",
+  "goal": "Test de stations en bereik de finish.",
+  "difficulty": "Easy",
+  "makers": [
+    {
+      "name": "Super Scratch",
+      "avatar": "#69e5dc",
+      "avatarAsset": "avatar-1"
+    },
+    {
+      "name": "Visuele demo",
+      "avatar": "#ef91aa",
+      "avatarAsset": "avatar-2"
+    }
+  ],
+  "palette": {
+    "sky": "#10172f",
+    "far": "#202b4b",
+    "near": "#304365",
+    "ground": "#26364b",
+    "accent": "#fbc35b"
+  },
+  "character": {
+    "name": "Nova de robot",
+    "color": "#ffffff",
+    "hitbox": {
+      "width": 22,
+      "height": 30,
+      "offsetX": 13,
+      "offsetY": 18
+    },
+    "visual": {
+      "asset": "hero",
+      "fit": "native",
+      "animations": {
+        "idle": {
+          "frames": [
+            0,
+            1
+          ],
+          "fps": 2,
+          "repeat": -1
+        },
+        "walk": {
+          "frames": [
+            2,
+            0,
+            3,
+            1
+          ],
+          "fps": 10,
+          "repeat": -1
+        },
+        "jump": {
+          "frames": [
+            4
+          ],
+          "fps": 7,
+          "repeat": -1
+        },
+        "fall": {
+          "frames": [
+            5
+          ],
+          "fps": 7,
+          "repeat": -1
+        },
+        "hurt": {
+          "frames": [
+            6,
+            0
+          ],
+          "fps": 10,
+          "repeat": -1
+        },
+        "victory": {
+          "frames": [
+            7,
+            1
+          ],
+          "fps": 4,
+          "repeat": -1
+        }
+      }
+    }
+  },
+  "music": {
+    "tempo": 120,
+    "notes": [
+      57,
+      64,
+      69,
+      72,
+      76,
+      72,
+      69,
+      64
+    ]
+  },
+  "world": {
+    "width": 12000,
+    "height": 540
+  },
+  "spawn": {
+    "x": 60,
+    "y": 420
+  },
+  "targetTime": 120,
+  "instructions": "↑ interactie/klimmen · ↓ dalen/oppakken · ↓ + Spatie gooien",
+  "objects": [
+    {
+      "id": "floor",
+      "kind": "ground",
+      "x": 0,
+      "y": 480,
+      "w": 8000,
+      "h": 60
+    },
+    {
+      "id": "floor2",
+      "kind": "ground",
+      "x": 8000,
+      "y": 480,
+      "w": 4000,
+      "h": 60
+    },
+    {
+      "id": "coin",
+      "kind": "coin",
+      "x": 220,
+      "y": 445,
+      "w": 24,
+      "h": 28
+    },
+    {
+      "id": "test-enemy",
+      "kind": "walker",
+      "x": 900,
+      "y": 448,
+      "w": 32,
+      "h": 32,
+      "speed": 0,
+      "range": 0
+    },
+    {
+      "id": "bord-90",
+      "kind": "decoration",
+      "x": 90,
+      "y": 380,
+      "w": 64,
+      "h": 96,
+      "text": "1. Pak de kist met ↓. Leg hem met ↓ op de drukplaat. De deur opent."
+    },
+    {
+      "id": "plate-crate",
+      "kind": "crate",
+      "x": 300,
+      "y": 448,
+      "w": 32,
+      "h": 32,
+      "carry": {}
+    },
+    {
+      "id": "plate",
+      "kind": "pressurePlate",
+      "x": 410,
+      "y": 470,
+      "w": 100,
+      "h": 10,
+      "trigger": {
+        "mode": "momentary",
+        "accepts": "crate",
+        "on": [
+          {
+            "type": "object",
+            "target": "plate-door",
+            "action": "open"
+          }
+        ],
+        "off": [
+          {
+            "type": "object",
+            "target": "plate-door",
+            "action": "close"
+          }
+        ]
+      }
+    },
+    {
+      "id": "plate-door",
+      "kind": "door",
+      "x": 610,
+      "y": 370,
+      "w": 36,
+      "h": 110
+    },
+    {
+      "id": "throw-crate",
+      "kind": "crate",
+      "x": 790,
+      "y": 448,
+      "w": 32,
+      "h": 32,
+      "carry": {}
+    },
+    {
+      "id": "bord-700",
+      "kind": "decoration",
+      "x": 700,
+      "y": 380,
+      "w": 64,
+      "h": 96,
+      "text": "2. Pak de kist. Houd ↓ ingedrukt en druk Spatie om naar de wandelaar te gooien."
+    },
+    {
+      "id": "bord-1060",
+      "kind": "decoration",
+      "x": 1060,
+      "y": 380,
+      "w": 64,
+      "h": 96,
+      "text": "3. Druk ↑ bij de schakelaar. De lift begint te bewegen langs drie stopplaatsen."
+    },
+    {
+      "id": "lift-switch",
+      "kind": "switch",
+      "x": 1160,
+      "y": 442,
+      "w": 30,
+      "h": 38,
+      "trigger": {
+        "mode": "toggle",
+        "on": [
+          {
+            "type": "object",
+            "target": "lift",
+            "action": "start"
+          }
+        ],
+        "off": [
+          {
+            "type": "object",
+            "target": "lift",
+            "action": "stop"
+          }
+        ]
+      }
+    },
+    {
+      "id": "lift",
+      "kind": "elevator",
+      "x": 1240,
+      "y": 460,
+      "w": 100,
+      "h": 20,
+      "route": {
+        "points": [
+          {
+            "x": 1240,
+            "y": 460
+          },
+          {
+            "x": 1240,
+            "y": 350
+          },
+          {
+            "x": 1370,
+            "y": 280
+          }
+        ],
+        "activation": "trigger",
+        "speed": 70,
+        "wait": 1
+      }
+    },
+    {
+      "id": "high-deck",
+      "kind": "surface",
+      "x": 1470,
+      "y": 280,
+      "w": 180,
+      "h": 20,
+      "surface": {
+        "type": "oneWay"
+      }
+    },
+    {
+      "id": "ladder",
+      "kind": "ladder",
+      "x": 1490,
+      "y": 280,
+      "w": 32,
+      "h": 200,
+      "ladder": {
+        "speed": 120
+      }
+    },
+    {
+      "id": "bord-1660",
+      "kind": "decoration",
+      "x": 1660,
+      "y": 380,
+      "w": 64,
+      "h": 96,
+      "text": "4. Ladder: ↑ omhoog, ↓ omlaag. Spatie laat je wegspringen."
+    },
+    {
+      "id": "ladder2",
+      "kind": "ladder",
+      "x": 1750,
+      "y": 300,
+      "w": 32,
+      "h": 180,
+      "ladder": {}
+    },
+    {
+      "id": "ladder-top",
+      "kind": "surface",
+      "x": 1690,
+      "y": 300,
+      "w": 200,
+      "h": 20,
+      "surface": {
+        "type": "oneWay"
+      }
+    },
+    {
+      "id": "bord-2020",
+      "kind": "decoration",
+      "x": 2020,
+      "y": 380,
+      "w": 64,
+      "h": 96,
+      "text": "5. Water met stroming: pijltjes sturen. Spatie geeft een zwemslag; bij het oppervlak spring je eruit."
+    },
+    {
+      "id": "water-free",
+      "kind": "water",
+      "x": 2160,
+      "y": 300,
+      "w": 380,
+      "h": 180,
+      "water": {
+        "currentX": 45,
+        "gravity": 0.12
+      }
+    },
+    {
+      "id": "water-oxygen",
+      "kind": "water",
+      "x": 2660,
+      "y": 280,
+      "w": 380,
+      "h": 200,
+      "water": {
+        "currentX": -20,
+        "currentY": 8,
+        "oxygen": 8
+      }
+    },
+    {
+      "id": "bord-2570",
+      "kind": "decoration",
+      "x": 2570,
+      "y": 380,
+      "w": 64,
+      "h": 96,
+      "text": "6. Hier is zuurstof beperkt. Kijk naar de meter. Zwem op tijd naar het oppervlak."
+    },
+    {
+      "id": "bord-3100",
+      "kind": "decoration",
+      "x": 3100,
+      "y": 380,
+      "w": 64,
+      "h": 96,
+      "text": "7. Speciale vloeren: ijs, modder, transportband, veer en eenrichtingsplatform."
+    },
+    {
+      "id": "ice",
+      "kind": "surface",
+      "x": 3220,
+      "y": 460,
+      "w": 180,
+      "h": 20,
+      "surface": {
+        "type": "ice"
+      }
+    },
+    {
+      "id": "mud",
+      "kind": "surface",
+      "x": 3420,
+      "y": 460,
+      "w": 180,
+      "h": 20,
+      "surface": {
+        "type": "mud"
+      }
+    },
+    {
+      "id": "belt",
+      "kind": "surface",
+      "x": 3620,
+      "y": 460,
+      "w": 180,
+      "h": 20,
+      "surface": {
+        "type": "conveyor",
+        "conveyor": -90
+      }
+    },
+    {
+      "id": "bounce",
+      "kind": "surface",
+      "x": 3820,
+      "y": 460,
+      "w": 120,
+      "h": 20,
+      "surface": {
+        "type": "bounce",
+        "bounce": 650
+      }
+    },
+    {
+      "id": "one-way",
+      "kind": "surface",
+      "x": 4000,
+      "y": 360,
+      "w": 140,
+      "h": 20,
+      "surface": {
+        "type": "oneWay"
+      }
+    },
+    {
+      "id": "friction",
+      "kind": "surface",
+      "x": 4200,
+      "y": 460,
+      "w": 140,
+      "h": 20,
+      "surface": {
+        "type": "friction",
+        "friction": 0.5
+      }
+    },
+    {
+      "id": "bord-4420",
+      "kind": "decoration",
+      "x": 4420,
+      "y": 380,
+      "w": 64,
+      "h": 96,
+      "text": "8. Omgevingszones: wind, lage/hoge zwaartekracht, beweging en tijdelijke snelheid."
+    },
+    {
+      "id": "wind-zone",
+      "kind": "zone",
+      "x": 4520,
+      "y": 180,
+      "w": 250,
+      "h": 300,
+      "zone": {
+        "forceX": 600
+      }
+    },
+    {
+      "id": "low-g",
+      "kind": "zone",
+      "x": 4820,
+      "y": 100,
+      "w": 200,
+      "h": 380,
+      "zone": {
+        "gravity": 0.35
+      }
+    },
+    {
+      "id": "high-g",
+      "kind": "zone",
+      "x": 5080,
+      "y": 100,
+      "w": 180,
+      "h": 380,
+      "zone": {
+        "gravity": 2
+      }
+    },
+    {
+      "id": "drift-h",
+      "kind": "zone",
+      "x": 5320,
+      "y": 100,
+      "w": 180,
+      "h": 380,
+      "zone": {
+        "driftX": 100
+      }
+    },
+    {
+      "id": "drift-v",
+      "kind": "zone",
+      "x": 5550,
+      "y": 200,
+      "w": 180,
+      "h": 280,
+      "zone": {
+        "driftY": -110
+      }
+    },
+    {
+      "id": "temporary-speed",
+      "kind": "zone",
+      "x": 5780,
+      "y": 100,
+      "w": 160,
+      "h": 380,
+      "zone": {
+        "speedFactor": 1.6,
+        "duration": 3
+      }
+    },
+    {
+      "id": "wind-platform",
+      "kind": "pathPlatform",
+      "x": 4520,
+      "y": 380,
+      "w": 100,
+      "h": 20,
+      "route": {
+        "points": [
+          {
+            "x": 4520,
+            "y": 380
+          },
+          {
+            "x": 4640,
+            "y": 300
+          },
+          {
+            "x": 4700,
+            "y": 380
+          }
+        ],
+        "speed": 50,
+        "wait": 0.3
+      }
+    },
+    {
+      "id": "bord-6100",
+      "kind": "decoration",
+      "x": 6100,
+      "y": 380,
+      "w": 64,
+      "h": 96,
+      "text": "9. Druk ↑ bij de poort. Je gaat naar de geheime kamer. De andere poort brengt je terug."
+    },
+    {
+      "id": "portal-a",
+      "kind": "teleporter",
+      "x": 6250,
+      "y": 416,
+      "w": 48,
+      "h": 64,
+      "portal": {
+        "destination": {
+          "object": "portal-b"
+        },
+        "secret": true
+      }
+    },
+    {
+      "id": "portal-b",
+      "kind": "teleporter",
+      "x": 6600,
+      "y": 416,
+      "w": 48,
+      "h": 64,
+      "portal": {
+        "destination": {
+          "object": "portal-a"
+        }
+      }
+    },
+    {
+      "id": "secret-area",
+      "kind": "secret",
+      "x": 6560,
+      "y": 400,
+      "w": 180,
+      "h": 80
+    },
+    {
+      "id": "treasure",
+      "kind": "chest",
+      "x": 6690,
+      "y": 444,
+      "w": 40,
+      "h": 36,
+      "chest": {
+        "rewards": [
+          {
+            "kind": "coin",
+            "amount": 3
+          },
+          {
+            "kind": "shield"
+          },
+          {
+            "kind": "bonus"
+          }
+        ]
+      }
+    },
+    {
+      "id": "auto-a",
+      "kind": "teleporter",
+      "x": 6900,
+      "y": 416,
+      "w": 48,
+      "h": 64,
+      "portal": {
+        "destination": {
+          "object": "auto-b"
+        },
+        "activation": "auto"
+      }
+    },
+    {
+      "id": "auto-b",
+      "kind": "teleporter",
+      "x": 7200,
+      "y": 416,
+      "w": 48,
+      "h": 64,
+      "portal": {
+        "destination": {
+          "object": "auto-a"
+        },
+        "activation": "auto"
+      }
+    },
+    {
+      "id": "bord-7420",
+      "kind": "decoration",
+      "x": 7420,
+      "y": 380,
+      "w": 64,
+      "h": 96,
+      "text": "10. Beweegplatform start wanneer je erop staat. De gebarsten brug stort in en keert terug."
+    },
+    {
+      "id": "rider-platform",
+      "kind": "pathPlatform",
+      "x": 7550,
+      "y": 420,
+      "w": 120,
+      "h": 20,
+      "route": {
+        "points": [
+          {
+            "x": 7550,
+            "y": 420
+          },
+          {
+            "x": 7750,
+            "y": 330
+          }
+        ],
+        "activation": "rider",
+        "speed": 75
+      }
+    },
+    {
+      "id": "collapse",
+      "kind": "collapsePlatform",
+      "x": 7900,
+      "y": 390,
+      "w": 180,
+      "h": 20,
+      "collapse": {
+        "delay": 0.7,
+        "returnAfter": 3
+      }
+    },
+    {
+      "id": "manual-lift",
+      "kind": "elevator",
+      "x": 8200,
+      "y": 460,
+      "w": 100,
+      "h": 20,
+      "route": {
+        "points": [
+          {
+            "x": 8200,
+            "y": 460
+          },
+          {
+            "x": 8200,
+            "y": 350
+          },
+          {
+            "x": 8380,
+            "y": 300
+          }
+        ],
+        "activation": "interact",
+        "speed": 100,
+        "wait": 0.3
+      }
+    },
+    {
+      "id": "bord-8520",
+      "kind": "decoration",
+      "x": 8520,
+      "y": 380,
+      "w": 64,
+      "h": 96,
+      "text": "11. Praat met de monteur: druk voor iedere volgende zin opnieuw ↑. Hij geeft een sleutel."
+    },
+    {
+      "id": "helper",
+      "kind": "npc",
+      "x": 8650,
+      "y": 432,
+      "w": 32,
+      "h": 48,
+      "npc": {
+        "lines": [
+          "Welkom in het lab!",
+          "Hier is de sleutel voor de archiefdeur."
+        ],
+        "reward": {
+          "kind": "key",
+          "key": "archive"
+        }
+      }
+    },
+    {
+      "id": "npc-door",
+      "kind": "door",
+      "x": 8850,
+      "y": 370,
+      "w": 36,
+      "h": 110,
+      "key": "archive"
+    },
+    {
+      "id": "receiver",
+      "kind": "npc",
+      "x": 9050,
+      "y": 432,
+      "w": 32,
+      "h": 48,
+      "npc": {
+        "lines": [
+          "Dank je. De sleutel opent nu de geheime poort."
+        ],
+        "requiresKey": "archive",
+        "receive": "key",
+        "actions": [
+          {
+            "type": "object",
+            "target": "locked-portal",
+            "action": "enable"
+          }
+        ]
+      }
+    },
+    {
+      "id": "locked-portal",
+      "kind": "teleporter",
+      "x": 9220,
+      "y": 416,
+      "w": 48,
+      "h": 64,
+      "enabled": false,
+      "portal": {
+        "destination": {
+          "x": 9500,
+          "y": 420
+        },
+        "activation": "interact"
+      }
+    },
+    {
+      "id": "bord-9620",
+      "kind": "decoration",
+      "x": 9620,
+      "y": 380,
+      "w": 64,
+      "h": 96,
+      "text": "12. Een tijdelijke schakelaar schakelt de val uit en maakt een verborgen brug beschikbaar."
+    },
+    {
+      "id": "timed-switch",
+      "kind": "switch",
+      "x": 9740,
+      "y": 442,
+      "w": 30,
+      "h": 38,
+      "trigger": {
+        "mode": "timed",
+        "duration": 4,
+        "on": [
+          {
+            "type": "object",
+            "target": "test-trap",
+            "action": "disable"
+          },
+          {
+            "type": "object",
+            "target": "hidden-bridge",
+            "action": "enable"
+          }
+        ],
+        "off": [
+          {
+            "type": "object",
+            "target": "test-trap",
+            "action": "enable"
+          },
+          {
+            "type": "object",
+            "target": "hidden-bridge",
+            "action": "disable"
+          }
+        ]
+      }
+    },
+    {
+      "id": "test-trap",
+      "kind": "trap",
+      "x": 9930,
+      "y": 450,
+      "w": 40,
+      "h": 30,
+      "range": 30,
+      "speed": 50
+    },
+    {
+      "id": "hidden-bridge",
+      "kind": "platform",
+      "x": 10070,
+      "y": 370,
+      "w": 150,
+      "h": 20,
+      "enabled": false
+    },
+    {
+      "id": "permanent-switch",
+      "kind": "switch",
+      "x": 10400,
+      "y": 442,
+      "w": 30,
+      "h": 38,
+      "trigger": {
+        "mode": "once",
+        "on": [
+          {
+            "type": "object",
+            "target": "final-portal",
+            "action": "enable"
+          },
+          {
+            "type": "message",
+            "text": "De laatste doorgang blijft open."
+          }
+        ]
+      }
+    },
+    {
+      "id": "final-portal",
+      "kind": "teleporter",
+      "x": 10600,
+      "y": 416,
+      "w": 48,
+      "h": 64,
+      "enabled": false,
+      "portal": {
+        "destination": {
+          "x": 11000,
+          "y": 420
+        },
+        "switch": "permanent-switch"
+      }
+    },
+    {
+      "id": "bonus-chest",
+      "kind": "chest",
+      "x": 11200,
+      "y": 444,
+      "w": 40,
+      "h": 36,
+      "chest": {
+        "rewards": [
+          {
+            "kind": "key",
+            "key": "extra"
+          },
+          {
+            "kind": "invincible",
+            "duration": 5
+          },
+          {
+            "kind": "jump"
+          },
+          {
+            "kind": "speed"
+          },
+          {
+            "kind": "heart"
+          },
+          {
+            "kind": "secret"
+          }
+        ]
+      }
+    },
+    {
+      "id": "finish",
+      "kind": "finish",
+      "x": 11700,
+      "y": 384,
+      "w": 64,
+      "h": 96
+    }
+  ],
+  "assets": {
+    "hero": {
+      "type": "sheet",
+      "src": "assets/midnight-city/hero.png",
+      "frameWidth": 48,
+      "frameHeight": 48,
+      "frameCount": 8
+    },
+    "enemies": {
+      "type": "sheet",
+      "src": "assets/midnight-city/enemies.png",
+      "frameWidth": 32,
+      "frameHeight": 32,
+      "frameCount": 6
+    },
+    "items": {
+      "type": "sheet",
+      "src": "assets/midnight-city/items.png",
+      "frameWidth": 32,
+      "frameHeight": 32,
+      "frameCount": 12
+    },
+    "tiles": {
+      "type": "sheet",
+      "src": "assets/midnight-city/tiles.png",
+      "frameWidth": 32,
+      "frameHeight": 32,
+      "frameCount": 6
+    },
+    "props": {
+      "type": "sheet",
+      "src": "assets/midnight-city/props.png",
+      "frameWidth": 64,
+      "frameHeight": 96,
+      "frameCount": 6
+    },
+    "intro": {
+      "type": "sheet",
+      "src": "assets/midnight-city/intro.png",
+      "frameWidth": 512,
+      "frameHeight": 288,
+      "frameCount": 4
+    },
+    "background": {
+      "type": "image",
+      "src": "assets/midnight-city/background.png"
+    },
+    "near": {
+      "type": "image",
+      "src": "assets/midnight-city/near.png"
+    },
+    "foreground": {
+      "type": "image",
+      "src": "assets/midnight-city/foreground.png"
+    },
+    "card": {
+      "type": "image",
+      "src": "assets/midnight-city/card.png"
+    },
+    "story": {
+      "type": "image",
+      "src": "assets/midnight-city/story.png"
+    },
+    "completion": {
+      "type": "image",
+      "src": "assets/midnight-city/completion.png"
+    },
+    "avatar-1": {
+      "type": "image",
+      "src": "assets/midnight-city/avatar-1.png"
+    },
+    "avatar-2": {
+      "type": "image",
+      "src": "assets/midnight-city/avatar-2.png"
+    },
+    "music": {
+      "type": "audio",
+      "src": "assets/midnight-city/music.wav"
+    },
+    "collect": {
+      "type": "audio",
+      "src": "assets/midnight-city/collect.wav"
+    },
+    "finish": {
+      "type": "audio",
+      "src": "assets/midnight-city/finish.wav"
+    }
+  },
+  "styles": {
+    "ground": {
+      "asset": "tiles",
+      "mode": "tile",
+      "frame": 0
+    },
+    "wall": {
+      "asset": "tiles",
+      "mode": "tile",
+      "frame": 0
+    },
+    "platform": {
+      "asset": "tiles",
+      "mode": "tile",
+      "frame": 1
+    },
+    "movingX": {
+      "asset": "tiles",
+      "mode": "tile",
+      "frame": 1
+    },
+    "movingY": {
+      "asset": "tiles",
+      "mode": "tile",
+      "frame": 1
+    },
+    "vanish": {
+      "asset": "tiles",
+      "mode": "tile",
+      "frame": 1
+    },
+    "breakable": {
+      "asset": "tiles",
+      "mode": "sprite",
+      "frame": 2
+    },
+    "crate": {
+      "asset": "tiles",
+      "mode": "sprite",
+      "frame": 2
+    },
+    "spikes": {
+      "asset": "tiles",
+      "mode": "tile",
+      "frame": 3
+    },
+    "trap": {
+      "asset": "tiles",
+      "mode": "sprite",
+      "frame": 3
+    },
+    "lava": {
+      "asset": "tiles",
+      "mode": "tile",
+      "frame": 4
+    },
+    "falling": {
+      "asset": "tiles",
+      "mode": "sprite",
+      "frame": 2
+    },
+    "spring": {
+      "asset": "tiles",
+      "mode": "sprite",
+      "frame": 5
+    },
+    "walker": {
+      "asset": "enemies",
+      "animations": {
+        "idle": {
+          "frames": [
+            0,
+            1
+          ],
+          "fps": 3,
+          "repeat": -1
+        },
+        "walk": {
+          "frames": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "fps": 7,
+          "repeat": -1
+        },
+        "fly": {
+          "frames": [
+            0,
+            2,
+            1,
+            3
+          ],
+          "fps": 7,
+          "repeat": -1
+        },
+        "jump": {
+          "frames": [
+            2
+          ],
+          "fps": 7,
+          "repeat": -1
+        },
+        "fall": {
+          "frames": [
+            3
+          ],
+          "fps": 7,
+          "repeat": -1
+        },
+        "attack": {
+          "frames": [
+            4
+          ],
+          "fps": 8,
+          "repeat": 0
+        },
+        "defeat": {
+          "frames": [
+            5
+          ],
+          "fps": 2,
+          "repeat": 0
+        }
+      }
+    },
+    "chaser": {
+      "asset": "enemies",
+      "animations": {
+        "idle": {
+          "frames": [
+            0,
+            1
+          ],
+          "fps": 3,
+          "repeat": -1
+        },
+        "walk": {
+          "frames": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "fps": 7,
+          "repeat": -1
+        },
+        "fly": {
+          "frames": [
+            0,
+            2,
+            1,
+            3
+          ],
+          "fps": 7,
+          "repeat": -1
+        },
+        "jump": {
+          "frames": [
+            2
+          ],
+          "fps": 7,
+          "repeat": -1
+        },
+        "fall": {
+          "frames": [
+            3
+          ],
+          "fps": 7,
+          "repeat": -1
+        },
+        "attack": {
+          "frames": [
+            4
+          ],
+          "fps": 8,
+          "repeat": 0
+        },
+        "defeat": {
+          "frames": [
+            5
+          ],
+          "fps": 2,
+          "repeat": 0
+        }
+      }
+    },
+    "jumper": {
+      "asset": "enemies",
+      "animations": {
+        "idle": {
+          "frames": [
+            0,
+            1
+          ],
+          "fps": 3,
+          "repeat": -1
+        },
+        "walk": {
+          "frames": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "fps": 7,
+          "repeat": -1
+        },
+        "fly": {
+          "frames": [
+            0,
+            2,
+            1,
+            3
+          ],
+          "fps": 7,
+          "repeat": -1
+        },
+        "jump": {
+          "frames": [
+            2
+          ],
+          "fps": 7,
+          "repeat": -1
+        },
+        "fall": {
+          "frames": [
+            3
+          ],
+          "fps": 7,
+          "repeat": -1
+        },
+        "attack": {
+          "frames": [
+            4
+          ],
+          "fps": 8,
+          "repeat": 0
+        },
+        "defeat": {
+          "frames": [
+            5
+          ],
+          "fps": 2,
+          "repeat": 0
+        }
+      }
+    },
+    "flyer": {
+      "asset": "enemies",
+      "animations": {
+        "idle": {
+          "frames": [
+            0,
+            1
+          ],
+          "fps": 3,
+          "repeat": -1
+        },
+        "walk": {
+          "frames": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "fps": 7,
+          "repeat": -1
+        },
+        "fly": {
+          "frames": [
+            0,
+            2,
+            1,
+            3
+          ],
+          "fps": 7,
+          "repeat": -1
+        },
+        "jump": {
+          "frames": [
+            2
+          ],
+          "fps": 7,
+          "repeat": -1
+        },
+        "fall": {
+          "frames": [
+            3
+          ],
+          "fps": 7,
+          "repeat": -1
+        },
+        "attack": {
+          "frames": [
+            4
+          ],
+          "fps": 8,
+          "repeat": 0
+        },
+        "defeat": {
+          "frames": [
+            5
+          ],
+          "fps": 2,
+          "repeat": 0
+        }
+      }
+    },
+    "shooter": {
+      "asset": "enemies",
+      "animations": {
+        "idle": {
+          "frames": [
+            0,
+            1
+          ],
+          "fps": 3,
+          "repeat": -1
+        },
+        "walk": {
+          "frames": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "fps": 7,
+          "repeat": -1
+        },
+        "fly": {
+          "frames": [
+            0,
+            2,
+            1,
+            3
+          ],
+          "fps": 7,
+          "repeat": -1
+        },
+        "jump": {
+          "frames": [
+            2
+          ],
+          "fps": 7,
+          "repeat": -1
+        },
+        "fall": {
+          "frames": [
+            3
+          ],
+          "fps": 7,
+          "repeat": -1
+        },
+        "attack": {
+          "frames": [
+            4
+          ],
+          "fps": 8,
+          "repeat": 0
+        },
+        "defeat": {
+          "frames": [
+            5
+          ],
+          "fps": 2,
+          "repeat": 0
+        }
+      }
+    },
+    "sentry": {
+      "asset": "enemies",
+      "animations": {
+        "idle": {
+          "frames": [
+            0,
+            1
+          ],
+          "fps": 3,
+          "repeat": -1
+        },
+        "walk": {
+          "frames": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "fps": 7,
+          "repeat": -1
+        },
+        "fly": {
+          "frames": [
+            0,
+            2,
+            1,
+            3
+          ],
+          "fps": 7,
+          "repeat": -1
+        },
+        "jump": {
+          "frames": [
+            2
+          ],
+          "fps": 7,
+          "repeat": -1
+        },
+        "fall": {
+          "frames": [
+            3
+          ],
+          "fps": 7,
+          "repeat": -1
+        },
+        "attack": {
+          "frames": [
+            4
+          ],
+          "fps": 8,
+          "repeat": 0
+        },
+        "defeat": {
+          "frames": [
+            5
+          ],
+          "fps": 2,
+          "repeat": 0
+        }
+      }
+    },
+    "coin": {
+      "asset": "items",
+      "animations": {
+        "idle": {
+          "frames": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "fps": 6,
+          "repeat": -1
+        }
+      }
+    },
+    "heart": {
+      "asset": "items",
+      "frame": 4
+    },
+    "key": {
+      "asset": "items",
+      "frame": 5
+    },
+    "bonus": {
+      "asset": "items",
+      "frame": 6
+    },
+    "invincible": {
+      "asset": "items",
+      "frame": 7
+    },
+    "jump": {
+      "asset": "items",
+      "frame": 8
+    },
+    "speed": {
+      "asset": "items",
+      "frame": 9
+    },
+    "shield": {
+      "asset": "items",
+      "frame": 10
+    },
+    "projectile": {
+      "asset": "items",
+      "frame": 11
+    },
+    "door": {
+      "asset": "props",
+      "frame": 0,
+      "animations": {
+        "idle": {
+          "frames": [
+            0
+          ],
+          "fps": 7,
+          "repeat": -1
+        },
+        "open": {
+          "frames": [
+            1
+          ],
+          "fps": 7,
+          "repeat": -1
+        }
+      }
+    },
+    "checkpoint": {
+      "asset": "props",
+      "frame": 2,
+      "animations": {
+        "idle": {
+          "frames": [
+            2
+          ],
+          "fps": 7,
+          "repeat": -1
+        },
+        "active": {
+          "frames": [
+            3
+          ],
+          "fps": 7,
+          "repeat": -1
+        }
+      }
+    },
+    "finish": {
+      "asset": "props",
+      "frame": 3
+    },
+    "secret": {
+      "asset": "items",
+      "frame": 6
+    },
+    "passage": {
+      "asset": "props",
+      "frame": 1
+    },
+    "decoration": {
+      "asset": "props",
+      "frame": 5,
+      "depth": -30
+    },
+    "npc": {
+      "asset": "hero",
+      "frame": 0
+    }
+  },
+  "background": {
+    "color": "#10172f",
+    "layers": [
+      {
+        "id": "distance",
+        "visual": {
+          "asset": "background"
+        },
+        "width": 1024,
+        "height": 540,
+        "parallax": 0.15
+      },
+      {
+        "id": "near",
+        "visual": {
+          "asset": "near"
+        },
+        "width": 1024,
+        "height": 540,
+        "parallax": 0.4
+      },
+      {
+        "id": "foreground",
+        "visual": {
+          "asset": "foreground",
+          "alpha": 0.8
+        },
+        "width": 1024,
+        "height": 540,
+        "parallax": 1.15,
+        "foreground": true
+      }
+    ],
+    "light": {
+      "color": "#182947",
+      "alpha": 0.04
+    }
+  },
+  "audio": {
+    "music": "music",
+    "loop": true,
+    "musicVolume": 0.65,
+    "effectsVolume": 0.9,
+    "effects": {
+      "coin": "collect",
+      "finish": "finish"
+    }
+  }
+}
