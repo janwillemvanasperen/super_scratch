@@ -1,3 +1,4 @@
+import { Challenges } from '../mechanics/challenges';
 import { WorldSystem } from '../mechanics/world-system';
 import { drawBuilding } from '../mechanics/draw-building';
 import type { Controls } from '../mechanics/world-types';
@@ -24,13 +25,14 @@ type Obj = Block & {
   attackUntil?: number;
   defeatedAt?: number;
 };
-type Shot = Rect & { vx: number; vy: number; ttl: number };
+type Shot = Rect & { vx: number; vy: number; ttl: number; damage?: number };
 export type GameHooks = {
   hud: (
     run: Run,
     powers: Record<string, number>,
     message: string,
     oxygen?: { remaining: number; total: number },
+    objectives?: string[],
   ) => void;
   pause: () => void;
   finish: (run: Run) => void;
@@ -39,6 +41,7 @@ export type GameHooks = {
 export class GameScene extends Phaser.Scene {
   level!: Level;
   systems?: WorldSystem;
+  challenge = new Challenges(this);
   speechLabel?: Phaser.GameObjects.Text;
   run = new Run();
   p!: Player;
@@ -67,7 +70,7 @@ export class GameScene extends Phaser.Scene {
   labels: Phaser.GameObjects.Text[] = [];
   constructor(
     private definition: Level,
-    private audio: AudioEngine,
+    readonly audio: AudioEngine,
     private hooks: GameHooks,
   ) {
     super('play');
@@ -90,6 +93,7 @@ export class GameScene extends Phaser.Scene {
   }
   create() {
     this.level = this.definition;
+    this.challenge = new Challenges(this);
     this.run = new Run();
     this.objects = this.level.objects.map((b) => ({
       ...b,
@@ -212,6 +216,7 @@ export class GameScene extends Phaser.Scene {
       this.powers,
       this.elapsed < this.messageUntil ? this.message : '',
       this.systems?.oxygen,
+      this.challenge.hud(),
     );
   }
   tick(dt: number) {
@@ -307,6 +312,11 @@ export class GameScene extends Phaser.Scene {
     }
     for (const o of this.objects) {
       if (!o.alive || (this.systems && !this.systems.active(o))) continue;
+      if (o.enemy) {
+        this.challenge.enemy(o, dt, previousBottom);
+        if (this.p !== p) return;
+        continue;
+      }
       if (['walker', 'chaser', 'jumper', 'flyer', 'shooter', 'sentry'].includes(o.kind)) {
         this.enemy(o, dt);
         if (overlap(p, o)) {
@@ -423,6 +433,7 @@ export class GameScene extends Phaser.Scene {
           }
           break;
         case 'finish':
+          if (this.level.goals?.length || o.requirements?.length || this.level.events?.length) break;
           this.run.finish(this.level.targetTime);
           this.run.finished = true;
           this.audio.stop(true);
@@ -494,6 +505,26 @@ export class GameScene extends Phaser.Scene {
     }
     this.systems?.after(dt, controls);
     if (this.p !== p) return;
+    this.challenge.tick();
+    const finishes = this.objects.filter(
+      (o) => o.kind === 'finish' && o.alive && this.active(o) && overlap(p, o),
+    );
+    if (finishes.length) {
+      const missing = finishes.map((o) =>
+        this.challenge
+          .goals(o)
+          .map((g) => this.challenge.progress(g))
+          .filter((g) => !g.done),
+      );
+      if (missing.some((goals) => !goals.length)) {
+        this.run.finish(this.level.targetTime);
+        this.audio.stop(true);
+        this.audio.play('finish');
+        this.hooks.finish(this.run);
+        return;
+      }
+      this.say('Finish gesloten. Nog nodig: ' + missing[0].map((g) => g.text).join(', '), 0.25);
+    }
     this.wasUp = up;
     this.wasDown = down;
     this.shots = this.shots.filter((s) => {
@@ -501,7 +532,7 @@ export class GameScene extends Phaser.Scene {
       s.y += s.vy * dt;
       s.ttl -= dt;
       if (overlap(p, s)) {
-        this.hurt(s.x);
+        if (s.damage !== 0) this.hurt(s.x, s.damage);
         return false;
       }
       return s.ttl > 0 && !this.solids().some((b) => overlap(s, b));
@@ -565,7 +596,11 @@ export class GameScene extends Phaser.Scene {
       });
     }
   }
-  hurt(x: number) {
+  music(notes: number[], tempo: number) {
+    this.audio.start(notes, tempo);
+    if (this.paused) this.audio.pause();
+  }
+  hurt(x: number, damage = 1) {
     const p = this.p;
     if (p.invuln > 0 || this.powers.invincible) return;
     if (this.powers.shield) {
@@ -574,7 +609,7 @@ export class GameScene extends Phaser.Scene {
       this.audio.play('power');
       return;
     }
-    this.run.hearts--;
+    this.run.hearts = Math.max(0, this.run.hearts - damage);
     this.audio.play('hurt');
     this.burst(p.x, p.y, 0xff7676);
     p.invuln = 1.5;
@@ -624,6 +659,10 @@ export class GameScene extends Phaser.Scene {
       );
       this.bg.fillRect(0, 0, 960, 540);
     }
+    if (this.challenge.background !== undefined) {
+      this.bg.fillStyle(this.challenge.background, 0.45);
+      this.bg.fillRect(0, 0, 960, 540);
+    }
     this.assetRenderer?.begin();
     this.assetRenderer?.layers(this.cam, artTime);
     g.clear();
@@ -634,6 +673,13 @@ export class GameScene extends Phaser.Scene {
     };
     for (const o of this.objects) {
       if (this.systems && !this.systems.visible(o)) continue;
+      if (this.challenge.hidden(o)) continue;
+      if (o.enemy && o.alive && (o.enemy.bar ?? o.enemy.boss)) {
+        g.fillStyle(0x241a2f);
+        g.fillRect(o.x - this.cam, o.y - 9, o.w, 5);
+        g.fillStyle(0x68ec9b);
+        g.fillRect(o.x - this.cam, o.y - 9, (o.w * this.challenge.state(o).hp) / o.enemy.hp, 5);
+      }
       const visual = o.visual || this.level.styles?.[o.kind];
       const defeated =
         !o.alive &&
@@ -645,7 +691,8 @@ export class GameScene extends Phaser.Scene {
               (visual?.animations?.defeat?.fps || 8),
           );
       if ((!o.alive && !defeated) || o.x + o.w < this.cam - 200 || o.x > this.cam + 1160) continue;
-      const enemy = ['walker', 'chaser', 'jumper', 'flyer', 'shooter', 'sentry'].includes(o.kind);
+      const enemy =
+        !!o.enemy || ['walker', 'chaser', 'jumper', 'flyer', 'shooter', 'sentry'].includes(o.kind);
       const state =
         this.systems?.animation(o) ||
         (defeated
@@ -703,6 +750,12 @@ export class GameScene extends Phaser.Scene {
         for (let j = 12; j < o.w; j += 24) rect(x + j, y + 14, 8, 4, 0xffffff);
         if (o.kind === 'ground')
           for (let j = 8; j < o.w; j += 36) rect(x + j, y + 32, 6, 5, 0x364654);
+      } else if (o.enemy) {
+        rect(x, y + 4, o.w, o.h - 4, o.enemy.boss ? 0x874b82 : 0x4b577d);
+        rect(x + o.w * 0.12, y, o.w * 0.76, 7, 0xf1be73);
+        rect(x + o.w * 0.24, y + o.h * 0.35, o.w * 0.52, 6, 0xfde7ba);
+      } else if (o.kind === 'objective') {
+        if (o.text) rect(x, y + o.h - 4, o.w, 4, 0x9fd4ce);
       } else if (['walker', 'chaser', 'jumper', 'flyer', 'shooter', 'sentry'].includes(o.kind)) {
         rect(x + 3, y, o.w - 6, o.h, c);
         rect(x, y + 5, o.w, o.h - 10, c);

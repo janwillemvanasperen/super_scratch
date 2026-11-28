@@ -62,7 +62,7 @@ describe('V2.2 reusable building systems', () => {
   it('validates the complete internal lab, while keeping it out of the public register', () => {
     expect(levelSchema.safeParse(raw()).success).toBe(true);
     const all = raw().objects;
-    for (const kind of kinds.slice(33))
+    for (const kind of kinds.slice(33, 45))
       expect(
         all.some((o: any) => o.kind === kind),
         kind,

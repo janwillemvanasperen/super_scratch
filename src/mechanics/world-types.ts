@@ -1,3 +1,4 @@
+import type { Rect } from '../core/physics';
 import type { Block, Level } from '../levels/schema';
 import type { Player } from '../entities/player';
 import type { Run } from '../core/rules';
@@ -27,6 +28,11 @@ export type WorldHost = {
   burst: (x: number, y: number, color?: number, n?: number) => void;
   solids: () => WorldObject[];
   hurt: (x: number) => void;
+  challenge?: {
+    hit: (o: WorldObject, method: 'event' | 'throw', source?: Rect) => boolean;
+    background?: number;
+  };
+  music?: (notes: number[], tempo: number) => void;
   loseLife: () => void;
 };
 export type ObjectState = {

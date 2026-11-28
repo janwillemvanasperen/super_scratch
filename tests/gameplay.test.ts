@@ -6,7 +6,7 @@ vi.mock('phaser', () => ({
   },
 }));
 import { GameScene } from '../src/scenes/GameScene';
-import {WorldSystem} from '../src/mechanics/world-system';
+import { WorldSystem } from '../src/mechanics/world-system';
 import { Player } from '../src/entities/player';
 import { objectBody } from '../src/assets/layout';
 import { levelSchema } from '../src/levels/schema';
@@ -35,7 +35,7 @@ function setup(id = 'tutorial') {
   }));
   s.p = s.createPlayer(l.spawn.x, l.spawn.y, true);
   s.checkpoint = { x: s.p.x, y: s.p.y };
-  s.systems=new WorldSystem(s,()=>{});
+  s.systems = new WorldSystem(s, () => {});
   s.keys = Object.fromEntries(
     ['left', 'right', 'up', 'down', 'jump', 'pause'].map((k) => [k, { isDown: false }]),
   ) as any;
@@ -208,4 +208,163 @@ describe('gameplay integration', () => {
       expect(s.run.finished, JSON.stringify(trace.slice(-20))).toBe(true);
       expect(s.run.lives).toBeGreaterThan(0);
     });
+});
+
+describe('V2.3 combat and objectives', () => {
+  it('completes the demonstration boss, three objectives and one of two finishes after respawn', () => {
+    const { s, step, hooks } = setup('crystal-workshop');
+    const find = (id: string) => s.objects.find((o) => o.id === id)!;
+    const at = (id: string) => {
+      s.p.x = find(id).x;
+      s.p.y = 450;
+      s.p.vx = 0;
+      s.p.vy = 0;
+    };
+    at('finish-lower');
+    step(1);
+    expect(s.run.finished).toBe(false);
+    expect(s.challenge.hud()).toContain('○ Kristallen 0/3');
+    for (const id of ['crystal-0', 'crystal-1', 'crystal-2']) {
+      at(id);
+      step(1);
+    }
+    at('machine');
+    s.keys.up.isDown = true;
+    step(1);
+    s.keys.up.isDown = false;
+    const boss = find('boss');
+    expect(s.active(boss)).toBe(true);
+    at('safe');
+    step(1);
+    s.loseLife();
+    expect(s.p.x).toBe(s.checkpoint.x);
+    expect(s.challenge.hud()).toContain('✓ Kristallen 3/3');
+    expect(s.challenge.hud()).toContain('✓ Zet de machine aan');
+    for (let i = 0; i < 3; i++) {
+      s.p.x = boss.x + 20;
+      s.p.y = boss.y - s.p.h - 1;
+      s.p.vy = 320;
+      step(1);
+      expect(s.challenge.state(boss).hp).toBe(2 - i);
+      if (i === 0) {
+        s.p.y = boss.y - s.p.h - 1;
+        s.p.vy = 320;
+        step(1);
+        expect(s.challenge.state(boss).hp).toBe(2);
+      }
+      at('safe');
+      step(95);
+      if (i === 1) expect(s.challenge.state(boss).phase).toBe(0);
+    }
+    expect(s.run.kills).toBe(1);
+    expect(s.challenge.hit(boss, 'stomp')).toBe(false);
+    expect(s.run.score).toBe(1000);
+    at('finish-lower');
+    step(1);
+    expect(hooks.finish).toHaveBeenCalledTimes(1);
+    step(10);
+    expect(hooks.finish).toHaveBeenCalledTimes(1);
+  });
+
+  it.each([
+    ['stand', 0],
+    ['walk', 1],
+    ['patrol', 1],
+    ['chase', 1],
+    ['flee', -1],
+    ['guard', 1],
+    ['route', 1],
+  ] as const)('moves with the %s behavior', (move, direction) => {
+    const { s, step } = setup('crystal-workshop');
+    const boss = s.objects.find((o) => o.id === 'boss')!;
+    boss.enemy!.behavior = {
+      ...boss.enemy!.behavior,
+      move,
+      route:
+        move === 'route'
+          ? [
+              { x: boss.x + 40, y: boss.y },
+              { x: boss.x + 80, y: boss.y },
+            ]
+          : undefined,
+    };
+    s.systems!.actions([{ type: 'object', target: 'boss', action: 'enable' }], 'test');
+    s.p.x = boss.x + 170;
+    s.p.y = 450;
+    const start = boss.x;
+    step(30);
+    expect(Math.sign(boss.x - start)).toBe(direction);
+  });
+  it.each(['flight', 'jump', 'wait', 'hide', 'teleport', 'shoot'] as const)(
+    'executes %s with compatible movement',
+    (feature) => {
+      const { s, step } = setup('crystal-workshop');
+      const boss = s.objects.find((o) => o.id === 'boss')!,
+        b = boss.enemy!.behavior;
+      b.shoot = undefined;
+      s.systems!.actions([{ type: 'object', target: 'boss', action: 'enable' }], 'test');
+      const x = boss.x,
+        y = boss.y;
+      s.p.x = x + 160;
+      s.p.y = 450;
+      if (feature === 'flight') {
+        b.flight = 40;
+        b.shoot = { speed: 100, direction: 'aim', pattern: 'spread' };
+      }
+      if (feature === 'jump') {
+        b.jump = 360;
+        b.jumpNear = true;
+      }
+      if (feature === 'wait') {
+        b.waitNear = true;
+        b.reaction = 1;
+      }
+      if (feature === 'hide') {
+        b.hide = 0.5;
+        b.move = 'chase';
+      }
+      if (feature === 'teleport')
+        b.teleport = [
+          { x: 1100, y },
+          { x: 1200, y },
+        ];
+      if (feature === 'shoot') b.shoot = { speed: 100, direction: 'left', pattern: 'single' };
+      step(30);
+      if (feature === 'flight') {
+        expect(boss.y).toBeLessThanOrEqual(y);
+        expect(s.shots.length).toBe(3);
+      }
+      if (feature === 'jump') expect(boss.y).toBeLessThan(y);
+      if (feature === 'wait') {
+        expect(boss.x).toBe(x);
+        step(100);
+        expect(boss.x).toBeGreaterThan(x);
+      }
+      if (feature === 'hide') {
+        expect(s.challenge.hidden(boss)).toBe(true);
+        step(45);
+        expect(s.challenge.hidden(boss)).toBe(false);
+      }
+      if (feature === 'teleport') expect(boss.x).toBeGreaterThan(1090);
+      if (feature === 'shoot') expect(s.shots[0].vx).toBeLessThan(0);
+    },
+  );
+  it('rejects incompatible movement, unordered phases and missing objective references', () => {
+    for (const mutate of [
+      (l: any, e: any) => {
+        e.behavior.flight = 20;
+        e.behavior.jump = 300;
+      },
+      (l: any, e: any) => {
+        e.phases.push(e.phases[0]);
+      },
+      (l: any) => {
+        l.goals[0].condition.ids = ['missing'];
+      },
+    ]) {
+      const l = JSON.parse(readFileSync('public/levels/crystal-workshop.json', 'utf8'));
+      mutate(l, l.objects.find((o: any) => o.id === 'boss').enemy);
+      expect(levelSchema.safeParse(l).success).toBe(false);
+    }
+  });
 });

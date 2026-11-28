@@ -183,3 +183,7 @@ De verplichte velden hierboven blijven geldig. Optioneel: `assets`, `styles`, `b
 ## Aanvulling V2.2
 
 Zie [bouwsystemen](BUILDING_SYSTEMS.md) voor de twaalf nieuwe objecttypen en de uitbreiding van kisten en doorgangen. Deze bestaande functies mogen gecombineerd worden zonder nieuwe spelcode. Beschrijf object-ID, bediening, gekoppelde doelen, duur, terugkeer bij levensverlies en benodigde beelden. De actuele [studentencatalogus](../STUDENT_LEVEL_GUIDE.md) bevat uitleg op taalniveau 2F.
+
+## V2.3
+
+Zie [vijanden en doelen](ENEMIES_AND_GOALS.md) voor modulaire vijanden, eindbazen, doelen, gebeurtenissen en verschillende uitgangen. De Kristalwerkplaats bevat een complete voorbeeldconfiguratie.

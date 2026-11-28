@@ -503,3 +503,23 @@ Voor V2.1 zijn beide demolevels volledig uitgespeeld in de browser, inclusief ge
 | [Vercel-configuratie](vercel.json) | Bouwen, publiceren en vernieuwen van levelgegevens |
 
 Als een wens uit het oorspronkelijke plan ruimer is dan wat de code nu kan, volgt deze gids de code. Bespreek een ontbrekende functie eerst met de bouwer voordat je er een verplicht deel van jullie route van maakt.
+
+  ## V2.3 – Vijanden, eindbazen en doelen
+
+Een vijand kan nu meerdere dingen doen. Kies eerst hoe hij beweegt. Je kunt hem laten stilstaan, lopen, heen en weer gaan, achtervolgen, vluchten, bewaken of een route laten volgen. Voeg daarna een extra gedrag toe, zoals springen, vliegen, schieten, teleporteren of zich kort verstoppen. Je kunt ook instellen op welke afstand hij reageert en hoe lang hij wacht.
+
+| Idee | Wat kan de bouwer instellen? |
+|---|---|
+| Vliegende schutter | Vlieghoogte, snelheid, schietrichting, tijd tussen schoten en snelheid van de kogels. |
+| Wachter die pas dichtbij springt | Afstand waarop hij reageert, reactietijd, looproute en sprongkracht. |
+| Eindbaas | Eigen beeld en grootte, levenspunten, balk, aanvalsfases, korte introductie, muziek en een beloning. |
+| Kwetsbare plek | Een rechthoek op het lichaam, bijvoorbeeld de bovenkant. Kies welke aanvallen tellen. |
+| Meerdere uitgangen | Geef elke uitgang zo nodig eigen voorwaarden. De eerste geldige finish sluit de poging af. |
+
+Een vijand kan niet tegelijk springen en vliegen. Een vaste route bepaalt zelf waar de vijand heen gaat. Combineer die route dus niet met springen, vliegen of teleporteren. De bestaande zes vijanden blijven beschikbaar.
+
+Je kunt de finish koppelen aan munten, specifieke voorwerpen, verslagen vijanden, schakelaars, geholpen personages, een bezorgde kist, sleutels, bezochte plekken en een tijdslimiet. De voortgang staat in beeld. De finish vertelt wat nog ontbreekt. Een harde tijdslimiet loopt door bij levensverlies. Is de tijd voorbij, dan moet de speler opnieuw beginnen om die opdracht te halen.
+
+Beschrijf bij iedere vijand waar hij begint, hoe hij beweegt, wat hij doet zodra hij de speler ziet en hoe hij te verslaan is. Geef voor een baas ook per fase aan wat verandert. Schrijf voor elk doel op wanneer het klaar is, hoe de speler dit merkt en welke uitgang erbij hoort. Teken een veilige route vanaf ieder checkpoint.
+
+In **De Kristalwerkplaats** verzamel je drie kristallen, zet je een machine aan en versla je een baas. Daarna kun je via twee uitgangen finishen. De [technische handleiding](docs/ENEMIES_AND_GOALS.md) bevat de instellingen voor de bouwer.

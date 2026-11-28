@@ -80,7 +80,7 @@ export function validateBuildingLinks(l: {
         else if (
           ['start', 'stop'].includes(a.action) &&
           !target.route &&
-          !['movingX', 'movingY', 'trap', 'decoration'].includes(target.kind)
+          !['movingX', 'movingY', 'trap', 'decoration', 'enemy'].includes(target.kind)
         )
           errors.push(`${o.id}: start/stop vereist een bewegend object`);
         if (a.target === o.id && a.action === 'reset')

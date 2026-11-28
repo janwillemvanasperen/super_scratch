@@ -134,6 +134,14 @@ export class WorldSystem {
   actions(actions: Action[], source: string) {
     actions.forEach((a, i) => {
       const h = this.host;
+      if (a.type === 'music') {
+        h.music?.(a.notes, a.tempo);
+        return;
+      }
+      if (a.type === 'background') {
+        if (h.challenge) h.challenge.background = parseInt(a.color.slice(1), 16);
+        return;
+      }
       if (a.type === 'message') {
         h.say(a.text, 4);
         return;
@@ -146,6 +154,12 @@ export class WorldSystem {
       if (!o) return;
       const s = this.state(o);
       switch (a.action) {
+        case 'talk':
+          if (o.npc && this.active(o)) this.talk(o, o.npc.lines[0]);
+          break;
+        case 'damage':
+          if (o.enemy) h.challenge?.hit(o, 'event');
+          break;
         case 'open':
           o.opened = true;
           s.closePending = false;
@@ -484,10 +498,14 @@ export class WorldSystem {
             if (
               enemy.alive &&
               this.active(enemy) &&
-              enemies.includes(enemy.kind) &&
+              (!!enemy.enemy || enemies.includes(enemy.kind)) &&
               enemy.kind !== 'sentry' &&
               overlap(o, enemy)
             ) {
+              if (enemy.enemy) {
+                if (h.challenge?.hit(enemy, 'throw', o)) s.vx *= 0.4;
+                continue;
+              }
               enemy.alive = false;
               enemy.defeatedAt = h.elapsed;
               h.run.claim(enemy.id, 'enemy');
