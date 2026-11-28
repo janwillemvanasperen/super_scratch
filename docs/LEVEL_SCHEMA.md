@@ -187,3 +187,7 @@ Zie [bouwsystemen](BUILDING_SYSTEMS.md) voor de twaalf nieuwe objecttypen en de 
 ## V2.3
 
 Zie [vijanden en doelen](ENEMIES_AND_GOALS.md) voor modulaire vijanden, eindbazen, doelen, gebeurtenissen en verschillende uitgangen. De Kristalwerkplaats bevat een complete voorbeeldconfiguratie.
+
+## V2.5 – Oefenzones
+
+De Playground gebruikt dezelfde objectvelden en verwijzingscontrole als avonturen. Een aparte interne schema-ingang laat de verplichte munt, vijand, geheime plek en finish per oefenzone weg. De normale schema-ingang en productieregistratie behouden die verplichte onderdelen. Oefendata staan in src/playground/zones.ts en komen niet in public/levels/index.json.

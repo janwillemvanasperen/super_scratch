@@ -68,6 +68,7 @@ export class GameScene extends Phaser.Scene {
   paused = false;
   mechanic?: MechanicSession;
   mechanicErrors: string[] = [];
+  practice = false;
   sparkles: { x: number; y: number; vx: number; vy: number; t: number; color: number }[] = [];
   wasUp = false;
   wasDown = false;
@@ -673,7 +674,8 @@ export class GameScene extends Phaser.Scene {
   loseLife() {
     this.mechanic?.event({ type: 'life' });
     this.audio.play('life');
-    if (!this.run.loseLife()) {
+    if (this.practice) this.run.hearts = RULES.hearts;
+    else if (!this.run.loseLife()) {
       this.paused = true;
       this.audio.stop(true);
       this.audio.play('over');

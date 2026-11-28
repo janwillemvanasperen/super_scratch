@@ -1,3 +1,4 @@
+import { makeZone, zones, type Card } from './playground/zones';
 import Phaser from 'phaser';
 import '@fontsource/space-grotesk/latin-400.css';
 import '@fontsource/space-grotesk/latin-500.css';
@@ -22,6 +23,7 @@ let levels: Level[] = [],
   scene: GameScene | null = null,
   current: Level | null = null,
   errors: string[] = [];
+let practiceId: string | undefined;
 let stopIntro: (() => void) | undefined;
 const esc = (s: string) =>
   s.replace(
@@ -78,11 +80,12 @@ function clean() {
     scene = null;
   }
   current = null;
+  practiceId = undefined;
 }
 function home() {
   clean();
   shell(
-    `<main class="home"><div class="hero-copy"><div class="eyebrow"><span></span> EEN NIEUW AVONTUUR BEGINT BIJ JOU</div><h1>SUPER<br><span>SCRATCH</span><em>Jouw wereld. Jouw avontuur.</em></h1><p>Spring in een wereld vol verrassingen.<br>Verzamel munten, ontdek geheimen en speel<br class="desktop"> de levels van de makers van morgen.</p><div class="hero-buttons">${button('Spelen <span>→</span>', 'levels', 'primary')}${button('Eerst even oefenen', 'tutorial', 'secondary')}</div><div class="hero-meta"><span><b>01</b> SPEEL</span><span><b>02</b> ONTDEK</span><span><b>03</b> MAAK</span></div></div><div class="hero-world">${art(undefined, true)}<div class="floating-label">+100 <span>ELK IDEE TELT</span></div><span class="corner-label">100% ORIGINEEL · 8-BIT AVONTUUR</span></div></main><section class="home-bottom"><div><span class="tiny">KLAAR VOOR DE VOLGENDE SPRONG?</span><h2>Kleine pixels. Eindeloze mogelijkheden.</h2></div><div class="quick-links">${button('<span>♜</span> Mijn records <b>↗</b>', 'records')}${button('<span>☷</span> Instellingen <b>↗</b>', 'settings')}${button('<span>✦</span> Over Super Scratch <b>↗</b>', 'about')}</div></section>`,
+    `<main class="home"><div class="hero-copy"><div class="eyebrow"><span></span> EEN NIEUW AVONTUUR BEGINT BIJ JOU</div><h1>SUPER<br><span>SCRATCH</span><em>Jouw wereld. Jouw avontuur.</em></h1><p>Spring in een wereld vol verrassingen.<br>Verzamel munten, ontdek geheimen en speel<br class="desktop"> de levels van de makers van morgen.</p><div class="hero-buttons">${button('Spelen <span>→</span>', 'levels', 'primary')}${button('Eerst even oefenen', 'tutorial', 'secondary')}${button('Super Scratch Playground', 'playground', 'secondary')}</div><div class="hero-meta"><span><b>01</b> SPEEL</span><span><b>02</b> ONTDEK</span><span><b>03</b> MAAK</span></div></div><div class="hero-world">${art(undefined, true)}<div class="floating-label">+100 <span>ELK IDEE TELT</span></div><span class="corner-label">100% ORIGINEEL · 8-BIT AVONTUUR</span></div></main><section class="home-bottom"><div><span class="tiny">KLAAR VOOR DE VOLGENDE SPRONG?</span><h2>Kleine pixels. Eindeloze mogelijkheden.</h2></div><div class="quick-links">${button('<span>♜</span> Mijn records <b>↗</b>', 'records')}${button('<span>☷</span> Instellingen <b>↗</b>', 'settings')}${button('<span>✦</span> Over Super Scratch <b>↗</b>', 'about')}</div></section>`,
   );
 }
 function levelMenu(query = '', difficulty = 'Alle') {
@@ -98,7 +101,7 @@ function levelMenu(query = '', difficulty = 'Alle') {
       shown
         .map((l) => {
           const r = records.data[l.id];
-          return `<article class="level-card">${art(l)}<div class="card-body"><div class="card-meta"><span class="badge">${l.difficulty}</span><span>${r?.completed ? '✓ Voltooid' : 'NOG TE ONTDEKKEN'}</span></div><h2>${esc(l.name)}</h2>${l.demo ? '<p class="demo-label">V2.1 · VISUEEL DEMOLEVEL</p>' : ''}${makers(l)}<div class="card-record"><span>Persoonlijk record</span><b>${r ? fmt(r.score) : '—'} <small>PTS</small></b></div>${button('Ontdek dit level <span>→</span>', `intro:${l.id}`, 'primary')}</div></article>`;
+          return `<article class="level-card">${art(l)}<div class="card-body"><div class="card-meta"><span class="badge">${l.difficulty}</span><span>${r?.completed ? '✓ Voltooid' : 'NOG TE ONTDEKKEN'}</span></div><h2>${esc(l.name)}</h2>${l.demo ? '<p class="demo-label">VOORBEELDLEVEL</p>' : ''}${makers(l)}<div class="card-record"><span>Persoonlijk record</span><b>${r ? fmt(r.score) : '—'} <small>PTS</small></b></div>${button('Ontdek dit level <span>→</span>', `intro:${l.id}`, 'primary')}</div></article>`;
         })
         .join('') || '<p>Geen levels gevonden. Probeer een andere zoekterm.</p>'
     }</div>${errors.length ? '<p class="notice">Een of meer levelbestanden zijn ongeldig en zijn overgeslagen. Zie de browserconsole voor details.</p>' : ''}<p class="storage-note">⌁ Records blijven bewaard in deze browser. Geen account nodig.${records.available ? '' : ' Opslag is niet beschikbaar; records gelden alleen tijdens deze sessie.'}</p></main>`,
@@ -152,16 +155,56 @@ function launch(l: Level) {
     play(l),
   );
 }
-function play(l: Level) {
+function cardDetails(cards: readonly Card[]) {
+  return cards
+    .map(
+      ([name, effect, choice, combo, limit, idea]) =>
+        '<details class="building-card"><summary>' +
+        esc(name) +
+        '</summary><p>' +
+        esc(effect) +
+        '</p><dl>' +
+        [
+          ['Jouw keuze', choice],
+          ['Combineer met', combo],
+          ['Let op', limit],
+          ['Ontwerpidee', idea],
+        ]
+          .map(([label, text]) => '<div><dt>' + label + '</dt><dd>' + esc(text) + '</dd></div>')
+          .join('') +
+        '</dl></details>',
+    )
+    .join('');
+}
+function playground() {
+  clean();
+  shell(
+    `<main class="page playground"><div class="page-heading"><div><h1>Super Scratch <span>Playground</span></h1><p>Kies een oefenzone. Probeer de bouwstenen uit en ontdek wat je ermee kunt maken.</p><p>Onbeperkte levens · Geen tijdslimiet · Geen records</p></div>${button('← Startscherm', 'home', 'secondary')} </div><div class="practice-grid">${zones.map((z, i) => `<article class="practice-card"><small>Zone ${i + 1}</small><h2>${esc(z.title)}</h2><p>${esc(z.instruction)}</p>${button('Start oefenzone →', 'zone:' + z.id, 'primary')}<div class="building-list">${cardDetails(z.cards)}</div></article>`).join('')} </div></main>`,
+  );
+}
+function openZone(id: string) {
+  const zone = zones.find((z) => z.id === id);
+  if (zone) play(makeZone(zone), id);
+}
+function play(l: Level, zoneId?: string) {
   if (current?.id === l.id) scene?.mechanic?.event({ type: 'restart' });
   clean();
   current = l;
-  root.innerHTML = `<div class="play-shell"><div class="play-top"><a class="brand" href="#" data-action="home">SUPER SCRATCH</a><span>${esc(l.name)}</span>${button('Ⅱ Pauze', 'pause')}</div><div class="game-wrap"><div id="hud" aria-live="off"></div><div id="game"></div><div id="hint">De wereld wordt geladen…</div><div id="overlay"></div></div><div class="controls"><span><kbd>←</kbd><kbd>→</kbd> Lopen</span><span><kbd>SPATIE</kbd> Springen</span><span><kbd>↑</kbd> Interactie${l.objects.some((o) => o.ladder || o.water) ? ' / klimmen / zwemmen' : ''}</span><span><kbd>↓</kbd> Oppakken${l.objects.some((o) => o.carry?.throwable) ? ' · ↓ + Spatie: gooien' : ''}</span><span><kbd>ESC</kbd> Pauze</span></div></div>`;
+  practiceId = zoneId;
+  const zone = zones.find((z) => z.id === zoneId);
+  const practiceActions = zone
+    ? button('Herstart zone', 'zone:' + zone.id, 'secondary') +
+      button('← Playground', 'playground', 'text-button')
+    : '';
+  root.innerHTML = `<div class="play-shell"><div class="play-top"><a class="brand" href="#" data-action="home">SUPER SCRATCH</a><span>${esc(l.name)}</span>${practiceActions}${button('Ⅱ Pauze', 'pause')}</div><div class="game-wrap"><div id="hud" aria-live="off"></div><div id="game"></div><div id="hint">De wereld wordt geladen…</div><div id="overlay"></div></div><div class="controls"><span><kbd>←</kbd><kbd>→</kbd> Lopen</span><span><kbd>SPATIE</kbd> Springen</span><span><kbd>↑</kbd> Interactie${l.objects.some((o) => o.ladder || o.water) ? ' / klimmen / zwemmen' : ''}</span><span><kbd>↓</kbd> Oppakken${l.objects.some((o) => o.carry?.throwable) ? ' · ↓ + Spatie: gooien' : ''}</span><span><kbd>ESC</kbd> Pauze</span></div>${zone ? `<section class="practice-reference"><h2>Bouwstenen in deze zone</h2><p>${esc(zone.instruction)}</p>${cardDetails(zone.cards)}</section>` : ''}</div>`;
   bind();
   scene = new GameScene(l, audio, {
     hud: updateHud,
     pause: pause,
-    finish: finish,
+    finish: zone
+      ? () =>
+          overlay('<h1>Gelukt!</h1><p>Je hebt deze demonstratie afgerond.</p>' + practiceActions)
+      : finish,
     over: () =>
       overlay(
         '<div class="eyebrow">ELK AVONTUUR HEEFT EEN NIEUW BEGIN</div><h1>Game over.</h1><p>Haal even adem. Je volgende poging wacht.</p>' +
@@ -169,6 +212,7 @@ function play(l: Level) {
           button('Naar de levels', 'levels', 'secondary'),
       ),
   });
+  scene.practice = !!zone;
   game = new Phaser.Game({
     type: Phaser.AUTO,
     parent: 'game',
@@ -193,7 +237,7 @@ function updateHud(
 ) {
   const el = document.querySelector('#hud');
   if (!el) return;
-  el.innerHTML = `<div><span class="hud-label">GEZONDHEID</span><b class="hearts">${'♥'.repeat(run.hearts)}<span>${'♡'.repeat(3 - run.hearts)}</span></b></div><div><span class="hud-label">LEVENS</span><b>× ${run.lives}</b></div><div><span class="hud-label">MUNTEN</span><b class="gold">● ${String(run.coins).padStart(2, '0')}</b></div><div><span class="hud-label">SCORE</span><b>${String(run.score).padStart(6, '0')}</b></div><div><span class="hud-label">TIJD</span><b>${time(run.seconds)}</b></div><div class="power-hud">${run.keys.size ? '⚿ ' : ''}${Object.entries(
+  el.innerHTML = `<div><span class="hud-label">GEZONDHEID</span><b class="hearts">${'♥'.repeat(run.hearts)}<span>${'♡'.repeat(3 - run.hearts)}</span></b></div><div><span class="hud-label">LEVENS</span><b>${practiceId ? '∞' : '× ' + run.lives}</b></div><div><span class="hud-label">MUNTEN</span><b class="gold">● ${String(run.coins).padStart(2, '0')}</b></div><div><span class="hud-label">SCORE</span><b>${String(run.score).padStart(6, '0')}</b></div>${practiceId ? '' : `<div><span class="hud-label">TIJD</span><b>${time(run.seconds)}</b></div>`}<div class="power-hud">${run.keys.size ? '⚿ ' : ''}${Object.entries(
     powers,
   )
     .map(
@@ -222,7 +266,7 @@ function pause() {
   if (!scene || scene.paused) return;
   scene.setPaused(true);
   overlay(
-    `<div class="eyebrow">EVEN OP ADEM KOMEN</div><h1>Op pauze.</h1><p>Jouw avontuur loopt niet weg.</p>${button('Verder spelen →', 'resume', 'primary')}${button('Instellingen', 'game-settings', 'secondary')}${button('Opnieuw beginnen', `start:${current!.id}`, 'secondary')}${button('Naar het levelmenu', 'levels', 'text-button')}`,
+    `<div class="eyebrow">EVEN OP ADEM KOMEN</div><h1>Op pauze.</h1><p>Jouw avontuur loopt niet weg.</p>${button('Verder spelen →', 'resume', 'primary')}${button('Instellingen', 'game-settings', 'secondary')}${practiceId ? button('Herstart zone', 'zone:' + practiceId, 'secondary') + button('← Playground', 'playground', 'text-button') : button('Opnieuw beginnen', `start:${current!.id}`, 'secondary') + button('Naar het levelmenu', 'levels', 'text-button')}`,
   );
 }
 function settings(inGame = false) {
@@ -281,6 +325,8 @@ function bind() {
         home();
         audio.start();
       } else if (action === 'levels') levelMenu();
+      else if (action === 'playground') playground();
+      else if (action === 'zone' && id) openZone(id);
       else if (action === 'tutorial') {
         const tutorial = levels.find((l) => l.tutorial);
         if (tutorial) intro(tutorial);

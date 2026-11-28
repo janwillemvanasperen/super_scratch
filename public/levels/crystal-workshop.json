@@ -1,6 +1,6 @@
 {
   "id": "crystal-workshop",
-  "version": 1,
+  "version": 2,
   "name": "De Kristalwerkplaats",
   "tutorial": false,
   "story": "Verzamel drie kristallen en herstel de werkplaats. Versla de Wachter om de uitgang vrij te maken.",
@@ -17,27 +17,45 @@
     }
   ],
   "palette": {
-    "sky": "#d5e4f1",
-    "far": "#a6b5d6",
-    "near": "#7a97b9",
-    "ground": "#666a89",
-    "accent": "#d3b5ee"
+    "sky": "#49394e",
+    "far": "#65516c",
+    "near": "#826279",
+    "ground": "#483247",
+    "accent": "#f6bf85"
   },
   "character": {
-    "name": "Pip de leerling",
-    "color": "#b6d2ff"
+    "name": "Mika de monteur",
+    "color": "#ffcf92",
+    "visual": {
+      "asset": "worker",
+      "offsetX": -6,
+      "offsetY": -9,
+      "animations": {
+        "walk": {
+          "frames": [
+            0,
+            1
+          ],
+          "fps": 7
+        }
+      }
+    }
   },
   "music": {
-    "tempo": 100,
+    "tempo": 112,
     "notes": [
+      57,
       60,
       64,
-      67,
-      64,
-      62,
-      65,
       69,
-      65
+      64,
+      60,
+      55,
+      59,
+      62,
+      67,
+      62,
+      59
     ]
   },
   "world": {
@@ -211,6 +229,10 @@
             "text": "Werkplaats gered! Volg een van de twee uitgangen."
           }
         ]
+      },
+      "visual": {
+        "asset": "watcher",
+        "fit": "body"
       }
     },
     {
@@ -339,5 +361,46 @@
         }
       ]
     }
-  ]
+  ],
+  "assets": {
+    "worker": {
+      "type": "sheet",
+      "src": "assets/crystal-workshop/worker.png",
+      "frameWidth": 32,
+      "frameHeight": 40,
+      "frameCount": 2
+    },
+    "watcher": {
+      "type": "image",
+      "src": "assets/crystal-workshop/watcher.png"
+    },
+    "workshop": {
+      "type": "image",
+      "src": "assets/crystal-workshop/workshop.png"
+    },
+    "cover": {
+      "type": "image",
+      "src": "assets/crystal-workshop/cover.png"
+    }
+  },
+  "presentation": {
+    "card": "cover",
+    "story": "cover",
+    "completion": "cover"
+  },
+  "background": {
+    "layers": [
+      {
+        "id": "atelier",
+        "width": 960,
+        "height": 540,
+        "repeatX": true,
+        "parallax": 0.22,
+        "visual": {
+          "asset": "workshop",
+          "fit": "body"
+        }
+      }
+    ]
+  }
 }
